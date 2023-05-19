@@ -13,22 +13,22 @@ import onnxoptimizer
 #processor = AutoImageProcessor.from_pretrained("microsoft/resnet-50")
 #odel1 = ResNetForImageClassification.from_pretrained("microsoft/resnet-18")
 
-model2 = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=True)
+#model2 = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=True)
 model3 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/resnet18-v1-7.onnx')
-
+'''
 dummy_input = torch.randn(1, 3, 224, 224)
 input_name, output_name = ['input'], ['output']
 torch.onnx.export(
     model2, 
     dummy_input, 
     "/depot/davisjam/data/chingwo/PTM-Naming/temp.onnx", 
-    verbose=True, 
+    verbose=False, 
     input_names=input_name, 
     output_names=output_name, 
     do_constant_folding=False, 
     opset_version=16,
     training=torch.onnx.TrainingMode.TRAINING
-    )
+    )'''
 model4 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/temp.onnx')
 
 def getLayerInfo(model: onnx.ModelProto, layer: list) -> dict:
@@ -69,69 +69,178 @@ def calcLayerDiff(info_dict1: dict, info_dict2: dict) -> dict:
     differ: difflib.Differ = difflib.Differ()
     diff_op_types: Iterator[str] = differ.compare(info_dict1["op_types"], info_dict2["op_types"])
     diff_dims: Iterator[str] = differ.compare([str(i) for i in info_dict1["dims"]], [str(i) for i in info_dict2["dims"]])
-    diff_params: Iterator[str] = differ.compare(info_dict1["params"], info_dict2["params"])
+    
+    diff_params: Iterator[str] = differ.compare(
+        [str(p) for p in info_dict1["params"]], 
+        [str(p) for p in info_dict2["params"]]
+    )
     return {"op_types": diff_op_types, "params": diff_params, "dims": diff_dims}
 
 def printLayerDiff(diff_dict: dict) -> None:
     print('op type difference')
     for item in diff_dict["op_types"]:
         print(item)
-    '''
-    print('\nparams difference') TODO: write a difference checker for dict type
+    
+    print('\nparams difference') 
     for item in diff_dict["params"]:
         print(item)
-    '''
+    
     print('\ndims difference')
     for item in diff_dict["dims"]:
         print(item)
 
 def printModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> None:
-    printLayerDiff(calcLayerDiff(getLayerInfo(model1, traverseGraph(model1)), getLayerInfo(model2, traverseGraph(model2))))
+    printLayerDiff(
+        calcLayerDiff(
+        getLayerInfo(model1, sortLayerList(traverseGraph(model1), getSortingSequence(model1, getAdjList(model1)['adj_list']))), 
+        getLayerInfo(model2, sortLayerList(traverseGraph(model2), getSortingSequence(model2, getAdjList(model2)['adj_list'])))))
 
-def traverseGraph(model: onnx.ModelProto) -> list: # TODO: handle the case: multiple outputs in a node
+def traverseGraph(model: onnx.ModelProto) -> list:
     graph: onnx.GraphProto = model.graph
-    out2in_mapping: dict = {}
+    name2node_map: dict = {node.name: node for node in graph.node}
+    in2node_map: dict = {}
     for node in graph.node:
         for input_name in node.input:
-            if input_name not in out2in_mapping:
-                out2in_mapping[input_name] = []
-            out2in_mapping[input_name] += node.output
-    name2node_mapping: dict = {node.name: node for node in graph.node}
+            if input_name not in in2node_map: in2node_map[input_name] = []
+            in2node_map[input_name] += [node]
 
     depth_mapping: dict = {node.name: -1 for node in graph.node}
     depth_mapping[graph.node[0].name] = 0
 
-    def getDepthMap(node: onnx.NodeProto, depth: dict, input_map: dict, name_map: dict, curr_depth: int) -> dict:
+    def getDepthMap(node: onnx.NodeProto, depth: dict, i2n_map: dict, curr_depth: int) -> dict:
         if depth[node.name] < curr_depth:
             depth[node.name] = curr_depth
-        if node.name in input_map:
-            for output_name in input_map[node.name]:
-                depth = getDepthMap(name_map[output_name], depth, input_map, name_map, curr_depth + 1)
+        for output_name in node.output:
+            if output_name in i2n_map:
+                for next_node in in2node_map[output_name]:
+                    depth = getDepthMap(next_node, depth, i2n_map, curr_depth + 1)
         return depth
     
-    dm = getDepthMap(graph.node[0], depth_mapping, out2in_mapping, name2node_mapping, 0)
-    layer = [None] * (max(dm.values()) + 1)
+    dm = getDepthMap(graph.node[0], depth_mapping, in2node_map, 0)
 
-    for k, v in out2in_mapping.items():
-        print(k, v)
+    layer = [None] * (max(dm.values()) + 1)
 
     for k in dm.keys():
         if layer[dm[k]] == None: layer[dm[k]] = []
         layer[dm[k]] += [k]
-    for i in range(len(layer)):
-        layer[i] = sorted(layer[i], key=lambda node_name: name2node_mapping[node_name].op_type)
-
-    for l in layer:
-        print(l)
     
     return layer
-'''
-print(onnx.helper.printable_graph(model4.graph))
-l = traverseGraph(model4)
-i_d = getLayerInfo(model4, l)
-printLayerInfo(i_d)
-'''
-for i in range(20):
-    print(model4.graph.node[i])
+
+def getAdjList(model: onnx.ModelProto) -> dict:
+    graph: onnx.GraphProto = model.graph
+    name2node_map: dict = {node.name: node for node in graph.node}
+    in2name_map: dict = {}
+    for node in graph.node:
+        for input in node.input:
+            if input not in in2name_map: in2name_map[input] = []
+            in2name_map[input] += [node.name]
+    adj_list: dict = {}
+    for node in graph.node:
+        adj_list[node.name] = []
+        for output in node.output:
+            if output in in2name_map:
+                for next_node_name in in2name_map[output]:
+                    adj_list[node.name].append(next_node_name)
+    return {'name2node_map': name2node_map, 'adj_list': adj_list}
+
+def getDims(model: onnx.ModelProto, node: onnx.NodeProto) -> list:
+    initializers: dict = {init.name: init for init in model.graph.initializer}
+    dims_list: list = []
+    for input_param in node.input:
+        if input_param in initializers:
+            dims_list.append(tuple(initializers[input_param].dims))
+    return dims_list
+
+def getSortingSequence(model: onnx.ModelProto, adj_list: dict) -> dict:
+    sorting_sequence_dict: dict = {}
+    graph: onnx.GraphProto = model.graph
+    name2node_map: dict = {node.name: node for node in graph.node}
+
+    def traverse(model: onnx.ModelProto, node_name: str, adj_list: dict, seq_dict: dict, n2n_map: dict) -> dict:
+        temp_list: list = []
+        node: onnx.NodeProto = n2n_map[node_name]
+        seq_dict[node_name]: str = '[{},{}]'.format(node.op_type, str(getDims(model, node)))
+        for next_node_name in adj_list[node_name]:
+            traverse(model, next_node_name, adj_list, seq_dict, n2n_map)
+            temp_list.append(seq_dict[next_node_name])
+        temp_list = sorted(temp_list)
+        for seq in temp_list:
+            seq_dict[node_name] += seq
+        return seq_dict
+
+    sorting_sequence_dict = traverse(model, graph.node[0].name, adj_list, sorting_sequence_dict, name2node_map)
+
+    return sorting_sequence_dict
+
+def sortLayerList(layer_list: list, seq_dict: dict) -> list:
+    for idx in range(len(layer_list)):
+        if len(layer_list[idx]) > 1:
+            layer_list[idx] = sorted(layer_list[idx], key=lambda branch: seq_dict[branch])
+    return layer_list
+
+def analyzeModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> None:
+    diff_dict: dict = calcLayerDiff(
+        getLayerInfo(model1, sortLayerList(traverseGraph(model1), getSortingSequence(model1, getAdjList(model1)['adj_list']))), 
+        getLayerInfo(model2, sortLayerList(traverseGraph(model2), getSortingSequence(model2, getAdjList(model2)['adj_list']))))
+    op_type_different: bool = False
+    dims_different: bool = False
+    params_different: bool = False
+    
+    op_types_diff: list = []
+    for s in diff_dict['op_types']: op_types_diff.append(s)
+    dims_diff: list = []
+    for s in diff_dict['dims']: dims_diff.append(s)
+    params_diff: list = []
+    for s in diff_dict['params']: params_diff.append(s)
+
+    for str_ in op_types_diff:
+        if str_[0] in ['-', '+']:
+            op_type_different = True
+            break
+    for str_ in params_diff:
+        if str_[0] in ['-', '+']:
+            params_different = True
+            break
+    for str_ in dims_diff:
+        if str_[0] in ['-', '+']:
+            dims_different = True
+            break
+
+    if op_type_different: # need test
+        print('Found differences in op types:')
+        for s in op_types_diff:
+            print(s)
+    elif dims_different: # need test
+        print('Found differences in dimensions')
+        j: int = 0
+        for i in range(len(op_types_diff)):
+            print('[{}] {} {}'.format(i, op_types_diff[i], dims_diff[j]))
+            if dims_diff[j][0] == '-':
+                while dims_diff[j][0] != '+':
+                    j += 1
+                print('[{}] {} {}'.format(i, op_types_diff[i], dims_diff[j]))
+                j += 1
+                if j < len(dims_diff):
+                    while dims_diff[j][2] != '{':
+                        j += 1
+                j -= 1
+            j += 1
+    elif params_different:
+        print('Found differences in parameters:')
+        j: int = 0
+        for i in range(len(op_types_diff)):
+            print('[{}] {} {} {}'.format(i, op_types_diff[i], dims_diff[i], params_diff[j]))
+            if params_diff[j][0] == '-':
+                while params_diff[j][0] != '+':
+                    j += 1
+                print('[{}] {} {} {}'.format(i, op_types_diff[i], dims_diff[i], params_diff[j]))
+                j += 1
+                if j < len(params_diff):
+                    while params_diff[j][2] != '{':
+                        j += 1
+                j -= 1
+            j += 1
+        
+analyzeModelLayerDiff(model3, model4)
 
 
