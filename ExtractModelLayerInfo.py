@@ -8,12 +8,40 @@ from GetOnnxFileFromURL import getModel
 from torch.onnx.verification import find_mismatch
 import difflib
 from typing import Iterator
-import onnxoptimizer
+import cProfile
+
+PARAMETERS_DEFAULT = {
+    'BatchNormalization': {
+        'epsilon': [9.999999747378752e-06],
+        'momentum': [0.8999999761581421],
+        'spatial': [1],
+        'consumed_inputs': []
+    },
+    'MaxPool': {
+        'auto_pad': ["NOTSET"],
+        'ceil_mode': [0],
+        'dilation': [1],
+        'strides': [1]
+    },
+    'Gemm': {
+        'alpha': [1.0],
+        'beta': [1.0],
+        'transA': [0],
+        'transB': [0]
+    },
+    'Flatten': {
+        'axis': [1]
+    }
+}
+
+UNUSED_ATTRIBUTE_NAME = {
+    'training_mode'
+}
 
 #processor = AutoImageProcessor.from_pretrained("microsoft/resnet-50")
 #odel1 = ResNetForImageClassification.from_pretrained("microsoft/resnet-18")
 
-#model2 = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=True)
+#model2 = torch.hub.load('pytorch/vision:v0.10.0', 'resnet34', pretrained=True)
 model3 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/resnet18-v1-7.onnx')
 '''
 dummy_input = torch.randn(1, 3, 224, 224)
@@ -21,7 +49,7 @@ input_name, output_name = ['input'], ['output']
 torch.onnx.export(
     model2, 
     dummy_input, 
-    "/depot/davisjam/data/chingwo/PTM-Naming/temp.onnx", 
+    "/depot/davisjam/data/chingwo/PTM-Naming/pytorch-resnet34.onnx", 
     verbose=False, 
     input_names=input_name, 
     output_names=output_name, 
@@ -30,6 +58,8 @@ torch.onnx.export(
     training=torch.onnx.TrainingMode.TRAINING
     )'''
 model4 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/temp.onnx')
+model5 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/pytorch-resnet34.onnx')
+model6 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/resnet34-v1-7.onnx')
 
 def getLayerInfo(model: onnx.ModelProto, layer: list) -> dict:
     name2node_mapping: dict = {node.name: node for node in model.graph.node}
@@ -45,6 +75,9 @@ def getLayerInfo(model: onnx.ModelProto, layer: list) -> dict:
             attributes.append(dict())
             dims.append(list())
             for attribute in name2node_mapping[node_name].attribute:
+                if attribute.name in UNUSED_ATTRIBUTE_NAME:
+                    continue
+                
                 if attribute.type == onnx.AttributeProto.INT:
                     attributes[node_index][attribute.name] = [attribute.i]
                 elif attribute.type == onnx.AttributeProto.INTS:
@@ -53,6 +86,13 @@ def getLayerInfo(model: onnx.ModelProto, layer: list) -> dict:
                     attributes[node_index][attribute.name] = [attribute.f]
                 elif attribute.type == onnx.AttributeProto.FLOATS:
                     attributes[node_index][attribute.name] = attribute.floats
+
+                # Remove the attribute if it is in default value
+                if name2node_mapping[node_name].op_type in PARAMETERS_DEFAULT:
+                    if attribute.name in PARAMETERS_DEFAULT[name2node_mapping[node_name].op_type]:
+                        if PARAMETERS_DEFAULT[name2node_mapping[node_name].op_type][attribute.name] == attributes[node_index][attribute.name]:
+                            del attributes[node_index][attribute.name]
+
             for name in name2node_mapping[node_name].input:
                 if name in initializers:
                     dims[node_index].append(tuple(initializers[name].dims))
@@ -143,32 +183,32 @@ def getAdjList(model: onnx.ModelProto) -> dict:
                     adj_list[node.name].append(next_node_name)
     return {'name2node_map': name2node_map, 'adj_list': adj_list}
 
-def getDims(model: onnx.ModelProto, node: onnx.NodeProto) -> list:
-    initializers: dict = {init.name: init for init in model.graph.initializer}
+def getDims(model: onnx.ModelProto, node: onnx.NodeProto, name2dim_map: dict) -> list:
     dims_list: list = []
     for input_param in node.input:
-        if input_param in initializers:
-            dims_list.append(tuple(initializers[input_param].dims))
+        if input_param in name2dim_map:
+            dims_list.append(tuple(name2dim_map[input_param]))
     return dims_list
 
 def getSortingSequence(model: onnx.ModelProto, adj_list: dict) -> dict:
     sorting_sequence_dict: dict = {}
     graph: onnx.GraphProto = model.graph
     name2node_map: dict = {node.name: node for node in graph.node}
+    name2dim_map: dict = {init.name: init.dims for init in model.graph.initializer}
 
-    def traverse(model: onnx.ModelProto, node_name: str, adj_list: dict, seq_dict: dict, n2n_map: dict) -> dict:
+    def traverse(model: onnx.ModelProto, node_name: str, adj_list: dict, seq_dict: dict, n2n_map: dict, n2d_map: dict) -> dict:
         temp_list: list = []
         node: onnx.NodeProto = n2n_map[node_name]
-        seq_dict[node_name]: str = '[{},{}]'.format(node.op_type, str(getDims(model, node)))
+        seq_dict[node_name]: str = '[{},{}]'.format(node.op_type, str(getDims(model, node, name2dim_map)))
         for next_node_name in adj_list[node_name]:
-            traverse(model, next_node_name, adj_list, seq_dict, n2n_map)
+            traverse(model, next_node_name, adj_list, seq_dict, n2n_map, n2d_map)
             temp_list.append(seq_dict[next_node_name])
         temp_list = sorted(temp_list)
         for seq in temp_list:
             seq_dict[node_name] += seq
         return seq_dict
 
-    sorting_sequence_dict = traverse(model, graph.node[0].name, adj_list, sorting_sequence_dict, name2node_map)
+    sorting_sequence_dict = traverse(model, graph.node[0].name, adj_list, sorting_sequence_dict, name2node_map, name2dim_map)
 
     return sorting_sequence_dict
 
@@ -240,7 +280,13 @@ def analyzeModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> N
                         j += 1
                 j -= 1
             j += 1
-        
-analyzeModelLayerDiff(model3, model4)
+    else:
+        print("Found no difference.")
 
+def main():
+    analyzeModelLayerDiff(model3, model4)
+    analyzeModelLayerDiff(model6, model5)
+    pass
+
+cProfile.run('main()')
 
