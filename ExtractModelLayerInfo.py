@@ -9,6 +9,7 @@ from torch.onnx.verification import find_mismatch
 import difflib
 from typing import Iterator
 import cProfile
+from collections import deque
 
 PARAMETERS_DEFAULT = {
     'BatchNormalization': {
@@ -146,17 +147,23 @@ def traverseGraph(model: onnx.ModelProto) -> list:
 
     depth_mapping: dict = {node.name: -1 for node in graph.node}
     depth_mapping[graph.node[0].name] = 0
+    
+    def getDepthMap(root_node: onnx.NodeProto, i2n_map: dict) -> dict:
+        depth = {root_node.name: 0}
+        queue = deque([(root_node, 0)])
 
-    def getDepthMap(node: onnx.NodeProto, depth: dict, i2n_map: dict, curr_depth: int) -> dict:
-        if depth[node.name] < curr_depth:
-            depth[node.name] = curr_depth
-        for output_name in node.output:
-            if output_name in i2n_map:
-                for next_node in in2node_map[output_name]:
-                    depth = getDepthMap(next_node, depth, i2n_map, curr_depth + 1)
+        while queue:
+            curr_node, curr_depth = queue.popleft()
+            for output_name in curr_node.output:
+                if output_name in i2n_map:
+                    for next_node in i2n_map[output_name]:
+                        if next_node.name not in depth or curr_depth + 1 > depth[next_node.name]:
+                            depth[next_node.name] = curr_depth + 1
+                            queue.append((next_node, curr_depth + 1))
         return depth
     
-    dm = getDepthMap(graph.node[0], depth_mapping, in2node_map, 0)
+    #dm = getDepthMap(graph.node[0], depth_mapping, in2node_map, 0)
+    dm = getDepthMap(graph.node[0], in2node_map)
 
     layer = [None] * (max(dm.values()) + 1)
 
@@ -196,19 +203,21 @@ def getSortingSequence(model: onnx.ModelProto, adj_list: dict) -> dict:
     name2node_map: dict = {node.name: node for node in graph.node}
     name2dim_map: dict = {init.name: init.dims for init in model.graph.initializer}
 
-    def traverse(model: onnx.ModelProto, node_name: str, adj_list: dict, seq_dict: dict, n2n_map: dict, n2d_map: dict) -> dict:
+    def traverse(model: onnx.ModelProto, node_name: str, adj_list: dict, seq_dict: dict, n2n_map: dict, n2d_map: dict, visited: set) -> dict:
         temp_list: list = []
         node: onnx.NodeProto = n2n_map[node_name]
         seq_dict[node_name]: str = '[{},{}]'.format(node.op_type, str(getDims(model, node, name2dim_map)))
         for next_node_name in adj_list[node_name]:
-            traverse(model, next_node_name, adj_list, seq_dict, n2n_map, n2d_map)
-            temp_list.append(seq_dict[next_node_name])
+            if next_node_name not in visited:
+                visited.add(next_node_name)
+                traverse(model, next_node_name, adj_list, seq_dict, n2n_map, n2d_map, visited)
+                temp_list.append(seq_dict[next_node_name])
         temp_list = sorted(temp_list)
         for seq in temp_list:
             seq_dict[node_name] += seq
         return seq_dict
 
-    sorting_sequence_dict = traverse(model, graph.node[0].name, adj_list, sorting_sequence_dict, name2node_map, name2dim_map)
+    sorting_sequence_dict = traverse(model, graph.node[0].name, adj_list, sorting_sequence_dict, name2node_map, name2dim_map, set())
 
     return sorting_sequence_dict
 
@@ -281,7 +290,20 @@ def analyzeModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> N
                 j -= 1
             j += 1
     else:
-        print("Found no difference.")
+        print("Found no difference:")
+        j: int = 0
+        for i in range(len(op_types_diff)):
+            print('[{}] {} {} {}'.format(i, op_types_diff[i], dims_diff[i], params_diff[j]))
+            if params_diff[j][0] == '-':
+                while params_diff[j][0] != '+':
+                    j += 1
+                print('[{}] {} {} {}'.format(i, op_types_diff[i], dims_diff[i], params_diff[j]))
+                j += 1
+                if j < len(params_diff):
+                    while params_diff[j][2] != '{':
+                        j += 1
+                j -= 1
+            j += 1
 
 def main():
     analyzeModelLayerDiff(model3, model4)
