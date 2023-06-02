@@ -196,7 +196,7 @@ def sortLayerList(layer_list: list, seq_dict: dict) -> list:
             layer_list[idx] = sorted(layer_list[idx], key=lambda branch: seq_dict[branch])
     return layer_list
 
-def analyzeModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> None:
+def analyzeModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> str:
     diff_dict: dict = calcLayerDiff(
         getLayerInfo(model1, sortLayerList(traverseGraph(model1), getSortingSequence(model1, getAdjList(model1)['adj_list']))), 
         getLayerInfo(model2, sortLayerList(traverseGraph(model2), getSortingSequence(model2, getAdjList(model2)['adj_list']))))
@@ -228,6 +228,7 @@ def analyzeModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> N
         print('Found differences in op types:')
         for s in op_types_diff:
             print(s)
+        return "op"
     elif dims_different: # need test
         print('Found differences in dimensions')
         j: int = 0
@@ -239,10 +240,11 @@ def analyzeModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> N
                 print('[{}] {} {}'.format(i, op_types_diff[i], dims_diff[j]))
                 j += 1
                 if j < len(dims_diff):
-                    while dims_diff[j][2] != '{':
+                    while dims_diff[j][2] != '[':
                         j += 1
                 j -= 1
             j += 1
+        return "dim"
     elif params_different:
         print('Found differences in parameters:')
         j: int = 0
@@ -258,6 +260,7 @@ def analyzeModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> N
                         j += 1
                 j -= 1
             j += 1
+        return "param"
     else:
         print("Found no difference:")
         j: int = 0
@@ -273,5 +276,6 @@ def analyzeModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> N
                         j += 1
                 j -= 1
             j += 1
+        return "none"
 
 
