@@ -1,11 +1,5 @@
-from transformers import AutoImageProcessor, ResNetForImageClassification
-import torch
-from datasets import load_dataset
-from torchvision.models import resnet50, ResNet50_Weights
+
 import onnx
-from onnx import shape_inference
-from GetOnnxFileFromURL import getModel
-from torch.onnx.verification import find_mismatch
 import difflib
 from typing import Iterator
 import cProfile
@@ -39,36 +33,12 @@ UNUSED_ATTRIBUTE_NAME = {
     'training_mode'
 }
 
-#processor = AutoImageProcessor.from_pretrained("microsoft/resnet-50")
-#odel1 = ResNetForImageClassification.from_pretrained("microsoft/resnet-18")
-
-#model2 = torch.hub.load('pytorch/vision:v0.10.0', 'resnet34', pretrained=True)
-model3 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/resnet18-v1-7.onnx')
-'''
-dummy_input = torch.randn(1, 3, 224, 224)
-input_name, output_name = ['input'], ['output']
-torch.onnx.export(
-    model2, 
-    dummy_input, 
-    "/depot/davisjam/data/chingwo/PTM-Naming/pytorch-resnet34.onnx", 
-    verbose=False, 
-    input_names=input_name, 
-    output_names=output_name, 
-    do_constant_folding=False, 
-    opset_version=16,
-    training=torch.onnx.TrainingMode.TRAINING
-    )'''
-model4 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/temp.onnx')
-model5 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/pytorch-resnet34.onnx')
-model6 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/resnet34-v1-7.onnx')
-
 def getLayerInfo(model: onnx.ModelProto, layer: list) -> dict:
     name2node_mapping: dict = {node.name: node for node in model.graph.node}
     initializers: dict = {init.name: init for init in model.graph.initializer}
     op_types: list = []
     attributes: list = []
     dims: list = []
-    nodes: onnx.NodeProto = model.graph.node
     node_index = 0
     for layer_depth in range(len(layer)):
         for node_name in layer[layer_depth]:
@@ -138,7 +108,6 @@ def printModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> Non
 
 def traverseGraph(model: onnx.ModelProto) -> list:
     graph: onnx.GraphProto = model.graph
-    name2node_map: dict = {node.name: node for node in graph.node}
     in2node_map: dict = {}
     for node in graph.node:
         for input_name in node.input:
@@ -163,9 +132,9 @@ def traverseGraph(model: onnx.ModelProto) -> list:
         return depth
     
     #dm = getDepthMap(graph.node[0], depth_mapping, in2node_map, 0)
-    dm = getDepthMap(graph.node[0], in2node_map)
+    dm: dict = getDepthMap(graph.node[0], in2node_map)
 
-    layer = [None] * (max(dm.values()) + 1)
+    layer: list = [None] * (max(dm.values()) + 1)
 
     for k in dm.keys():
         if layer[dm[k]] == None: layer[dm[k]] = []
@@ -305,10 +274,4 @@ def analyzeModelLayerDiff(model1: onnx.ModelProto, model2: onnx.ModelProto) -> N
                 j -= 1
             j += 1
 
-def main():
-    analyzeModelLayerDiff(model3, model4)
-    analyzeModelLayerDiff(model6, model5)
-    pass
-
-cProfile.run('main()')
 
