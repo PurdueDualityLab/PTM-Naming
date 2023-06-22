@@ -1,5 +1,5 @@
 # PTM-Naming
-# Example usage of generating an ordered list of NN layers from a pytorch model:
+Example usage of generating an ordered list of NN layers from a pytorch model:
 ```python
 class TestNN(nn.Module):
     # Replace this class with your model
@@ -14,7 +14,8 @@ class TestNN(nn.Module):
         x = self.layers(x)
         return x
 
-gen = OrderedListGenerator(TestMLP(), torch.randn(2, 128))
+# Replace the model and input with the one correspond to your model
+gen = OrderedListGenerator(TestNN(), torch.randn(2, 128))
 
 # Return a list[NodeInfo] object
 l = gen.get_ordered_list()
