@@ -1,6 +1,6 @@
 # PTM-Naming
 # Example usage of generating an ordered list of NN layers from a pytorch model:
-'''
+```python
 class TestNN(nn.Module):
     # Replace this class with your model
     def __init__(self, inplace: bool = True) -> None:
@@ -24,5 +24,4 @@ gen.print_ordered_list
 
 # For printing a list with all the layer connections
 gen.print_connection()
-
-'''
+```
