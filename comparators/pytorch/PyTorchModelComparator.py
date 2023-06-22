@@ -61,3 +61,6 @@ for edge_tuple in model_graph.edge_list:
 
 # TODO: need to handle function node
 
+# With one call of generate_ordered_layer_list_from_pytorch_model(pytorch_model) 
+# an ordered list (similar to ANN) should be generated
+
