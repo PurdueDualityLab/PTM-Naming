@@ -3,7 +3,7 @@ import torchview
 import torch
 from typing import Tuple, Any, List, Dict, Set
 from torchview.computation_node.base_node import Node
-from torchview.computation_node.compute_node import ModuleNode, TensorNode
+from torchview.computation_node.compute_node import ModuleNode, TensorNode, FunctionNode
 from torchview.computation_graph import ComputationGraph
 
 
@@ -24,7 +24,10 @@ class ParamInfo():
         return self.param_value == other.param_value
     
     def __str__(self) -> str:
-        return '<' + self.param_name + ', ' + str(self.param_value) + '>'
+        return '<' + self.param_name + ': ' + str(self.param_value) + '>'
+    
+    def __hash__(self) -> int:
+        return hash(str(self.param_name) + str(self.param_value))
 
 
 # A class that stores useful information of a node(layer)
@@ -82,8 +85,16 @@ class NodeInfo():
         if node.name == 'output-tensor':
             self.is_output_node = True
 
-    # TODO: fill in the class var for function node type
+    # fill in the class var for function node type
+    def fill_info_function_node(self, node: FunctionNode) -> None:
+        self.node_id = node.node_id
+        self.input_shape = node.input_shape
+        self.output_shape = node.output_shape
+        self.operation = node.name
+
     def param_compare(self, other) -> bool:
+        if self.parameters == None:
+            return other.parameters == None
         for p in self.parameters:
             if p not in other.parameters and p not in self.UNUSED_PARAM_SET:
                 return False
@@ -124,24 +135,32 @@ class NodeInfo():
             self.fill_info_module_node(node)
         elif type(node) == TensorNode:
             self.fill_info_tensor_node(node)
+        elif type(node) == FunctionNode:
+            self.fill_info_function_node(node)
 
     # Generate the 'head' of the sorting identifier(sequence) for this node
     def generate_sorting_identifier_head(self) -> str:
         if self.is_input_node: return '[INPUT]'
         if self.is_output_node: return '[OUTPUT]'
-        pm_list = []
-        for pm in self.parameters:
-            pm_list.append(str(pm))
-        return '[{}/{}/{}/{}]'.format(str(self.input_shape), str(self.output_shape), self.operation, str(pm_list))
+        if self.parameters != None:
+            pm_list = []
+            for pm in self.parameters:
+                pm_list.append(str(pm))
+            return '[{}/{}/{}/{}]'.format(str(self.input_shape), str(self.output_shape), self.operation, str(pm_list))
+        else:
+            return '[{}/{}/{}]'.format(str(self.input_shape), str(self.output_shape), self.operation)
 
     # to string function
     def __str__(self) -> str:
         if self.is_input_node: return '[INPUT]'
         if self.is_output_node: return '[OUTPUT]'
-        pm_list = []
-        for pm in self.parameters:
-            pm_list.append(str(pm))
-        return '[{}] in: {} out: {} {}'.format(self.operation, str(self.input_shape), str(self.output_shape), str(pm_list))
+        if self.parameters != None:
+            pm_list = []
+            for pm in self.parameters:
+                pm_list.append(str(pm))
+            return '[{}] in: {} out: {} {}'.format(self.operation, str(self.input_shape), str(self.output_shape), str(pm_list))
+        else:
+            return '[{}] in: {} out: {}'.format(self.operation, str(self.input_shape), str(self.output_shape))
 
 
 # A class that stores all the mapping and some list/set of useful information
@@ -150,9 +169,9 @@ class Mapper():
 
     def __init__(
         self,
-        node_info_obj_set: Set[NodeInfo] = set(),
-        node_id_to_node_obj_mapping: Dict[int, NodeInfo] = {},
-        edge_node_info_list: List[Tuple[NodeInfo, NodeInfo]] = []
+        node_info_obj_set: Set[NodeInfo] = None,
+        node_id_to_node_obj_mapping: Dict[int, NodeInfo] = None,
+        edge_node_info_list: List[Tuple[NodeInfo, NodeInfo]] = None
     ) -> None:
         self.node_info_obj_set = node_info_obj_set
         self.node_id_to_node_obj_mapping = node_id_to_node_obj_mapping
@@ -166,18 +185,30 @@ class Mapper():
         self,
         edge_list: List[Tuple[Node, Node]]
     ) -> None:
+        self.node_info_obj_set = set()
+        self.node_id_to_node_obj_mapping = {}
+        self.edge_node_info_list = []
         for edge_tuple in edge_list:
-            n_info_0 = NodeInfo()
-            n_info_1 = NodeInfo()
-            n_info_0.fill_info(edge_tuple[0])
-            n_info_1.fill_info(edge_tuple[1])
+            
+            if edge_tuple[0].node_id not in self.node_id_to_node_obj_mapping:
+                n_info_0 = NodeInfo()
+                n_info_0.fill_info(edge_tuple[0])
+                self.node_info_obj_set.add(n_info_0)
+                self.node_id_to_node_obj_mapping[n_info_0.node_id] = n_info_0
+            else:
+                n_info_0 = self.node_id_to_node_obj_mapping[edge_tuple[0].node_id]
 
-            self.node_info_obj_set.add(n_info_0)
-            self.node_info_obj_set.add(n_info_1)
+
+            if edge_tuple[1].node_id not in self.node_id_to_node_obj_mapping:
+                n_info_1 = NodeInfo()
+                n_info_1.fill_info(edge_tuple[1])
+                self.node_info_obj_set.add(n_info_1)
+                self.node_id_to_node_obj_mapping[n_info_1.node_id] = n_info_1
+            else:
+                n_info_1 = self.node_id_to_node_obj_mapping[edge_tuple[1].node_id]
+
             self.edge_node_info_list.append((n_info_0, n_info_1))
         
-        for node_info_obj in self.node_info_obj_set:
-            self.node_id_to_node_obj_mapping[node_info_obj.node_id] = node_info_obj
 
     # returns an adjacency 'dictionary' that maps NodeInfo.node_id to a list of all the 'next node's it points to
     def get_adj_dict(self) -> Dict[int, List[NodeInfo]]:
@@ -201,9 +232,9 @@ class Traverser():
         self.input_node_info_obj_list: List[TensorNode] = []
         self.output_node_info_obj_list: List[TensorNode] = []
         for edge_node_info_tuple in mapper.edge_node_info_list: # identify input/output node and put them into the class var
-            if edge_node_info_tuple[0].is_input_node:
+            if edge_node_info_tuple[0].is_input_node and edge_node_info_tuple[0] not in self.input_node_info_obj_list:
                 self.input_node_info_obj_list.append(edge_node_info_tuple[0])
-            if edge_node_info_tuple[1].is_output_node:
+            if edge_node_info_tuple[1].is_output_node and edge_node_info_tuple[1] not in self.output_node_info_obj_list:
                 self.output_node_info_obj_list.append(edge_node_info_tuple[1])
         self.adj_dict: Dict[int, List[NodeInfo]] = mapper.get_adj_dict()
 
@@ -229,10 +260,8 @@ class Traverser():
             curr_node_info_obj.preorder_visited = True
             sorting_identifier: str = curr_node_info_obj.generate_sorting_identifier_head()
 
-            #print(str(curr_node_info_obj))
-
             if curr_node_info_obj.node_id not in self.adj_dict: # output node
-                
+
                 curr_node_info_obj.sorting_identifier = sorting_identifier
 
             else:
@@ -241,9 +270,6 @@ class Traverser():
                     if next_node_info_obj.preorder_visited or next_node_info_obj.postorder_visited: # handles cyclic graphs
                         continue
                     traverse(next_node_info_obj)
-                    next_node_info_obj.postorder_visited = True
-                
-                #for obj in self.adj_dict[curr_node_info_obj.node_id]: print(obj.sorting_identifier)
 
                 sorted_next_obj_list = self.sorted_node_info_list(self.adj_dict[curr_node_info_obj.node_id]) # sort the next nodes
 
@@ -251,6 +277,11 @@ class Traverser():
                     sorting_identifier += next_node_info_obj.sorting_identifier
 
                 curr_node_info_obj.sorting_identifier = sorting_identifier
+
+                #for obj in self.adj_dict[curr_node_info_obj.node_id]: print(obj.sorting_identifier)
+            #print(curr_node_info_obj, id(curr_node_info_obj), sorting_identifier)
+
+            curr_node_info_obj.postorder_visited = True
 
             return
 
@@ -314,7 +345,38 @@ def generate_ordered_layer_list_from_pytorch_model(
     mapper.populate_class_var(model_graph.edge_list)
 
     traverser = Traverser(mapper)
-    traverser.generate_ordered_layer_list()
+    l = traverser.generate_ordered_layer_list()
+    return l
+
+def generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(
+        model: Any, 
+        inputs: Tuple[torch.Tensor], 
+        graph_name: str = 'Untitled',
+        depth: int = 6
+    ) -> List[Tuple[int, List[int]]]:
+    
+    model_graph: ComputationGraph = torchview.draw_graph(
+        model, inputs,
+        graph_name=graph_name,
+        depth=depth, 
+        expand_nested=True
+    )
+    
+    mapper = Mapper()
+    mapper.populate_class_var(model_graph.edge_list)
+
+    traverser = Traverser(mapper)
+    l = traverser.generate_ordered_layer_list()
+
+    layer_id_connection_list: List[Tuple[int, List[int]]] = []
+
+    for layer in l:
+        connection_list = traverser.adj_dict[layer.node_id] if layer.node_id in traverser.adj_dict else []
+        connection_id_list = []
+        for node in connection_list:
+            connection_id_list.append(node.node_id)
+        layer_id_connection_list.append((layer.node_id, connection_id_list))
+    return l, layer_id_connection_list
         
 # Adding a class var to torchview Node classes so the original Tensor/Module can be accessed
 def patch():
@@ -357,3 +419,6 @@ def patch():
     old_mn_init = torchview.computation_node.ModuleNode.__init__
 
     torchview.computation_node.ModuleNode.__init__ = new_mn_init
+
+def print_list(l):
+    for i in l: print(i)
