@@ -5,6 +5,8 @@ from typing import Tuple, Any, List, Dict, Set
 from torchview.computation_node.base_node import Node
 from torchview.computation_node.compute_node import ModuleNode, TensorNode, FunctionNode
 from torchview.computation_graph import ComputationGraph
+import onnx
+from onnx import NodeProto, GraphProto
 
 
 # A class that stores a parameter-value pair
@@ -35,7 +37,8 @@ class ParamInfo():
 class NodeInfo():
 
     UNUSED_PARAM_SET = {
-
+        'inplace',
+        'training'
     }
 
     def __init__(
@@ -74,8 +77,10 @@ class NodeInfo():
         self.parameters = []
         
         for attr_name, attr_val in node.module_unit.__dict__.items():
-            if attr_name[0] != '_': # include non-private attributes
+            if attr_name[0] != '_' and attr_name not in self.UNUSED_PARAM_SET and 'All' not in self.UNUSED_PARAM_SET: # include non-private attributes
                 self.parameters.append(ParamInfo(attr_name, attr_val))
+
+        if 'All' in self.UNUSED_PARAM_SET: self.parameters = None
 
     # fill in the class var for tensor node type
     def fill_info_tensor_node(self, node: TensorNode) -> None:
@@ -91,6 +96,47 @@ class NodeInfo():
         self.input_shape = node.input_shape
         self.output_shape = node.output_shape
         self.operation = node.name
+
+    def fill_info_from_onnx(
+            self, 
+            node: NodeProto = None, 
+            node_name: str = None,
+            input: List[Tuple[int, ...]] = None, 
+            output: List[Tuple[int, ...]] = None,
+            is_input: bool = False,
+            is_output: bool = False
+        ) -> None:
+        self.node_id = id(node_name)
+        self.input_shape = input
+        self.output_shape = output
+        self.is_input_node = is_input
+        self.is_output_node = is_output
+        if not (is_input or is_output):
+            self.operation = node.op_type
+
+            for attr in node.attribute:
+                if attr.HasField('f'):
+                    self.parameters.append(ParamInfo(attr.name, attr.f))
+                elif attr.HasField('i'):
+                    self.parameters.append(ParamInfo(attr.name, attr.i))
+                elif attr.HasField('s'):
+                    self.parameters.append(ParamInfo(attr.name, attr.s))
+                elif attr.HasField('t'):
+                    self.parameters.append(ParamInfo(attr.name, attr.t))
+                elif attr.HasField('g'):
+                    self.parameters.append(ParamInfo(attr.name, attr.g))
+                elif attr.HasField('ints'):
+                    self.parameters.append(ParamInfo(attr.name, tuple(attr.ints)))
+                elif attr.HasField('floats'):
+                    self.parameters.append(ParamInfo(attr.name, tuple(attr.floats)))
+                elif attr.HasField('strings'):
+                    self.parameters.append(ParamInfo(attr.name, tuple(attr.strings)))
+                elif attr.HasField('tensors'):
+                    self.parameters.append(ParamInfo(attr.name, tuple(attr.tensors)))
+                elif attr.HasField('graphs'):
+                    self.parameters.append(ParamInfo(attr.name, tuple(attr.graphs)))
+                else:
+                    self.parameters.append(ParamInfo(attr.name, None))
 
     def param_compare(self, other) -> bool:
         if self.parameters == None:
@@ -208,15 +254,104 @@ class Mapper():
                 n_info_1 = self.node_id_to_node_obj_mapping[edge_tuple[1].node_id]
 
             self.edge_node_info_list.append((n_info_0, n_info_1))
+
+    def populate_class_var_from_onnx(
+        self,
+        onnx_model: Any
+    ):
+        self.node_info_obj_set = set()
+        self.node_id_to_node_obj_mapping = {}
+        self.edge_node_info_list = []
+        
+        in2idx_map = {}
+        idx2out_map = []
+
+        node_list = onnx_model.graph.node
+    
+        inname2shape_map: dict = {
+            input_tensor.name: [dim.dim_value for dim in input_tensor.type.tensor_type.shape.dim]
+            for input_tensor in onnx_model.graph.input
+        }
+        initializer_names = set(init.name for init in onnx_model.graph.initializer)
+        actual_inputs = [inp for inp in onnx_model.graph.input if inp.name not in initializer_names]
+
+        input_node_names = actual_inputs
+        output_node_names = onnx_model.graph.output
+        
+        input_node_info_list = []
+        output_node_info_list = []
+        for i_n in input_node_names:
+            input_node_info = NodeInfo()
+            input_node_info.fill_info_from_onnx(node_name=i_n, is_input=True)
+            self.node_info_obj_set.add(input_node_info)
+            self.node_id_to_node_obj_mapping[id(i_n)] = input_node_info
+            input_node_info_list.append(input_node_info)
+        for o_n in output_node_names:
+            output_node_info = NodeInfo()
+            output_node_info.fill_info_from_onnx(node_name=o_n, is_output=True)
+            self.node_info_obj_set.add(output_node_info)
+            self.node_id_to_node_obj_mapping[id(o_n)] = output_node_info
+            output_node_info_list.append(output_node_info)
+
+        node_info_list = []
+        output_name_set = set()
+        for i in range(len(node_list)):
+            node = node_list[i]
+            idx2out_map.append(node.output)
+            for output_name in node.output:
+                output_name_set.add(output_name)
+
+        for k, v in inname2shape_map.items():
+            print(k, v)
+        
+        # TODO: fix onnx batchnorm multiple input issue
+        for i in range(len(node_list)):
+            node = node_list[i]
+            input_shape_list = []
+            for input in node.input:
+                if input in output_name_set or input in input_node_names:
+                    print(input)
+                    if input in inname2shape_map:
+                        input_shape_list.append(tuple(inname2shape_map[input]))
+                    else:
+                        input_shape_list.append(tuple())
+                    if input not in in2idx_map:
+                        in2idx_map[input] = []
+                    in2idx_map[input].append(i)
+            
+            #print(input_shape_list)
+
+        '''
+        for i in range(len(node_list)):
+            node = node_list[i]
+            outputs = idx2out_map[i]
+            for o in outputs:
+                print(o)'''
+
         
 
     # returns an adjacency 'dictionary' that maps NodeInfo.node_id to a list of all the 'next node's it points to
-    def get_adj_dict(self) -> Dict[int, List[NodeInfo]]:
+    def get_adj_dict(self, options: Set = None) -> Dict[int, List[NodeInfo]]:
         adj_dict: Dict[int, List[NodeInfo]] = dict()
         for node_info_tuple in self.edge_node_info_list:
             if node_info_tuple[0].node_id not in adj_dict:
                 adj_dict[node_info_tuple[0].node_id] = []
             adj_dict[node_info_tuple[0].node_id].append(node_info_tuple[1])
+        
+        if options != None and 'remove_identity' in options:
+            for n_id, next_nodes in adj_dict.items():
+                cleared = False
+                while not cleared:
+                    cleared = True
+                    for next_node in next_nodes:
+                        if next_node.operation == 'Identity':
+                            cleared = False
+                            adj_dict[n_id].remove(next_node)
+                            for next_next_node in adj_dict[next_node.node_id]:
+                                adj_dict[n_id].append(next_next_node)
+                            adj_dict[next_node.node_id] = []
+
+
         return adj_dict
 
 
@@ -236,7 +371,7 @@ class Traverser():
                 self.input_node_info_obj_list.append(edge_node_info_tuple[0])
             if edge_node_info_tuple[1].is_output_node and edge_node_info_tuple[1] not in self.output_node_info_obj_list:
                 self.output_node_info_obj_list.append(edge_node_info_tuple[1])
-        self.adj_dict: Dict[int, List[NodeInfo]] = mapper.get_adj_dict()
+        self.adj_dict: Dict[int, List[NodeInfo]] = mapper.get_adj_dict({'remove_identity'})
 
     # A helper function that helps to sort a list of node based on their sorting identifiers
     def sorted_node_info_list(self, node_info_list: List[NodeInfo]):
@@ -331,7 +466,7 @@ def generate_ordered_layer_list_from_pytorch_model(
         model: Any, 
         inputs: Tuple[torch.Tensor], 
         graph_name: str = 'Untitled',
-        depth: int = 6
+        depth: int = 16
     ) -> List[NodeInfo]:
     
     model_graph: ComputationGraph = torchview.draw_graph(
@@ -348,11 +483,17 @@ def generate_ordered_layer_list_from_pytorch_model(
     l = traverser.generate_ordered_layer_list()
     return l
 
+def generate_ordered_layer_list_from_onnx_model(
+        model: Any
+    ) -> List[NodeInfo]:
+    mapper = Mapper()
+    mapper.populate_class_var_from_onnx(model)
+
 def generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(
         model: Any, 
         inputs: Tuple[torch.Tensor], 
         graph_name: str = 'Untitled',
-        depth: int = 6
+        depth: int = 16
     ) -> List[Tuple[int, List[int]]]:
     
     model_graph: ComputationGraph = torchview.draw_graph(
