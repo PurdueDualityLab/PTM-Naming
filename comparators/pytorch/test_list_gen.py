@@ -2,7 +2,14 @@
 import torch
 import torch.nn as nn
 from list_gen import OrderedListGenerator
+import onnx
 from transformers import ResNetForImageClassification
+
+from utils import generate_ordered_layer_list_from_onnx_model
+
+# use under general env
+# module use /depot/davisjam/data/chingwo/general_env/modules
+# module load conda-env/general_env-py3.8.5
 
 class TestRNN(nn.Module):
     def __init__(self, inplace: bool = True) -> None:
@@ -105,10 +112,15 @@ def Order_Test():
     genB = OrderedListGenerator(orderB, i) 
     genB.print_ordered_list()
 
+def ResNet18_Onnx_Test():
+    rn18 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/models/resnet18-v1-7.onnx')
+    generate_ordered_layer_list_from_onnx_model(rn18)
 
 #RNN_test()
 #MLP_Test()
-#ResNet50_Test()
-ResNet18_Test()
-##Order_Test()
+#print('===')
 
+#ResNet50_Test()
+#ResNet18_Test()
+##Order_Test()
+#ResNet18_Onnx_Test()

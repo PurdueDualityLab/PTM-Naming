@@ -14,15 +14,23 @@ class OrderedListComparator():
         self.l2 = generate_ordered_layer_list_from_pytorch_model(m2, inp)
 
     def get_diff(self):
-        matcher = difflib.SequenceMatcher(None, self.l1, self.l2)
-        for tag, i1, i2, j1, j2 in matcher.get_opcodes():
-            if tag == 'delete':
-                for i in range(i1, i2):
-                    print(f"- {self.l1[i]}")
-            elif tag == 'insert':
-                for i in range(j1, j2):
-                    print(f"+ {self.l2[i]}")
+        str_l1 = [str(e) for e in self.l1]
+        str_l2 = [str(e) for e in self.l2]
+        differ: difflib.Differ = difflib.Differ()
+        diff = differ.compare(str_l1, str_l2)
+        for i in diff:
+            print(i)
 
-    def get_sim_metric(self):
+        return diff
+
+    def get_sim_metric(self): # not a good metric
         matcher = difflib.SequenceMatcher(None, self.l1, self.l2)
         return matcher.ratio()
+    
+    def get_approximate_ged(self):
+        diff = self.get_diff()
+        ged = 0
+        for i in diff:
+            if i[0] in {'-', '+'}:
+                ged += 1
+        return ged
