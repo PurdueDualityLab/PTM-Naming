@@ -2,19 +2,26 @@ import os
 import sys
 import json
 import transformers
+from huggingface_hub import hf_hub_download, HfApi, ModelFilter, list_models
 
 from loguru import logger
 
 logger.remove()  # Remove all handlers
 logger.add(sys.stderr, level='INFO')  # Add a new handler for INFO and above
 
+api = HfApi()
+models = api.list_models()
 
 def load_metadata(path='./model_metadata/model_archs.json') -> dict:
+    '''
+    Load model metadata from model_archs.json
+    '''
     with open(os.path.join(os.path.dirname(__file__), path), "r") as f:
         metadata_list = json.load(f)
     return metadata_list
     
-def load_model_list(path='./modelArch_list.json'):
+
+def load_model_list(path='./modelArch_list.json') -> list:
     '''
     Load model list from model_list.json
     '''
@@ -22,6 +29,37 @@ def load_model_list(path='./modelArch_list.json'):
         model_list = json.load(f)
     return model_list
 
+
+def get_downloads(model_name):
+    # TODO: the search is weird, need to fix it.
+    
+    # Use hfapi to get the model from model_name)
+    model_name = model_name.split('/')
+    if len(model_name) > 1:
+        author = model_name[0]
+        model_name = model_name[1]
+        model_filter = ModelFilter(
+            author=author,
+            model_name=model_name,
+        )
+    else:
+        model_filter = ModelFilter(
+            model_name=model_name[0],
+        )
+
+    models = api.list_models(filter=model_filter)
+    # models = api.list_models(model_args["model_name"]=model_name)
+    
+    cnt = 0
+    for model in models:
+        # Use hfapi to get the model from model_name)
+        downloads=model.downloads
+        cnt += 1
+    if cnt > 1:
+        logger.error(f'More than 1 model for {model_name}')
+        return downloads
+    else:
+        return downloads
 
 def get_model_from_arch(model_arch: str, metadata_dict: dict):
     '''
@@ -32,6 +70,12 @@ def get_model_from_arch(model_arch: str, metadata_dict: dict):
         logger.debug(f'No model for {model_arch}, continue to next model.')
     else:
         model_metadata = metadata_dict[model_arch]
+        # Get the model downloads
+        for model in model_metadata:
+            model_download = get_downloads(model)
+            if model_download < 10:
+                logger.info(f'{model} has less than 10 downloads, continue to next model.')
+                model_metadata.remove(model)
         logger.info(f'Loading {len(model_metadata)} {model_arch} models.')
         # Saving the model_archs with more than 2 models
         if len(model_metadata) > 1:
@@ -41,7 +85,19 @@ def get_model_from_arch(model_arch: str, metadata_dict: dict):
     return None
 
 
-def load_model(model_list: list, metadata_dict: dict) -> None:
+def filter_downloads(filtered_models: dict) -> dict:
+
+    # Load filtered_models
+    with open(os.path.join(os.path.dirname(__file__), 'filtered_models.json'), "r") as f:
+        filtered_models = json.load(f)
+    
+    for model_arch in filtered_models:
+        for model in filtered_models[model_arch]:
+            logger.error(model)
+            sys.exit()
+    return filtered_models
+
+def load_model(model_list: list, metadata_dict: dict):
     '''
     Load model with same architecture from huggingface
     '''
@@ -54,11 +110,26 @@ def load_model(model_list: list, metadata_dict: dict) -> None:
             filtered_models[model_arch] = models_metadata
         
     logger.info(f'Number of filtered_models: {len(filtered_models)}')
+    filtered_models = filter_downloads(filtered_models)
     logger.success(f'Saving filtered_models to filtered_models.json')
     with open(os.path.join(os.path.dirname(__file__), 'filtered_models.json'), 'w') as f:
         json.dump(filtered_models, f, indent=4)
     return
 
+
+def download_model(filtered_models='filtered_models.json', download_path=''):
+    # load filtered_models
+    with open(os.path.join(os.path.dirname(__file__), filtered_models), "r") as f:
+        filtered_models = json.load(f)
+    
+    for model_arch in filtered_models:
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), download_path, model_arch)):
+            os.makedirs(os.path.join(os.path.dirname(__file__), download_path, model_arch))
+    
+        for model in filtered_models[model_arch]:
+            logger.info(f'Downloading {model}')
+            hf_hub_download(repo_id=model, filename="config.json")
+    return
 
 if __name__=='__main__':
     model_list = load_model_list()
@@ -67,5 +138,4 @@ if __name__=='__main__':
     logger.info(f'Number of metadata: {len(metadata_dict)}')
 
     load_model(model_list, metadata_dict)
-
 
