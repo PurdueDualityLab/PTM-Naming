@@ -35,6 +35,7 @@ def download_model(filtered_models='filtered_models.json', download_path='./down
                     json.dump(config_file, f, indent=4)
                 if not metadata_only:
                     torch_model = hf_hub_download(repo_id=model, filename="pytorch_model.bin")
+                    
                     # save the torch_model
                     with open(os.path.join(os.path.dirname(__file__), download_path, model_arch, model, 'pytorch_model.bin'), 'wb') as f:
                         f.write(torch_model)
@@ -45,4 +46,4 @@ def download_model(filtered_models='filtered_models.json', download_path='./down
 
 
 if __name__=='__main__':
-    download_model(metadata_only=True)
+    download_model(metadata_only=False)
