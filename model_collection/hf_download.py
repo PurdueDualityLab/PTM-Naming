@@ -12,7 +12,7 @@ logger.remove()  # Remove all handlers
 logger.add(sys.stderr, level='INFO')  # Add a new handler for INFO and above
 
 
-def download_model(filtered_models='filtered_models_nameOnly.json', download_path='./downloads', metadata_only=True):
+def download_model(filtered_models='filtered_models.json', download_path='./downloads', metadata_only=True):
     # load filtered_models
     with open(os.path.join(os.path.dirname(__file__), filtered_models), "r") as f:
         filtered_models = json.load(f)
