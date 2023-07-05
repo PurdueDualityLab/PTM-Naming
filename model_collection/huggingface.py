@@ -51,7 +51,6 @@ def get_model_from_arch(model_arch: str, metadata_dict: dict):
         logger.debug(f'No model for {model_arch}, continue to next model.')
     else:
         model_metadata = metadata_dict[model_arch]
-        model_metadata_nameDownload = model_metadata.copy()
         
         # Get the model downloads
         for model in model_metadata:
@@ -59,18 +58,13 @@ def get_model_from_arch(model_arch: str, metadata_dict: dict):
             if model_download is None:
                 logger.debug(f'{model} does not exist, continue to next model.')
                 model_metadata.remove(model)
-                model_metadata_nameDownload.remove(model)
             elif model_download < 10:
                 logger.debug(f'{model} has less than 10 downloads, continue to next model.')
                 model_metadata.remove(model)
-                model_metadata_nameDownload.remove(model)
-            else:
-                # replace mdoel with (model, model_download) in model_metadata
-                model_metadata_nameDownload[model_metadata.index(model)] = (model, model_download)
         logger.debug(f'Loading {len(model_metadata)} {model_arch} models.')
         # Saving the model_archs with more than 2 models
         if len(model_metadata) > 1:
-            return model_metadata, model_metadata_nameDownload
+            return model_metadata
         else:
             logger.debug(f'Only 1 model for {model_arch}, continue to next model.')
     return None, None
@@ -96,33 +90,21 @@ def load_model(model_list: list, metadata_dict: dict):
     Load model with same architecture from huggingface
     '''
     filtered_models = {}
-    filtered_models_nameDownload = {}
 
     for model_arch in tqdm(model_list):
          
-        models_metadata, model_metadata_nameDownload = get_model_from_arch(model_arch, metadata_dict)
+        models_metadata = get_model_from_arch(model_arch, metadata_dict)
        
     
         if models_metadata:
-            logger.debug(f'Saving {model_arch} to filtered_models_nameOnly')
+            logger.debug(f'Saving {model_arch} to filtered_models...')
             filtered_models[model_arch] = models_metadata
         
-        if model_metadata_nameDownload:
-            logger.debug(f'Saving {model_arch} to filtered_models_nameDownload')
-            filtered_models_nameDownload[model_arch] = model_metadata_nameDownload
-        
     logger.info(f'Number of filtered_models: {len(filtered_models)}')
-    logger.info(f'Number of filtered_models_nameDownload: {len(filtered_models_nameDownload)}')
-    # filtered_models = filter_downloads(filtered_models)
     
     with open(os.path.join(os.path.dirname(__file__), 'filtered_models.json'), 'w') as f:
         json.dump(filtered_models, f, indent=4)
     logger.success(f'Saved filtered_models!')
-
-    with open(os.path.join(os.path.dirname(__file__), 'filtered_models_nameDownload.json'), 'w') as f:
-        json.dump(filtered_models_nameDownload, f, indent=4)
-    logger.success(f'Saved filtered_models_nameDownload!')
-
 
 
     return

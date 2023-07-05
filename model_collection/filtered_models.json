@@ -1,4 +1,28 @@
 {
+    "ASTConfig": [
+        null,
+        null
+    ],
+    "ASTFeatureExtractor": [
+        null,
+        null
+    ],
+    "ASTForAudioClassification": [
+        null,
+        null
+    ],
+    "ASTModel": [
+        null,
+        null
+    ],
+    "ASTPreTrainedModel": [
+        null,
+        null
+    ],
+    "AlbertConfig": [
+        null,
+        null
+    ],
     "AlbertForMaskedLM": [
         "albert-base-v1",
         "albert-base-v2",
@@ -32,6 +56,10 @@
         "sibt-rj/albert-large-urdu",
         "uer/albert-base-chinese-cluecorpussmall",
         "uer/albert-large-chinese-cluecorpussmall"
+    ],
+    "AlbertForMultipleChoice": [
+        null,
+        null
     ],
     "AlbertForPreTraining": [
         "ibraheemmoosa/xlmindic-base-multiscript",
@@ -182,12 +210,244 @@
         "AnReu/math_albert",
         "AnReu/albert-for-arqmath-3"
     ],
+    "AlbertPreTrainedModel": [
+        null,
+        null
+    ],
+    "AlbertTokenizer": [
+        null,
+        null
+    ],
+    "AlbertTokenizerFast": [
+        null,
+        null
+    ],
+    "AlignConfig": [
+        null,
+        null
+    ],
+    "AlignModel": [
+        null,
+        null
+    ],
+    "AlignPreTrainedModel": [
+        null,
+        null
+    ],
+    "AlignProcessor": [
+        null,
+        null
+    ],
+    "AlignTextConfig": [
+        null,
+        null
+    ],
+    "AlignTextModel": [
+        null,
+        null
+    ],
+    "AlignVisionConfig": [
+        null,
+        null
+    ],
+    "AlignVisionModel": [
+        null,
+        null
+    ],
+    "AltCLIPConfig": [
+        null,
+        null
+    ],
+    "AltCLIPModel": [
+        null,
+        null
+    ],
+    "AltCLIPPreTrainedModel": [
+        null,
+        null
+    ],
+    "AltCLIPProcessor": [
+        null,
+        null
+    ],
+    "AltCLIPTextConfig": [
+        null,
+        null
+    ],
+    "AltCLIPTextModel": [
+        null,
+        null
+    ],
+    "AltCLIPVisionConfig": [
+        null,
+        null
+    ],
+    "AltCLIPVisionModel": [
+        null,
+        null
+    ],
+    "AutoBackbone": [
+        null,
+        null
+    ],
+    "AutoConfig": [
+        null,
+        null
+    ],
+    "AutoFeatureExtractor": [
+        null,
+        null
+    ],
+    "AutoImageProcessor": [
+        null,
+        null
+    ],
     "AutoModel": [
         "StanfordAIMI/stanford-deidentifier-only-i2b2",
         "StanfordAIMI/stanford-deidentifier-only-radiology-reports",
         "StanfordAIMI/stanford-deidentifier-only-radiology-reports-augmented",
         "StanfordAIMI/stanford-deidentifier-with-radiology-reports-and-i2b2",
         "StanfordAIMI/stanford-deidentifier-base"
+    ],
+    "AutoModelForAudioClassification": [
+        null,
+        null
+    ],
+    "AutoModelForAudioFrameClassification": [
+        null,
+        null
+    ],
+    "AutoModelForAudioXVector": [
+        null,
+        null
+    ],
+    "AutoModelForCTC": [
+        null,
+        null
+    ],
+    "AutoModelForCausalLM": [
+        null,
+        null
+    ],
+    "AutoModelForDepthEstimation": [
+        null,
+        null
+    ],
+    "AutoModelForDocumentQuestionAnswering": [
+        null,
+        null
+    ],
+    "AutoModelForImageClassification": [
+        null,
+        null
+    ],
+    "AutoModelForImageSegmentation": [
+        null,
+        null
+    ],
+    "AutoModelForInstanceSegmentation": [
+        null,
+        null
+    ],
+    "AutoModelForMaskedImageModeling": [
+        null,
+        null
+    ],
+    "AutoModelForMaskedLM": [
+        null,
+        null
+    ],
+    "AutoModelForMultipleChoice": [
+        null,
+        null
+    ],
+    "AutoModelForNextSentencePrediction": [
+        null,
+        null
+    ],
+    "AutoModelForObjectDetection": [
+        null,
+        null
+    ],
+    "AutoModelForPreTraining": [
+        null,
+        null
+    ],
+    "AutoModelForQuestionAnswering": [
+        null,
+        null
+    ],
+    "AutoModelForSemanticSegmentation": [
+        null,
+        null
+    ],
+    "AutoModelForSeq2SeqLM": [
+        null,
+        null
+    ],
+    "AutoModelForSequenceClassification": [
+        null,
+        null
+    ],
+    "AutoModelForSpeechSeq2Seq": [
+        null,
+        null
+    ],
+    "AutoModelForTableQuestionAnswering": [
+        null,
+        null
+    ],
+    "AutoModelForTokenClassification": [
+        null,
+        null
+    ],
+    "AutoModelForUniversalSegmentation": [
+        null,
+        null
+    ],
+    "AutoModelForVideoClassification": [
+        null,
+        null
+    ],
+    "AutoModelForVision2Seq": [
+        null,
+        null
+    ],
+    "AutoModelForVisualQuestionAnswering": [
+        null,
+        null
+    ],
+    "AutoModelForZeroShotImageClassification": [
+        null,
+        null
+    ],
+    "AutoModelForZeroShotObjectDetection": [
+        null,
+        null
+    ],
+    "AutoModelWithLMHead": [
+        null,
+        null
+    ],
+    "AutoProcessor": [
+        null,
+        null
+    ],
+    "AutoTokenizer": [
+        null,
+        null
+    ],
+    "AutomaticSpeechRecognitionPipeline": [
+        null,
+        null
+    ],
+    "BartConfig": [
+        null,
+        null
+    ],
+    "BartForCausalLM": [
+        null,
+        null
     ],
     "BartForConditionalGeneration": [
         "beyond/genius-large-k2t",
@@ -619,6 +879,42 @@
         "nielsr/tapex-large-finetuned-tabfact",
         "joeddav/bart-large-mnli-yahoo-answers"
     ],
+    "BartModel": [
+        null,
+        null
+    ],
+    "BartPretrainedModel": [
+        null,
+        null
+    ],
+    "BartTokenizer": [
+        null,
+        null
+    ],
+    "BartTokenizerFast": [
+        null,
+        null
+    ],
+    "BarthezTokenizer": [
+        null,
+        null
+    ],
+    "BarthezTokenizerFast": [
+        null,
+        null
+    ],
+    "BartphoTokenizer": [
+        null,
+        null
+    ],
+    "BeitConfig": [
+        null,
+        null
+    ],
+    "BeitFeatureExtractor": [
+        null,
+        null
+    ],
     "BeitForImageClassification": [
         "AkshatSurolia/BEiT-FaceMask-Finetuned",
         "microsoft/beit-base-patch16-224-pt22k-ft22k",
@@ -671,6 +967,22 @@
     "BeitForSemanticSegmentation": [
         "microsoft/beit-base-finetuned-ade-640-640",
         "microsoft/beit-large-finetuned-ade-640-640"
+    ],
+    "BeitImageProcessor": [
+        null,
+        null
+    ],
+    "BeitModel": [
+        null,
+        null
+    ],
+    "BeitPreTrainedModel": [
+        null,
+        null
+    ],
+    "BertConfig": [
+        null,
+        null
     ],
     "BertForMaskedLM": [
         "bert-base-cased",
@@ -1089,6 +1401,10 @@
         "persiannlp/wikibert-base-parsinlu-multiple-choice",
         "sledz08/finetuned-bert-piqa",
         "Shaier/pubmed_qa_biolinkbert"
+    ],
+    "BertForNextSentencePrediction": [
+        null,
+        null
     ],
     "BertForPreTraining": [
         "Intel/bert-base-uncased-sparse-85-unstructured-pruneofa",
@@ -2983,6 +3299,38 @@
         "boda/ANER",
         "Amal98/autotrain-final_model-3026786824"
     ],
+    "BertGenerationConfig": [
+        null,
+        null
+    ],
+    "BertGenerationDecoder": [
+        null,
+        null
+    ],
+    "BertGenerationEncoder": [
+        null,
+        null
+    ],
+    "BertGenerationPreTrainedModel": [
+        null,
+        null
+    ],
+    "BertGenerationTokenizer": [
+        null,
+        null
+    ],
+    "BertJapaneseTokenizer": [
+        null,
+        null
+    ],
+    "BertLMHeadModel": [
+        null,
+        null
+    ],
+    "BertLayer": [
+        null,
+        null
+    ],
     "BertModel": [
         "michiyasunaga/LinkBERT-large",
         "michiyasunaga/LinkBERT-base",
@@ -3279,6 +3627,30 @@
         "stjiris/bert-large-portuguese-cased-legal-mlm-gpl-nli-sts-v1",
         "Shobhank-iiitdwd/BERT-BU-nli-sts-sent"
     ],
+    "BertPreTrainedModel": [
+        null,
+        null
+    ],
+    "BertTokenizer": [
+        null,
+        null
+    ],
+    "BertTokenizerFast": [
+        null,
+        null
+    ],
+    "BertweetTokenizer": [
+        null,
+        null
+    ],
+    "BigBirdConfig": [
+        null,
+        null
+    ],
+    "BigBirdForCausalLM": [
+        null,
+        null
+    ],
     "BigBirdForMaskedLM": [
         "google/bigbird-roberta-large",
         "google/bigbird-roberta-large",
@@ -3289,6 +3661,10 @@
         "flax-community/pino-bigbird-roberta-base",
         "flax-community/pino-bigbird-roberta-base",
         "robingeibel/bigbird-large-finetuned-big_patent"
+    ],
+    "BigBirdForMultipleChoice": [
+        null,
+        null
     ],
     "BigBirdForPreTraining": [
         "google/bigbird-roberta-base",
@@ -3344,6 +3720,26 @@
         "ilos-vigil/bigbird-small-indonesian-nli",
         "pepa/bigbird-roberta-large-fever"
     ],
+    "BigBirdForTokenClassification": [
+        null,
+        null
+    ],
+    "BigBirdLayer": [
+        null,
+        null
+    ],
+    "BigBirdModel": [
+        null,
+        null
+    ],
+    "BigBirdPegasusConfig": [
+        null,
+        null
+    ],
+    "BigBirdPegasusForCausalLM": [
+        null,
+        null
+    ],
     "BigBirdPegasusForConditionalGeneration": [
         "Kevincp560/bigbird-pegasus-large-bigpatent-finetuned-pubMed",
         "google/bigbird-pegasus-large-arxiv",
@@ -3351,6 +3747,90 @@
         "pszemraj/bigbird-pegasus-large-K-booksum",
         "google/bigbird-pegasus-large-bigpatent",
         "farleyknight/patent-summarization-google-bigbird-pegasus-large-arxiv-2022-09-20"
+    ],
+    "BigBirdPegasusForQuestionAnswering": [
+        null,
+        null
+    ],
+    "BigBirdPegasusForSequenceClassification": [
+        null,
+        null
+    ],
+    "BigBirdPegasusModel": [
+        null,
+        null
+    ],
+    "BigBirdPegasusPreTrainedModel": [
+        null,
+        null
+    ],
+    "BigBirdPreTrainedModel": [
+        null,
+        null
+    ],
+    "BigBirdTokenizer": [
+        null,
+        null
+    ],
+    "BigBirdTokenizerFast": [
+        null,
+        null
+    ],
+    "BioGptConfig": [
+        null,
+        null
+    ],
+    "BioGptForCausalLM": [
+        null,
+        null
+    ],
+    "BioGptModel": [
+        null,
+        null
+    ],
+    "BioGptPreTrainedModel": [
+        null,
+        null
+    ],
+    "BioGptTokenizer": [
+        null,
+        null
+    ],
+    "BitBackbone": [
+        null,
+        null
+    ],
+    "BitConfig": [
+        null,
+        null
+    ],
+    "BitForImageClassification": [
+        null,
+        null
+    ],
+    "BitImageProcessor": [
+        null,
+        null
+    ],
+    "BitModel": [
+        null,
+        null
+    ],
+    "BitPreTrainedModel": [
+        null,
+        null
+    ],
+    "BitsAndBytesConfig": [
+        null,
+        null
+    ],
+    "BlenderbotConfig": [
+        null,
+        null
+    ],
+    "BlenderbotForCausalLM": [
+        null,
+        null
     ],
     "BlenderbotForConditionalGeneration": [
         "facebook/blenderbot-1B-distill",
@@ -3363,9 +3843,137 @@
         "sshleifer/bb3b-tok",
         "sergunow/movie-chat"
     ],
+    "BlenderbotModel": [
+        null,
+        null
+    ],
+    "BlenderbotPreTrainedModel": [
+        null,
+        null
+    ],
+    "BlenderbotSmallConfig": [
+        null,
+        null
+    ],
+    "BlenderbotSmallForCausalLM": [
+        null,
+        null
+    ],
     "BlenderbotSmallForConditionalGeneration": [
         "facebook/blenderbot-90M",
         "facebook/blenderbot_small-90M"
+    ],
+    "BlenderbotSmallModel": [
+        null,
+        null
+    ],
+    "BlenderbotSmallPreTrainedModel": [
+        null,
+        null
+    ],
+    "BlenderbotSmallTokenizer": [
+        null,
+        null
+    ],
+    "BlenderbotSmallTokenizerFast": [
+        null,
+        null
+    ],
+    "BlenderbotTokenizer": [
+        null,
+        null
+    ],
+    "BlenderbotTokenizerFast": [
+        null,
+        null
+    ],
+    "Blip2Config": [
+        null,
+        null
+    ],
+    "Blip2ForConditionalGeneration": [
+        null,
+        null
+    ],
+    "Blip2Model": [
+        null,
+        null
+    ],
+    "Blip2PreTrainedModel": [
+        null,
+        null
+    ],
+    "Blip2Processor": [
+        null,
+        null
+    ],
+    "Blip2QFormerConfig": [
+        null,
+        null
+    ],
+    "Blip2QFormerModel": [
+        null,
+        null
+    ],
+    "Blip2VisionConfig": [
+        null,
+        null
+    ],
+    "Blip2VisionModel": [
+        null,
+        null
+    ],
+    "BlipConfig": [
+        null,
+        null
+    ],
+    "BlipForConditionalGeneration": [
+        null,
+        null
+    ],
+    "BlipForImageTextRetrieval": [
+        null,
+        null
+    ],
+    "BlipForQuestionAnswering": [
+        null,
+        null
+    ],
+    "BlipImageProcessor": [
+        null,
+        null
+    ],
+    "BlipModel": [
+        null,
+        null
+    ],
+    "BlipPreTrainedModel": [
+        null,
+        null
+    ],
+    "BlipProcessor": [
+        null,
+        null
+    ],
+    "BlipTextConfig": [
+        null,
+        null
+    ],
+    "BlipTextModel": [
+        null,
+        null
+    ],
+    "BlipVisionConfig": [
+        null,
+        null
+    ],
+    "BlipVisionModel": [
+        null,
+        null
+    ],
+    "BloomConfig": [
+        null,
+        null
     ],
     "BloomForCausalLM": [
         "malteos/bloom-1b5-clp-german",
@@ -3381,6 +3989,14 @@
     "BloomForQuestionAnswering": [
         "jasoneden/bloom560m-squad-helloworld",
         "jasoneden/BLOOM-560-QuestionAnswering-CDC-Covid19-Tuned"
+    ],
+    "BloomForSequenceClassification": [
+        null,
+        null
+    ],
+    "BloomForTokenClassification": [
+        null,
+        null
     ],
     "BloomModel": [
         "bigscience/sgpt-bloom-7b1-msmarco",
@@ -3403,9 +4019,169 @@
         "bs-la/bloomz-7b1-4b-xp3ru",
         "bs-la/bloomz-7b1-4b-ru"
     ],
+    "BloomPreTrainedModel": [
+        null,
+        null
+    ],
+    "BloomTokenizerFast": [
+        null,
+        null
+    ],
+    "BridgeTowerConfig": [
+        null,
+        null
+    ],
+    "BridgeTowerForContrastiveLearning": [
+        null,
+        null
+    ],
+    "BridgeTowerForImageAndTextRetrieval": [
+        null,
+        null
+    ],
+    "BridgeTowerForMaskedLM": [
+        null,
+        null
+    ],
+    "BridgeTowerImageProcessor": [
+        null,
+        null
+    ],
+    "BridgeTowerModel": [
+        null,
+        null
+    ],
+    "BridgeTowerPreTrainedModel": [
+        null,
+        null
+    ],
+    "BridgeTowerProcessor": [
+        null,
+        null
+    ],
+    "BridgeTowerTextConfig": [
+        null,
+        null
+    ],
+    "BridgeTowerVisionConfig": [
+        null,
+        null
+    ],
+    "CLIPConfig": [
+        null,
+        null
+    ],
+    "CLIPFeatureExtractor": [
+        null,
+        null
+    ],
+    "CLIPImageProcessor": [
+        null,
+        null
+    ],
     "CLIPModel": [
         "ydshieh/clip-vit-base-patch32",
         "arampacha/clip-test"
+    ],
+    "CLIPPreTrainedModel": [
+        null,
+        null
+    ],
+    "CLIPProcessor": [
+        null,
+        null
+    ],
+    "CLIPSEG_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "CLIPSEG_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "CLIPSegConfig": [
+        null,
+        null
+    ],
+    "CLIPSegForImageSegmentation": [
+        null,
+        null
+    ],
+    "CLIPSegModel": [
+        null,
+        null
+    ],
+    "CLIPSegPreTrainedModel": [
+        null,
+        null
+    ],
+    "CLIPSegProcessor": [
+        null,
+        null
+    ],
+    "CLIPSegTextConfig": [
+        null,
+        null
+    ],
+    "CLIPSegTextModel": [
+        null,
+        null
+    ],
+    "CLIPSegVisionConfig": [
+        null,
+        null
+    ],
+    "CLIPSegVisionModel": [
+        null,
+        null
+    ],
+    "CLIPTextConfig": [
+        null,
+        null
+    ],
+    "CLIPTextModel": [
+        null,
+        null
+    ],
+    "CLIPTextModelWithProjection": [
+        null,
+        null
+    ],
+    "CLIPTokenizer": [
+        null,
+        null
+    ],
+    "CLIPTokenizerFast": [
+        null,
+        null
+    ],
+    "CLIPVisionConfig": [
+        null,
+        null
+    ],
+    "CLIPVisionModel": [
+        null,
+        null
+    ],
+    "CLIPVisionModelWithProjection": [
+        null,
+        null
+    ],
+    "CLIP_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "CLIP_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "CTRLConfig": [
+        null,
+        null
+    ],
+    "CTRLForSequenceClassification": [
+        null,
+        null
     ],
     "CTRLLMHeadModel": [
         "prajjwal1/ctrl_discovery_1",
@@ -3419,9 +4195,41 @@
         "prajjwal1/ctrl_discovery_5",
         "prajjwal1/ctrl_discovery_flipped_1"
     ],
+    "CTRLModel": [
+        null,
+        null
+    ],
+    "CTRLPreTrainedModel": [
+        null,
+        null
+    ],
+    "CTRLTokenizer": [
+        null,
+        null
+    ],
+    "CTRL_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "CTRL_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "CamembertConfig": [
+        null,
+        null
+    ],
+    "CamembertForCausalLM": [
+        null,
+        null
+    ],
     "CamembertForMaskedLM": [
         "manu/lilt-camembert-base",
         "manu/lilt-camembert-dit-base-hf"
+    ],
+    "CamembertForMultipleChoice": [
+        null,
+        null
     ],
     "CamembertForQuestionAnswering": [
         "cmarkea/distilcamembert-base-qa",
@@ -3474,6 +4282,30 @@
         "dangvantuan/sentence-camembert-large",
         "dangvantuan/sentence-camembert-base"
     ],
+    "CamembertPreTrainedModel": [
+        null,
+        null
+    ],
+    "CamembertTokenizer": [
+        null,
+        null
+    ],
+    "CamembertTokenizerFast": [
+        null,
+        null
+    ],
+    "CanineConfig": [
+        null,
+        null
+    ],
+    "CanineForMultipleChoice": [
+        null,
+        null
+    ],
+    "CanineForQuestionAnswering": [
+        null,
+        null
+    ],
     "CanineForSequenceClassification": [
         "celine98/canine-s-finetuned-sst2",
         "vicl/canine-c-finetuned-mrpc",
@@ -3481,11 +4313,115 @@
         "vicl/canine-s-finetuned-cola",
         "SebOchs/canine-c-lang-id"
     ],
+    "CanineForTokenClassification": [
+        null,
+        null
+    ],
+    "CanineLayer": [
+        null,
+        null
+    ],
     "CanineModel": [
         "google/canine-c",
         "google/canine-s",
         "google/canine-c",
         "google/canine-s"
+    ],
+    "CaninePreTrainedModel": [
+        null,
+        null
+    ],
+    "CanineTokenizer": [
+        null,
+        null
+    ],
+    "ChineseCLIPConfig": [
+        null,
+        null
+    ],
+    "ChineseCLIPFeatureExtractor": [
+        null,
+        null
+    ],
+    "ChineseCLIPImageProcessor": [
+        null,
+        null
+    ],
+    "ChineseCLIPModel": [
+        null,
+        null
+    ],
+    "ChineseCLIPPreTrainedModel": [
+        null,
+        null
+    ],
+    "ChineseCLIPProcessor": [
+        null,
+        null
+    ],
+    "ChineseCLIPTextConfig": [
+        null,
+        null
+    ],
+    "ChineseCLIPTextModel": [
+        null,
+        null
+    ],
+    "ChineseCLIPVisionConfig": [
+        null,
+        null
+    ],
+    "ChineseCLIPVisionModel": [
+        null,
+        null
+    ],
+    "ClapAudioConfig": [
+        null,
+        null
+    ],
+    "ClapAudioModel": [
+        null,
+        null
+    ],
+    "ClapAudioModelWithProjection": [
+        null,
+        null
+    ],
+    "ClapConfig": [
+        null,
+        null
+    ],
+    "ClapFeatureExtractor": [
+        null,
+        null
+    ],
+    "ClapModel": [
+        null,
+        null
+    ],
+    "ClapPreTrainedModel": [
+        null,
+        null
+    ],
+    "ClapProcessor": [
+        null,
+        null
+    ],
+    "ClapTextConfig": [
+        null,
+        null
+    ],
+    "ClapTextModel": [
+        null,
+        null
+    ],
+    "ClapTextModelWithProjection": [
+        null,
+        null
+    ],
+    "CodeGenConfig": [
+        null,
+        null
     ],
     "CodeGenForCausalLM": [
         "giulio98/codegen-350M-multi-xlcost",
@@ -3493,16 +4429,80 @@
         "alecsharpie/codegen_350m_css",
         "alecsharpie/codegen_350m_html"
     ],
+    "CodeGenModel": [
+        null,
+        null
+    ],
+    "CodeGenPreTrainedModel": [
+        null,
+        null
+    ],
+    "CodeGenTokenizer": [
+        null,
+        null
+    ],
+    "CodeGenTokenizerFast": [
+        null,
+        null
+    ],
+    "ConditionalDetrConfig": [
+        null,
+        null
+    ],
+    "ConditionalDetrFeatureExtractor": [
+        null,
+        null
+    ],
+    "ConditionalDetrForObjectDetection": [
+        null,
+        null
+    ],
+    "ConditionalDetrForSegmentation": [
+        null,
+        null
+    ],
+    "ConditionalDetrImageProcessor": [
+        null,
+        null
+    ],
+    "ConditionalDetrModel": [
+        null,
+        null
+    ],
+    "ConditionalDetrPreTrainedModel": [
+        null,
+        null
+    ],
+    "ConvBertConfig": [
+        null,
+        null
+    ],
     "ConvBertForMaskedLM": [
         "Finnish-NLP/convbert-base-generator-finnish",
         "Finnish-NLP/convbert-base-generator-finnish",
         "dbmdz/convbert-base-turkish-mc4-cased",
         "dbmdz/convbert-base-turkish-mc4-uncased"
     ],
+    "ConvBertForMultipleChoice": [
+        null,
+        null
+    ],
+    "ConvBertForQuestionAnswering": [
+        null,
+        null
+    ],
     "ConvBertForSequenceClassification": [
         "emrecan/convbert-base-turkish-mc4-cased-allnli_tr",
         "emrecan/convbert-base-turkish-mc4-cased-multinli_tr",
         "emrecan/convbert-base-turkish-mc4-cased-snli_tr"
+    ],
+    "ConvBertForTokenClassification": [
+        null,
+        null
+    ],
+    "ConvBertLayer": [
+        null,
+        null
     ],
     "ConvBertModel": [
         "Finnish-NLP/convbert-base-finnish",
@@ -3511,6 +4511,30 @@
         "Finnish-NLP/convbert-base-finnish",
         "jonfd/convbert-base-igc-is",
         "jonfd/convbert-small-igc-is"
+    ],
+    "ConvBertPreTrainedModel": [
+        null,
+        null
+    ],
+    "ConvBertTokenizer": [
+        null,
+        null
+    ],
+    "ConvBertTokenizerFast": [
+        null,
+        null
+    ],
+    "ConvNextBackbone": [
+        null,
+        null
+    ],
+    "ConvNextConfig": [
+        null,
+        null
+    ],
+    "ConvNextFeatureExtractor": [
+        null,
+        null
     ],
     "ConvNextForImageClassification": [
         "AkshatSurolia/ConvNeXt-FaceMask-Finetuned",
@@ -3560,6 +4584,42 @@
         "BIDEQUITY/autotrain-software_picture_preselection_classifier-2804582686",
         "ivensamdh/autotrain-convnext_test_masterage-2947785378"
     ],
+    "ConvNextImageProcessor": [
+        null,
+        null
+    ],
+    "ConvNextModel": [
+        null,
+        null
+    ],
+    "ConvNextPreTrainedModel": [
+        null,
+        null
+    ],
+    "ConvNextV2Backbone": [
+        null,
+        null
+    ],
+    "ConvNextV2Config": [
+        null,
+        null
+    ],
+    "ConvNextV2ForImageClassification": [
+        null,
+        null
+    ],
+    "ConvNextV2Model": [
+        null,
+        null
+    ],
+    "ConvNextV2PreTrainedModel": [
+        null,
+        null
+    ],
+    "CvtConfig": [
+        null,
+        null
+    ],
     "CvtForImageClassification": [
         "microsoft/cvt-13",
         "microsoft/cvt-13-384",
@@ -3569,6 +4629,18 @@
         "microsoft/cvt-21",
         "microsoft/cvt-w24-384-22k",
         "jayanta/cvt-13-384-in22k-FV-finetuned-memes"
+    ],
+    "CvtModel": [
+        null,
+        null
+    ],
+    "CvtPreTrainedModel": [
+        null,
+        null
+    ],
+    "DPRConfig": [
+        null,
+        null
     ],
     "DPRContextEncoder": [
         "deepset/gbert-base-germandpr-ctx_encoder",
@@ -3581,6 +4653,30 @@
         "voidful/dpr-ctx_encoder-bert-base-multilingual",
         "voidful/dpr-ctx_encoder-bert-base-multilingual",
         "voidful/dpr-ctx_encoder-bert-base-multilingual"
+    ],
+    "DPRContextEncoderTokenizer": [
+        null,
+        null
+    ],
+    "DPRContextEncoderTokenizerFast": [
+        null,
+        null
+    ],
+    "DPRPreTrainedModel": [
+        null,
+        null
+    ],
+    "DPRPretrainedContextEncoder": [
+        null,
+        null
+    ],
+    "DPRPretrainedQuestionEncoder": [
+        null,
+        null
+    ],
+    "DPRPretrainedReader": [
+        null,
+        null
     ],
     "DPRQuestionEncoder": [
         "zhiweitong/dpr-answer_encoder-single-nq-base",
@@ -3598,6 +4694,14 @@
         "voidful/dpr-question_encoder-bert-base-multilingual",
         "voidful/dpr-question_encoder-bert-base-multilingual"
     ],
+    "DPRQuestionEncoderTokenizer": [
+        null,
+        null
+    ],
+    "DPRQuestionEncoderTokenizerFast": [
+        null,
+        null
+    ],
     "DPRReader": [
         "facebook/dpr-reader-multiset-base",
         "facebook/dpr-reader-multiset-base",
@@ -3605,9 +4709,77 @@
         "facebook/dpr-reader-multiset-base",
         "facebook/dpr-reader-multiset-base"
     ],
+    "DPRReaderOutput": [
+        null,
+        null
+    ],
+    "DPRReaderTokenizer": [
+        null,
+        null
+    ],
+    "DPRReaderTokenizerFast": [
+        null,
+        null
+    ],
+    "DPR_CONTEXT_ENCODER_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "DPR_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "DPR_QUESTION_ENCODER_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "DPR_READER_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "DPTConfig": [
+        null,
+        null
+    ],
+    "DPTFeatureExtractor": [
+        null,
+        null
+    ],
+    "DPTForDepthEstimation": [
+        null,
+        null
+    ],
     "DPTForSemanticSegmentation": [
         "Intel/dpt-large-ade",
         "kiheh85202/yolo"
+    ],
+    "DPTImageProcessor": [
+        null,
+        null
+    ],
+    "DPTModel": [
+        null,
+        null
+    ],
+    "DPTPreTrainedModel": [
+        null,
+        null
+    ],
+    "DPT_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "DPT_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "Data2VecAudioConfig": [
+        null,
+        null
+    ],
+    "Data2VecAudioForAudioFrameClassification": [
+        null,
+        null
     ],
     "Data2VecAudioForCTC": [
         "robinhad/data2vec-large-uk",
@@ -3618,9 +4790,37 @@
         "patrickvonplaten/data2vec-audio-base-10m-4-gram",
         "patrickvonplaten/data2vec-audio-base-960h-4-gram"
     ],
+    "Data2VecAudioForSequenceClassification": [
+        null,
+        null
+    ],
+    "Data2VecAudioForXVector": [
+        null,
+        null
+    ],
     "Data2VecAudioModel": [
         "facebook/data2vec-audio-base",
         "facebook/data2vec-audio-large"
+    ],
+    "Data2VecAudioPreTrainedModel": [
+        null,
+        null
+    ],
+    "Data2VecTextConfig": [
+        null,
+        null
+    ],
+    "Data2VecTextForCausalLM": [
+        null,
+        null
+    ],
+    "Data2VecTextForMaskedLM": [
+        null,
+        null
+    ],
+    "Data2VecTextForMultipleChoice": [
+        null,
+        null
     ],
     "Data2VecTextForQuestionAnswering": [
         "wesleyaag/data2vec-squad-test",
@@ -3632,9 +4832,21 @@
         "mrm8488/data2vec-text-base-finetuned-mrpc",
         "mrm8488/data2vec-text-base-finetuned-sst2"
     ],
+    "Data2VecTextForTokenClassification": [
+        null,
+        null
+    ],
     "Data2VecTextModel": [
         "facebook/data2vec-text-base",
         "facebook/data2vec-text-base"
+    ],
+    "Data2VecTextPreTrainedModel": [
+        null,
+        null
+    ],
+    "Data2VecVisionConfig": [
+        null,
+        null
     ],
     "Data2VecVisionForImageClassification": [
         "facebook/data2vec-vision-large-ft1k",
@@ -3642,11 +4854,27 @@
         "facebook/data2vec-vision-large-ft1k",
         "facebook/data2vec-vision-base-ft1k"
     ],
+    "Data2VecVisionForSemanticSegmentation": [
+        null,
+        null
+    ],
     "Data2VecVisionModel": [
         "facebook/data2vec-vision-base",
         "facebook/data2vec-vision-large",
         "facebook/data2vec-vision-base",
         "facebook/data2vec-vision-large"
+    ],
+    "Data2VecVisionPreTrainedModel": [
+        null,
+        null
+    ],
+    "DebertaConfig": [
+        null,
+        null
+    ],
+    "DebertaForMaskedLM": [
+        null,
+        null
     ],
     "DebertaForQuestionAnswering": [
         "MaggieXM/deberta-base-finetuned-squad",
@@ -3677,6 +4905,26 @@
         "tner/deberta-large-wnut2017",
         "sohamtiwari3120/scideberta-cs-tdm-pretrained-finetuned-ner"
     ],
+    "DebertaModel": [
+        null,
+        null
+    ],
+    "DebertaPreTrainedModel": [
+        null,
+        null
+    ],
+    "DebertaTokenizer": [
+        null,
+        null
+    ],
+    "DebertaTokenizerFast": [
+        null,
+        null
+    ],
+    "DebertaV2Config": [
+        null,
+        null
+    ],
     "DebertaV2ForMaskedLM": [
         "ku-nlp/deberta-v2-base-japanese",
         "ku-nlp/deberta-v2-tiny-japanese-char-wwm",
@@ -3691,6 +4939,10 @@
         "ku-nlp/deberta-v2-large-japanese",
         "ku-nlp/deberta-v2-tiny-japanese",
         "ThetaPhiPsi/deberta-v3-base-finetuned-imdb"
+    ],
+    "DebertaV2ForMultipleChoice": [
+        null,
+        null
     ],
     "DebertaV2ForQuestionAnswering": [
         "Mizuiro-sakura/deberta-v2-base-japanese-finetuned-QAe",
@@ -3951,12 +5203,76 @@
         "tner/deberta-v3-large-mit-movie-trivia",
         "tner/deberta-v3-large-fin"
     ],
+    "DebertaV2Model": [
+        null,
+        null
+    ],
+    "DebertaV2PreTrainedModel": [
+        null,
+        null
+    ],
+    "DebertaV2Tokenizer": [
+        null,
+        null
+    ],
+    "DebertaV2TokenizerFast": [
+        null,
+        null
+    ],
+    "DecisionTransformerConfig": [
+        null,
+        null
+    ],
+    "DecisionTransformerGPT2Model": [
+        null,
+        null
+    ],
+    "DecisionTransformerGPT2PreTrainedModel": [
+        null,
+        null
+    ],
+    "DecisionTransformerModel": [
+        null,
+        null
+    ],
+    "DecisionTransformerPreTrainedModel": [
+        null,
+        null
+    ],
+    "DeformableDetrConfig": [
+        null,
+        null
+    ],
+    "DeformableDetrFeatureExtractor": [
+        null,
+        null
+    ],
     "DeformableDetrForObjectDetection": [
         "SenseTime/deformable-detr-single-scale-dc5",
         "SenseTime/deformable-detr-single-scale",
         "SenseTime/deformable-detr-with-box-refine-two-stage",
         "SenseTime/deformable-detr-with-box-refine",
         "SenseTime/deformable-detr"
+    ],
+    "DeformableDetrImageProcessor": [
+        null,
+        null
+    ],
+    "DeformableDetrModel": [
+        null,
+        null
+    ],
+    "DeformableDetrPreTrainedModel": [
+        null,
+        null
+    ],
+    "DeiTConfig": [
+        null,
+        null
+    ],
+    "DeiTFeatureExtractor": [
+        null,
+        null
     ],
     "DeiTForImageClassification": [
         "AkshatSurolia/DeiT-FaceMask-Finetuned",
@@ -3967,6 +5283,50 @@
         "facebook/deit-base-distilled-patch16-384",
         "facebook/deit-small-distilled-patch16-224",
         "facebook/deit-tiny-distilled-patch16-224"
+    ],
+    "DeiTForMaskedImageModeling": [
+        null,
+        null
+    ],
+    "DeiTImageProcessor": [
+        null,
+        null
+    ],
+    "DeiTModel": [
+        null,
+        null
+    ],
+    "DeiTPreTrainedModel": [
+        null,
+        null
+    ],
+    "DetaConfig": [
+        null,
+        null
+    ],
+    "DetaForObjectDetection": [
+        null,
+        null
+    ],
+    "DetaImageProcessor": [
+        null,
+        null
+    ],
+    "DetaModel": [
+        null,
+        null
+    ],
+    "DetaPreTrainedModel": [
+        null,
+        null
+    ],
+    "DetrConfig": [
+        null,
+        null
+    ],
+    "DetrFeatureExtractor": [
+        null,
+        null
     ],
     "DetrForObjectDetection": [
         "facebook/detr-resnet-101-dc5",
@@ -3987,6 +5347,26 @@
         "facebook/detr-resnet-50-dc5-panoptic",
         "facebook/detr-resnet-50-panoptic"
     ],
+    "DetrImageProcessor": [
+        null,
+        null
+    ],
+    "DetrModel": [
+        null,
+        null
+    ],
+    "DetrPreTrainedModel": [
+        null,
+        null
+    ],
+    "DinatBackbone": [
+        null,
+        null
+    ],
+    "DinatConfig": [
+        null,
+        null
+    ],
     "DinatForImageClassification": [
         "shi-labs/dinat-large-in22k-in1k-384",
         "shi-labs/dinat-mini-in1k-224",
@@ -3994,6 +5374,18 @@
         "shi-labs/dinat-base-in1k-224",
         "shi-labs/dinat-large-in22k-in1k-384",
         "shi-labs/dinat-tiny-in1k-224"
+    ],
+    "DinatModel": [
+        null,
+        null
+    ],
+    "DinatPreTrainedModel": [
+        null,
+        null
+    ],
+    "DistilBertConfig": [
+        null,
+        null
     ],
     "DistilBertForMaskedLM": [
         "distilbert-base-uncased",
@@ -5308,9 +6700,81 @@
         "mpjan/msmarco-distilbert-base-tas-b-mmarco-pt-100k",
         "mpjan/msmarco-distilbert-base-tas-b-mmarco-pt-300k"
     ],
+    "DistilBertPreTrainedModel": [
+        null,
+        null
+    ],
+    "DistilBertTokenizer": [
+        null,
+        null
+    ],
+    "DistilBertTokenizerFast": [
+        null,
+        null
+    ],
+    "DonutSwinConfig": [
+        null,
+        null
+    ],
+    "DonutSwinModel": [
+        null,
+        null
+    ],
+    "DonutSwinPreTrainedModel": [
+        null,
+        null
+    ],
+    "EfficientFormerConfig": [
+        null,
+        null
+    ],
+    "EfficientFormerForImageClassification": [
+        null,
+        null
+    ],
     "EfficientFormerForImageClassificationWithTeacher": [
         "snap-research/efficientformer-l1-300",
         "snap-research/efficientformer-l3-300"
+    ],
+    "EfficientFormerImageProcessor": [
+        null,
+        null
+    ],
+    "EfficientFormerModel": [
+        null,
+        null
+    ],
+    "EfficientFormerPreTrainedModel": [
+        null,
+        null
+    ],
+    "EfficientNetConfig": [
+        null,
+        null
+    ],
+    "EfficientNetForImageClassification": [
+        null,
+        null
+    ],
+    "EfficientNetImageProcessor": [
+        null,
+        null
+    ],
+    "EfficientNetModel": [
+        null,
+        null
+    ],
+    "EfficientNetPreTrainedModel": [
+        null,
+        null
+    ],
+    "ElectraConfig": [
+        null,
+        null
+    ],
+    "ElectraForCausalLM": [
+        null,
+        null
     ],
     "ElectraForMaskedLM": [
         "Finnish-NLP/electra-base-generator-finnish",
@@ -5348,6 +6812,10 @@
         "stefan-it/electra-base-gc4-64k-800000-cased-generator",
         "stefan-it/electra-base-gc4-64k-900000-cased-generator",
         "Yaxin/electra-base-discriminator-yelp-mlm"
+    ],
+    "ElectraForMultipleChoice": [
+        null,
+        null
     ],
     "ElectraForPreTraining": [
         "Finnish-NLP/electra-base-discriminator-finnish",
@@ -5516,6 +6984,22 @@
         "megagonlabs/transformers-ud-japanese-electra-base-ginza-510",
         "megagonlabs/transformers-ud-japanese-electra-base-ginza-510"
     ],
+    "ElectraPreTrainedModel": [
+        null,
+        null
+    ],
+    "ElectraTokenizer": [
+        null,
+        null
+    ],
+    "ElectraTokenizerFast": [
+        null,
+        null
+    ],
+    "EncoderDecoderConfig": [
+        null,
+        null
+    ],
     "EncoderDecoderModel": [
         "Ayham/albert_bert_summarization_cnn_dailymail",
         "Ayham/albert_distilgpt2_summarization_cnn_dailymail",
@@ -5611,12 +7095,145 @@
         "joheras/marimari-r2r-mlsum-clara-med",
         "SZTAKI-HLT/Bert2Bert-HunSum-1"
     ],
+    "ErnieConfig": [
+        null,
+        null
+    ],
+    "ErnieForCausalLM": [
+        null,
+        null
+    ],
+    "ErnieForMaskedLM": [
+        null,
+        null
+    ],
+    "ErnieForMultipleChoice": [
+        null,
+        null
+    ],
+    "ErnieForNextSentencePrediction": [
+        null,
+        null
+    ],
+    "ErnieForPreTraining": [
+        null,
+        null
+    ],
+    "ErnieForQuestionAnswering": [
+        null,
+        null
+    ],
+    "ErnieForSequenceClassification": [
+        null,
+        null
+    ],
+    "ErnieForTokenClassification": [
+        null,
+        null
+    ],
+    "ErnieMConfig": [
+        null,
+        null
+    ],
+    "ErnieMForInformationExtraction": [
+        null,
+        null
+    ],
+    "ErnieMForMultipleChoice": [
+        null,
+        null
+    ],
+    "ErnieMForQuestionAnswering": [
+        null,
+        null
+    ],
+    "ErnieMForSequenceClassification": [
+        null,
+        null
+    ],
+    "ErnieMForTokenClassification": [
+        null,
+        null
+    ],
     "ErnieMModel": [
-        "PaddlePaddle/ernie-m-large"
+        null,
+        null
+    ],
+    "ErnieMPreTrainedModel": [
+        null,
+        null
+    ],
+    "ErnieMTokenizer": [
+        null,
+        null
+    ],
+    "ErnieModel": [
+        null,
+        null
+    ],
+    "ErniePreTrainedModel": [
+        null,
+        null
+    ],
+    "EsmConfig": [
+        null,
+        null
+    ],
+    "EsmFoldPreTrainedModel": [
+        null,
+        null
+    ],
+    "EsmForMaskedLM": [
+        null,
+        null
+    ],
+    "EsmForProteinFolding": [
+        null,
+        null
+    ],
+    "EsmForSequenceClassification": [
+        null,
+        null
+    ],
+    "EsmForTokenClassification": [
+        null,
+        null
+    ],
+    "EsmModel": [
+        null,
+        null
+    ],
+    "EsmPreTrainedModel": [
+        null,
+        null
+    ],
+    "EsmTokenizer": [
+        null,
+        null
+    ],
+    "FNetConfig": [
+        null,
+        null
+    ],
+    "FNetForMaskedLM": [
+        null,
+        null
+    ],
+    "FNetForMultipleChoice": [
+        null,
+        null
+    ],
+    "FNetForNextSentencePrediction": [
+        null,
+        null
     ],
     "FNetForPreTraining": [
         "google/fnet-base",
         "google/fnet-large"
+    ],
+    "FNetForQuestionAnswering": [
+        null,
+        null
     ],
     "FNetForSequenceClassification": [
         "gchhablani/fnet-base-finetuned-mnli",
@@ -5635,6 +7252,34 @@
         "gchhablani/fnet-large-finetuned-sst2",
         "gchhablani/fnet-large-finetuned-wnli"
     ],
+    "FNetForTokenClassification": [
+        null,
+        null
+    ],
+    "FNetLayer": [
+        null,
+        null
+    ],
+    "FNetModel": [
+        null,
+        null
+    ],
+    "FNetPreTrainedModel": [
+        null,
+        null
+    ],
+    "FNetTokenizer": [
+        null,
+        null
+    ],
+    "FNetTokenizerFast": [
+        null,
+        null
+    ],
+    "FSMTConfig": [
+        null,
+        null
+    ],
     "FSMTForConditionalGeneration": [
         "allenai/wmt16-en-de-12-1",
         "allenai/wmt16-en-de-dist-12-1",
@@ -5648,9 +7293,41 @@
         "facebook/wmt19-en-ru",
         "facebook/wmt19-ru-en"
     ],
+    "FSMTModel": [
+        null,
+        null
+    ],
+    "FSMTTokenizer": [
+        null,
+        null
+    ],
+    "FSMT_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "FlaubertConfig": [
+        null,
+        null
+    ],
+    "FlaubertForMultipleChoice": [
+        null,
+        null
+    ],
+    "FlaubertForQuestionAnswering": [
+        null,
+        null
+    ],
+    "FlaubertForQuestionAnsweringSimple": [
+        null,
+        null
+    ],
     "FlaubertForSequenceClassification": [
         "nlptown/flaubert_small_cased_sentiment",
         "lincoln/flaubert-mlsum-topic-classification"
+    ],
+    "FlaubertForTokenClassification": [
+        null,
+        null
     ],
     "FlaubertModel": [
         "hugorosen/flaubert_base_uncased-xnli-sts",
@@ -5660,11 +7337,79 @@
         "inokufu/flaubert-base-uncased-xnli-sts-finetuned-education",
         "inokufu/flaubert-base-uncased-xnli-sts"
     ],
+    "FlaubertPreTrainedModel": [
+        null,
+        null
+    ],
+    "FlaubertTokenizer": [
+        null,
+        null
+    ],
     "FlaubertWithLMHeadModel": [
         "flaubert/flaubert_base_cased",
         "flaubert/flaubert_base_uncased",
         "flaubert/flaubert_large_cased",
         "flaubert/flaubert_small_cased"
+    ],
+    "FlavaConfig": [
+        null,
+        null
+    ],
+    "FlavaFeatureExtractor": [
+        null,
+        null
+    ],
+    "FlavaForPreTraining": [
+        null,
+        null
+    ],
+    "FlavaImageCodebook": [
+        null,
+        null
+    ],
+    "FlavaImageCodebookConfig": [
+        null,
+        null
+    ],
+    "FlavaImageConfig": [
+        null,
+        null
+    ],
+    "FlavaImageModel": [
+        null,
+        null
+    ],
+    "FlavaImageProcessor": [
+        null,
+        null
+    ],
+    "FlavaModel": [
+        null,
+        null
+    ],
+    "FlavaMultimodalConfig": [
+        null,
+        null
+    ],
+    "FlavaMultimodalModel": [
+        null,
+        null
+    ],
+    "FlavaPreTrainedModel": [
+        null,
+        null
+    ],
+    "FlavaProcessor": [
+        null,
+        null
+    ],
+    "FlavaTextConfig": [
+        null,
+        null
+    ],
+    "FlavaTextModel": [
+        null,
+        null
     ],
     "FunnelBaseModel": [
         "funnel-transformer/intermediate-base",
@@ -5683,9 +7428,33 @@
         "funnel-transformer/small-base",
         "funnel-transformer/xlarge-base"
     ],
+    "FunnelConfig": [
+        null,
+        null
+    ],
+    "FunnelForMaskedLM": [
+        null,
+        null
+    ],
+    "FunnelForMultipleChoice": [
+        null,
+        null
+    ],
+    "FunnelForPreTraining": [
+        null,
+        null
+    ],
+    "FunnelForQuestionAnswering": [
+        null,
+        null
+    ],
     "FunnelForSequenceClassification": [
         "Sreevishnu/funnel-transformer-small-imdb",
         "ybybybybybybyb/autonlp-revanalysis-6711455"
+    ],
+    "FunnelForTokenClassification": [
+        null,
+        null
     ],
     "FunnelModel": [
         "funnel-transformer/intermediate",
@@ -5704,11 +7473,67 @@
         "funnel-transformer/small",
         "funnel-transformer/xlarge"
     ],
+    "FunnelPreTrainedModel": [
+        null,
+        null
+    ],
+    "FunnelTokenizer": [
+        null,
+        null
+    ],
+    "FunnelTokenizerFast": [
+        null,
+        null
+    ],
+    "GLPNConfig": [
+        null,
+        null
+    ],
+    "GLPNFeatureExtractor": [
+        null,
+        null
+    ],
+    "GLPNForDepthEstimation": [
+        null,
+        null
+    ],
+    "GLPNImageProcessor": [
+        null,
+        null
+    ],
+    "GLPNModel": [
+        null,
+        null
+    ],
+    "GLPNPreTrainedModel": [
+        null,
+        null
+    ],
+    "GLPN_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "GLPN_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "GPT2Config": [
+        null,
+        null
+    ],
+    "GPT2DoubleHeadsModel": [
+        null,
+        null
+    ],
     "GPT2ForSequenceClassification": [
         "tianyisun/gpt2-finetuned-cola",
         "sujatha2502/DialogRPT-updown-finetuned-wnli",
         "LYTinn/gpt2-finetuning-sentiment-model-3000-samples",
         "w11wo/javanese-gpt2-small-imdb-classifier"
+    ],
+    "GPT2ForTokenClassification": [
+        null,
+        null
     ],
     "GPT2LMHeadModel": [
         "Ferch423/gpt2-small-portuguese-wikipediabio",
@@ -6167,6 +7992,30 @@
         "keshan/sinhala-gpt2",
         "aliosm/ComVE-gpt2-medium"
     ],
+    "GPT2PreTrainedModel": [
+        null,
+        null
+    ],
+    "GPT2Tokenizer": [
+        null,
+        null
+    ],
+    "GPT2TokenizerFast": [
+        null,
+        null
+    ],
+    "GPT2_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "GPT2_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "GPTJConfig": [
+        null,
+        null
+    ],
     "GPTJForCausalLM": [
         "NbAiLab/nb-gpt-j-6B",
         "Cedille/fr-boris",
@@ -6200,9 +8049,33 @@
         "ethzanalytics/gpt-j-8bit-KILT_WoW_10k_steps",
         "bertin-project/bertin-gpt-j-6B-infolibros"
     ],
+    "GPTJForQuestionAnswering": [
+        null,
+        null
+    ],
+    "GPTJForSequenceClassification": [
+        null,
+        null
+    ],
     "GPTJModel": [
         "Muennighoff/SGPT-5.8B-weightedmean-msmarco-specb-bitfit",
         "Muennighoff/SGPT-5.8B-weightedmean-nli-bitfit"
+    ],
+    "GPTJPreTrainedModel": [
+        null,
+        null
+    ],
+    "GPTJ_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "GPTJ_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "GPTNeoConfig": [
+        null,
+        null
     ],
     "GPTNeoForCausalLM": [
         "yellowback/gpt-neo-japanese-1.3B",
@@ -6242,21 +8115,173 @@
         "breadlicker45/MuseNeo",
         "NathanRoll/results"
     ],
+    "GPTNeoForSequenceClassification": [
+        null,
+        null
+    ],
     "GPTNeoModel": [
         "Muennighoff/SGPT-1.3B-weightedmean-msmarco-specb-bitfit",
         "Muennighoff/SGPT-125M-weightedmean-msmarco-specb-bitfit",
         "Muennighoff/SGPT-125M-weightedmean-nli-bitfit",
         "Muennighoff/SGPT-2.7B-weightedmean-msmarco-specb-bitfit"
     ],
+    "GPTNeoPreTrainedModel": [
+        null,
+        null
+    ],
+    "GPTNeoXConfig": [
+        null,
+        null
+    ],
     "GPTNeoXForCausalLM": [
         "hoskinson-center/proofGPT-v0.1",
         "breadlicker45/MusePy",
         "BreadAi/MusePy-1-1"
     ],
+    "GPTNeoXJapaneseConfig": [
+        null,
+        null
+    ],
     "GPTNeoXJapaneseForCausalLM": [
         "abeja/gpt-neox-japanese-2.7b",
         "abeja/gpt-neox-japanese-2.7b",
         "abeja/gpt-neox-japanese-2.7b"
+    ],
+    "GPTNeoXJapaneseLayer": [
+        null,
+        null
+    ],
+    "GPTNeoXJapaneseModel": [
+        null,
+        null
+    ],
+    "GPTNeoXJapanesePreTrainedModel": [
+        null,
+        null
+    ],
+    "GPTNeoXJapaneseTokenizer": [
+        null,
+        null
+    ],
+    "GPTNeoXLayer": [
+        null,
+        null
+    ],
+    "GPTNeoXModel": [
+        null,
+        null
+    ],
+    "GPTNeoXPreTrainedModel": [
+        null,
+        null
+    ],
+    "GPTNeoXTokenizerFast": [
+        null,
+        null
+    ],
+    "GPTSanJapaneseConfig": [
+        null,
+        null
+    ],
+    "GPTSanJapaneseForConditionalGeneration": [
+        null,
+        null
+    ],
+    "GPTSanJapaneseModel": [
+        null,
+        null
+    ],
+    "GPTSanJapanesePreTrainedModel": [
+        null,
+        null
+    ],
+    "GPTSanJapaneseTokenizer": [
+        null,
+        null
+    ],
+    "GenerationConfig": [
+        null,
+        null
+    ],
+    "GenerationMixin": [
+        null,
+        null
+    ],
+    "GitConfig": [
+        null,
+        null
+    ],
+    "GitForCausalLM": [
+        null,
+        null
+    ],
+    "GitModel": [
+        null,
+        null
+    ],
+    "GitPreTrainedModel": [
+        null,
+        null
+    ],
+    "GitProcessor": [
+        null,
+        null
+    ],
+    "GitVisionConfig": [
+        null,
+        null
+    ],
+    "GitVisionModel": [
+        null,
+        null
+    ],
+    "GraphormerConfig": [
+        null,
+        null
+    ],
+    "GraphormerForGraphClassification": [
+        null,
+        null
+    ],
+    "GraphormerModel": [
+        null,
+        null
+    ],
+    "GraphormerPreTrainedModel": [
+        null,
+        null
+    ],
+    "GroupViTConfig": [
+        null,
+        null
+    ],
+    "GroupViTModel": [
+        null,
+        null
+    ],
+    "GroupViTPreTrainedModel": [
+        null,
+        null
+    ],
+    "GroupViTTextConfig": [
+        null,
+        null
+    ],
+    "GroupViTTextModel": [
+        null,
+        null
+    ],
+    "GroupViTVisionConfig": [
+        null,
+        null
+    ],
+    "GroupViTVisionModel": [
+        null,
+        null
+    ],
+    "HubertConfig": [
+        null,
+        null
     ],
     "HubertForCTC": [
         "jonatasgrosman/exp_w2v2t_en_hubert_s596",
@@ -6321,6 +8346,122 @@
         "facebook/hubert-large-ll60k",
         "facebook/hubert-xlarge-ll60k"
     ],
+    "HubertPreTrainedModel": [
+        null,
+        null
+    ],
+    "IBertConfig": [
+        null,
+        null
+    ],
+    "IBertForMaskedLM": [
+        null,
+        null
+    ],
+    "IBertForMultipleChoice": [
+        null,
+        null
+    ],
+    "IBertForQuestionAnswering": [
+        null,
+        null
+    ],
+    "IBertForSequenceClassification": [
+        null,
+        null
+    ],
+    "IBertForTokenClassification": [
+        null,
+        null
+    ],
+    "IBertModel": [
+        null,
+        null
+    ],
+    "IBertPreTrainedModel": [
+        null,
+        null
+    ],
+    "ImageGPTConfig": [
+        null,
+        null
+    ],
+    "ImageGPTFeatureExtractor": [
+        null,
+        null
+    ],
+    "ImageGPTForCausalImageModeling": [
+        null,
+        null
+    ],
+    "ImageGPTForImageClassification": [
+        null,
+        null
+    ],
+    "ImageGPTImageProcessor": [
+        null,
+        null
+    ],
+    "ImageGPTModel": [
+        null,
+        null
+    ],
+    "ImageGPTPreTrainedModel": [
+        null,
+        null
+    ],
+    "InformerConfig": [
+        null,
+        null
+    ],
+    "InformerForPrediction": [
+        null,
+        null
+    ],
+    "InformerModel": [
+        null,
+        null
+    ],
+    "InformerPreTrainedModel": [
+        null,
+        null
+    ],
+    "JukeboxConfig": [
+        null,
+        null
+    ],
+    "JukeboxModel": [
+        null,
+        null
+    ],
+    "JukeboxPreTrainedModel": [
+        null,
+        null
+    ],
+    "JukeboxPrior": [
+        null,
+        null
+    ],
+    "JukeboxPriorConfig": [
+        null,
+        null
+    ],
+    "JukeboxTokenizer": [
+        null,
+        null
+    ],
+    "JukeboxVQVAE": [
+        null,
+        null
+    ],
+    "JukeboxVQVAEConfig": [
+        null,
+        null
+    ],
+    "LEDConfig": [
+        null,
+        null
+    ],
     "LEDForConditionalGeneration": [
         "HHousen/distil-led-large-cnn-16384",
         "d0r1h/LEDBill",
@@ -6346,6 +8487,54 @@
         "farleyknight/patent-summarization-allen-led-large-2022-09-20",
         "KellyShiiii/primer-crd3"
     ],
+    "LEDForQuestionAnswering": [
+        null,
+        null
+    ],
+    "LEDForSequenceClassification": [
+        null,
+        null
+    ],
+    "LEDModel": [
+        null,
+        null
+    ],
+    "LEDPreTrainedModel": [
+        null,
+        null
+    ],
+    "LEDTokenizer": [
+        null,
+        null
+    ],
+    "LEDTokenizerFast": [
+        null,
+        null
+    ],
+    "LED_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "LED_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "LayoutLMConfig": [
+        null,
+        null
+    ],
+    "LayoutLMForMaskedLM": [
+        null,
+        null
+    ],
+    "LayoutLMForQuestionAnswering": [
+        null,
+        null
+    ],
+    "LayoutLMForSequenceClassification": [
+        null,
+        null
+    ],
     "LayoutLMForTokenClassification": [
         "dodogigi/layoutlm-funsd",
         "rubensmau/layoutlm-funsd",
@@ -6357,6 +8546,38 @@
         "philschmid/layoutlm-funsd",
         "Narsil/layoutlm-funsd"
     ],
+    "LayoutLMModel": [
+        null,
+        null
+    ],
+    "LayoutLMPreTrainedModel": [
+        null,
+        null
+    ],
+    "LayoutLMTokenizer": [
+        null,
+        null
+    ],
+    "LayoutLMTokenizerFast": [
+        null,
+        null
+    ],
+    "LayoutLMv2Config": [
+        null,
+        null
+    ],
+    "LayoutLMv2FeatureExtractor": [
+        null,
+        null
+    ],
+    "LayoutLMv2ForQuestionAnswering": [
+        null,
+        null
+    ],
+    "LayoutLMv2ForSequenceClassification": [
+        null,
+        null
+    ],
     "LayoutLMv2ForTokenClassification": [
         "Theivaprakasham/layoutlmv2-finetuned-sroie",
         "nielsr/layoutlmv2-finetuned-funsd",
@@ -6367,6 +8588,46 @@
         "orlcast/layoutxlm-finetuned-xfund-it",
         "Sushanti123/layoutxlm-finetuned-xfund-fr",
         "notaginger/layoutxlm-finetuned-xfund-de"
+    ],
+    "LayoutLMv2ImageProcessor": [
+        null,
+        null
+    ],
+    "LayoutLMv2Model": [
+        null,
+        null
+    ],
+    "LayoutLMv2PreTrainedModel": [
+        null,
+        null
+    ],
+    "LayoutLMv2Processor": [
+        null,
+        null
+    ],
+    "LayoutLMv2Tokenizer": [
+        null,
+        null
+    ],
+    "LayoutLMv2TokenizerFast": [
+        null,
+        null
+    ],
+    "LayoutLMv3Config": [
+        null,
+        null
+    ],
+    "LayoutLMv3FeatureExtractor": [
+        null,
+        null
+    ],
+    "LayoutLMv3ForQuestionAnswering": [
+        null,
+        null
+    ],
+    "LayoutLMv3ForSequenceClassification": [
+        null,
+        null
     ],
     "LayoutLMv3ForTokenClassification": [
         "Theivaprakasham/layoutlmv3-finetuned-sroie",
@@ -6403,12 +8664,72 @@
         "DataIntelligenceTeam/Rhenus-Annotations-vgg-json",
         "buihungtpd3/layoutlmv3-finetuned-cord_100"
     ],
+    "LayoutLMv3ImageProcessor": [
+        null,
+        null
+    ],
+    "LayoutLMv3Model": [
+        null,
+        null
+    ],
+    "LayoutLMv3PreTrainedModel": [
+        null,
+        null
+    ],
+    "LayoutLMv3Processor": [
+        null,
+        null
+    ],
+    "LayoutLMv3Tokenizer": [
+        null,
+        null
+    ],
+    "LayoutLMv3TokenizerFast": [
+        null,
+        null
+    ],
+    "LevitConfig": [
+        null,
+        null
+    ],
+    "LevitFeatureExtractor": [
+        null,
+        null
+    ],
+    "LevitForImageClassification": [
+        null,
+        null
+    ],
     "LevitForImageClassificationWithTeacher": [
         "facebook/levit-384",
         "facebook/levit-256",
         "facebook/levit-192",
         "facebook/levit-128",
         "facebook/levit-128S"
+    ],
+    "LevitImageProcessor": [
+        null,
+        null
+    ],
+    "LevitModel": [
+        null,
+        null
+    ],
+    "LevitPreTrainedModel": [
+        null,
+        null
+    ],
+    "LiltConfig": [
+        null,
+        null
+    ],
+    "LiltForQuestionAnswering": [
+        null,
+        null
+    ],
+    "LiltForSequenceClassification": [
+        null,
+        null
     ],
     "LiltForTokenClassification": [
         "nielsr/lilt-roberta-en-base-finetuned-funsd",
@@ -6420,6 +8741,22 @@
         "romin23/lilt-form-read",
         "Tatiana239/lilt-en-funsd",
         "Karroul/lilt-en-funsd"
+    ],
+    "LiltModel": [
+        null,
+        null
+    ],
+    "LiltPreTrainedModel": [
+        null,
+        null
+    ],
+    "LongT5Config": [
+        null,
+        null
+    ],
+    "LongT5EncoderModel": [
+        null,
+        null
     ],
     "LongT5ForConditionalGeneration": [
         "nbroad/longt5-base-global-mediasum",
@@ -6451,6 +8788,18 @@
         "sumedh/biomedical_text_summarization",
         "Shobhank-iiitdwd/long-t5-tglobal-base-16384-book-summary"
     ],
+    "LongT5Model": [
+        null,
+        null
+    ],
+    "LongT5PreTrainedModel": [
+        null,
+        null
+    ],
+    "LongformerConfig": [
+        null,
+        null
+    ],
     "LongformerForMaskedLM": [
         "kiddothe2b/longformer-base-4096",
         "kiddothe2b/longformer-mini-1024",
@@ -6477,6 +8826,122 @@
         "jpwahle/longformer-base-plagiarism-detection",
         "nbroad/longformer-base-health-fact",
         "jfan-98/autotrain-LegalLong_on_contracts-1230246837"
+    ],
+    "LongformerForTokenClassification": [
+        null,
+        null
+    ],
+    "LongformerModel": [
+        null,
+        null
+    ],
+    "LongformerPreTrainedModel": [
+        null,
+        null
+    ],
+    "LongformerSelfAttention": [
+        null,
+        null
+    ],
+    "LongformerTokenizer": [
+        null,
+        null
+    ],
+    "LongformerTokenizerFast": [
+        null,
+        null
+    ],
+    "LukeConfig": [
+        null,
+        null
+    ],
+    "LukeForEntityClassification": [
+        null,
+        null
+    ],
+    "LukeForEntityPairClassification": [
+        null,
+        null
+    ],
+    "LukeForEntitySpanClassification": [
+        null,
+        null
+    ],
+    "LukeForMaskedLM": [
+        null,
+        null
+    ],
+    "LukeForMultipleChoice": [
+        null,
+        null
+    ],
+    "LukeForQuestionAnswering": [
+        null,
+        null
+    ],
+    "LukeForSequenceClassification": [
+        null,
+        null
+    ],
+    "LukeForTokenClassification": [
+        null,
+        null
+    ],
+    "LukeModel": [
+        null,
+        null
+    ],
+    "LukePreTrainedModel": [
+        null,
+        null
+    ],
+    "LukeTokenizer": [
+        null,
+        null
+    ],
+    "LxmertConfig": [
+        null,
+        null
+    ],
+    "LxmertEncoder": [
+        null,
+        null
+    ],
+    "LxmertForPreTraining": [
+        null,
+        null
+    ],
+    "LxmertForQuestionAnswering": [
+        null,
+        null
+    ],
+    "LxmertModel": [
+        null,
+        null
+    ],
+    "LxmertPreTrainedModel": [
+        null,
+        null
+    ],
+    "LxmertTokenizer": [
+        null,
+        null
+    ],
+    "LxmertTokenizerFast": [
+        null,
+        null
+    ],
+    "LxmertVisualFeatureEncoder": [
+        null,
+        null
+    ],
+    "LxmertXLayer": [
+        null,
+        null
+    ],
+    "M2M100Config": [
+        null,
+        null
     ],
     "M2M100ForConditionalGeneration": [
         "ctu-aic/m2m100-418M-multilingual-summarization-multilarge-cs",
@@ -6508,6 +8973,34 @@
         "ctu-aic/m2m100-418M-multilingual-summarization-multilarge-cs",
         "alirezamsh/small100",
         "alirezamsh/small100"
+    ],
+    "M2M100Model": [
+        null,
+        null
+    ],
+    "M2M100PreTrainedModel": [
+        null,
+        null
+    ],
+    "M2M100Tokenizer": [
+        null,
+        null
+    ],
+    "MBart50Tokenizer": [
+        null,
+        null
+    ],
+    "MBart50TokenizerFast": [
+        null,
+        null
+    ],
+    "MBartConfig": [
+        null,
+        null
+    ],
+    "MBartForCausalLM": [
+        null,
+        null
     ],
     "MBartForConditionalGeneration": [
         "Formzu/bart-base-japanese",
@@ -6617,9 +9110,77 @@
         "lmqg/mbart-large-cc25-itquad-qag",
         "lmqg/mbart-large-cc25-ruquad-qag"
     ],
+    "MBartForQuestionAnswering": [
+        null,
+        null
+    ],
+    "MBartForSequenceClassification": [
+        null,
+        null
+    ],
+    "MBartModel": [
+        null,
+        null
+    ],
+    "MBartPreTrainedModel": [
+        null,
+        null
+    ],
+    "MBartTokenizer": [
+        null,
+        null
+    ],
+    "MBartTokenizerFast": [
+        null,
+        null
+    ],
+    "MCTCTConfig": [
+        null,
+        null
+    ],
+    "MCTCTFeatureExtractor": [
+        null,
+        null
+    ],
     "MCTCTForCTC": [
         "speechbrain/m-ctc-t-large",
         "speechbrain/m-ctc-t-large"
+    ],
+    "MCTCTModel": [
+        null,
+        null
+    ],
+    "MCTCTPreTrainedModel": [
+        null,
+        null
+    ],
+    "MCTCTProcessor": [
+        null,
+        null
+    ],
+    "MCTCT_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "MCTCT_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "MMBTConfig": [
+        null,
+        null
+    ],
+    "MMBTForClassification": [
+        null,
+        null
+    ],
+    "MMBTModel": [
+        null,
+        null
+    ],
+    "MPNetConfig": [
+        null,
+        null
     ],
     "MPNetForMaskedLM": [
         "sentence-transformers/all-mpnet-base-v2",
@@ -6657,9 +9218,25 @@
         "sentence-transformers/multi-qa-mpnet-base-dot-v1",
         "sdharashivka/multi-qa-mpnet-base-dot-v1-feat-extraction"
     ],
+    "MPNetForMultipleChoice": [
+        null,
+        null
+    ],
+    "MPNetForQuestionAnswering": [
+        null,
+        null
+    ],
     "MPNetForSequenceClassification": [
         "symanto/mpnet-base-snli-mnli",
         "symanto/mpnet-base-snli-mnli"
+    ],
+    "MPNetForTokenClassification": [
+        null,
+        null
+    ],
+    "MPNetLayer": [
+        null,
+        null
     ],
     "MPNetModel": [
         "jamescalam/mpnet-snli",
@@ -6681,6 +9258,26 @@
         "symanto/sn-mpnet-base-snli-mnli",
         "jamescalam/mpnet-nli-sts",
         "FremyCompany/BioLORD-STAMB2-v1"
+    ],
+    "MPNetPreTrainedModel": [
+        null,
+        null
+    ],
+    "MPNetTokenizer": [
+        null,
+        null
+    ],
+    "MPNetTokenizerFast": [
+        null,
+        null
+    ],
+    "MT5Config": [
+        null,
+        null
+    ],
+    "MT5EncoderModel": [
+        null,
+        null
     ],
     "MT5ForConditionalGeneration": [
         "persiannlp/mt5-base-parsinlu-squad-reading-comprehension",
@@ -7021,6 +9618,30 @@
         "ConvLab/mt5-small-nlu-all-crosswoz",
         "Tritkoman/EnglishtoAncientGreekV4"
     ],
+    "MT5Model": [
+        null,
+        null
+    ],
+    "MT5PreTrainedModel": [
+        null,
+        null
+    ],
+    "MT5Tokenizer": [
+        null,
+        null
+    ],
+    "MT5TokenizerFast": [
+        null,
+        null
+    ],
+    "MarianConfig": [
+        null,
+        null
+    ],
+    "MarianForCausalLM": [
+        null,
+        null
+    ],
     "MarianMTModel": [
         "AI-Lab-Makerere/en_lg",
         "AI-Lab-Makerere/lg_en",
@@ -7240,9 +9861,57 @@
         "jamm55/autotrain-improved-pidgin-model-2837583189",
         "leightonllc/opus-mt-zh-en-wmt19-news"
     ],
+    "MarianModel": [
+        null,
+        null
+    ],
+    "MarianTokenizer": [
+        null,
+        null
+    ],
+    "MarkupLMConfig": [
+        null,
+        null
+    ],
+    "MarkupLMFeatureExtractor": [
+        null,
+        null
+    ],
     "MarkupLMForQuestionAnswering": [
         "microsoft/markuplm-base-finetuned-websrc",
         "microsoft/markuplm-large-finetuned-websrc"
+    ],
+    "MarkupLMForSequenceClassification": [
+        null,
+        null
+    ],
+    "MarkupLMForTokenClassification": [
+        null,
+        null
+    ],
+    "MarkupLMModel": [
+        null,
+        null
+    ],
+    "MarkupLMPreTrainedModel": [
+        null,
+        null
+    ],
+    "MarkupLMProcessor": [
+        null,
+        null
+    ],
+    "MarkupLMTokenizer": [
+        null,
+        null
+    ],
+    "MarkupLMTokenizerFast": [
+        null,
+        null
+    ],
+    "Mask2FormerConfig": [
+        null,
+        null
     ],
     "Mask2FormerForUniversalSegmentation": [
         "facebook/mask2former-swin-base-coco-instance",
@@ -7275,6 +9944,26 @@
         "facebook/mask2former-swin-base-IN21k-cityscapes-semantic",
         "facebook/mask2former-swin-base-IN21k-coco-instance"
     ],
+    "Mask2FormerImageProcessor": [
+        null,
+        null
+    ],
+    "Mask2FormerModel": [
+        null,
+        null
+    ],
+    "Mask2FormerPreTrainedModel": [
+        null,
+        null
+    ],
+    "MaskFormerConfig": [
+        null,
+        null
+    ],
+    "MaskFormerFeatureExtractor": [
+        null,
+        null
+    ],
     "MaskFormerForInstanceSegmentation": [
         "facebook/maskformer-swin-base-coco",
         "facebook/maskformer-swin-large-coco",
@@ -7285,6 +9974,114 @@
         "facebook/maskformer-swin-small-ade",
         "facebook/maskformer-swin-tiny-ade",
         "zuppif/maskformer-swin-small-ade"
+    ],
+    "MaskFormerImageProcessor": [
+        null,
+        null
+    ],
+    "MaskFormerModel": [
+        null,
+        null
+    ],
+    "MaskFormerPreTrainedModel": [
+        null,
+        null
+    ],
+    "MaskFormerSwinBackbone": [
+        null,
+        null
+    ],
+    "MaskFormerSwinConfig": [
+        null,
+        null
+    ],
+    "MegatronBertConfig": [
+        null,
+        null
+    ],
+    "MegatronBertForCausalLM": [
+        null,
+        null
+    ],
+    "MegatronBertForMaskedLM": [
+        null,
+        null
+    ],
+    "MegatronBertForMultipleChoice": [
+        null,
+        null
+    ],
+    "MegatronBertForNextSentencePrediction": [
+        null,
+        null
+    ],
+    "MegatronBertForPreTraining": [
+        null,
+        null
+    ],
+    "MegatronBertForQuestionAnswering": [
+        null,
+        null
+    ],
+    "MegatronBertForSequenceClassification": [
+        null,
+        null
+    ],
+    "MegatronBertForTokenClassification": [
+        null,
+        null
+    ],
+    "MegatronBertModel": [
+        null,
+        null
+    ],
+    "MegatronBertPreTrainedModel": [
+        null,
+        null
+    ],
+    "MgpstrConfig": [
+        null,
+        null
+    ],
+    "MgpstrForSceneTextRecognition": [
+        null,
+        null
+    ],
+    "MgpstrModel": [
+        null,
+        null
+    ],
+    "MgpstrPreTrainedModel": [
+        null,
+        null
+    ],
+    "MgpstrProcessor": [
+        null,
+        null
+    ],
+    "MgpstrTokenizer": [
+        null,
+        null
+    ],
+    "MobileBertConfig": [
+        null,
+        null
+    ],
+    "MobileBertForMaskedLM": [
+        null,
+        null
+    ],
+    "MobileBertForMultipleChoice": [
+        null,
+        null
+    ],
+    "MobileBertForNextSentencePrediction": [
+        null,
+        null
+    ],
+    "MobileBertForPreTraining": [
+        null,
+        null
     ],
     "MobileBertForQuestionAnswering": [
         "csarron/mobilebert-uncased-squad-v1",
@@ -7305,11 +10102,63 @@
         "typeform/mobilebert-uncased-mnli",
         "lordtt13/emo-mobilebert"
     ],
+    "MobileBertForTokenClassification": [
+        null,
+        null
+    ],
+    "MobileBertLayer": [
+        null,
+        null
+    ],
+    "MobileBertModel": [
+        null,
+        null
+    ],
+    "MobileBertPreTrainedModel": [
+        null,
+        null
+    ],
+    "MobileBertTokenizer": [
+        null,
+        null
+    ],
+    "MobileBertTokenizerFast": [
+        null,
+        null
+    ],
+    "MobileNetV1Config": [
+        null,
+        null
+    ],
+    "MobileNetV1FeatureExtractor": [
+        null,
+        null
+    ],
     "MobileNetV1ForImageClassification": [
         "Matthijs/mobilenet_v1_1.0_224",
         "Matthijs/mobilenet_v1_0.75_192",
         "google/mobilenet_v1_1.0_224",
         "google/mobilenet_v1_0.75_192"
+    ],
+    "MobileNetV1ImageProcessor": [
+        null,
+        null
+    ],
+    "MobileNetV1Model": [
+        null,
+        null
+    ],
+    "MobileNetV1PreTrainedModel": [
+        null,
+        null
+    ],
+    "MobileNetV2Config": [
+        null,
+        null
+    ],
+    "MobileNetV2FeatureExtractor": [
+        null,
+        null
     ],
     "MobileNetV2ForImageClassification": [
         "Matthijs/mobilenet_v2_1.0_224",
@@ -7323,6 +10172,26 @@
         "Matthijs/deeplabv3_mobilenet_v2_1.0_513",
         "google/deeplabv3_mobilenet_v2_1.0_513"
     ],
+    "MobileNetV2ImageProcessor": [
+        null,
+        null
+    ],
+    "MobileNetV2Model": [
+        null,
+        null
+    ],
+    "MobileNetV2PreTrainedModel": [
+        null,
+        null
+    ],
+    "MobileViTConfig": [
+        null,
+        null
+    ],
+    "MobileViTFeatureExtractor": [
+        null,
+        null
+    ],
     "MobileViTForImageClassification": [
         "Matthijs/mobilevit-small",
         "apple/mobilevit-small",
@@ -7335,9 +10204,153 @@
         "apple/deeplabv3-mobilevit-x-small",
         "apple/deeplabv3-mobilevit-xx-small"
     ],
+    "MobileViTImageProcessor": [
+        null,
+        null
+    ],
+    "MobileViTModel": [
+        null,
+        null
+    ],
+    "MobileViTPreTrainedModel": [
+        null,
+        null
+    ],
+    "MvpConfig": [
+        null,
+        null
+    ],
+    "MvpForCausalLM": [
+        null,
+        null
+    ],
+    "MvpForConditionalGeneration": [
+        null,
+        null
+    ],
+    "MvpForQuestionAnswering": [
+        null,
+        null
+    ],
+    "MvpForSequenceClassification": [
+        null,
+        null
+    ],
+    "MvpModel": [
+        null,
+        null
+    ],
+    "MvpPreTrainedModel": [
+        null,
+        null
+    ],
+    "MvpTokenizer": [
+        null,
+        null
+    ],
+    "MvpTokenizerFast": [
+        null,
+        null
+    ],
+    "NatBackbone": [
+        null,
+        null
+    ],
+    "NatConfig": [
+        null,
+        null
+    ],
     "NatForImageClassification": [
         "shi-labs/nat-mini-in1k-224",
         "shi-labs/nat-base-in1k-224"
+    ],
+    "NatModel": [
+        null,
+        null
+    ],
+    "NatPreTrainedModel": [
+        null,
+        null
+    ],
+    "NezhaConfig": [
+        null,
+        null
+    ],
+    "NezhaForMaskedLM": [
+        null,
+        null
+    ],
+    "NezhaForMultipleChoice": [
+        null,
+        null
+    ],
+    "NezhaForNextSentencePrediction": [
+        null,
+        null
+    ],
+    "NezhaForPreTraining": [
+        null,
+        null
+    ],
+    "NezhaForQuestionAnswering": [
+        null,
+        null
+    ],
+    "NezhaForSequenceClassification": [
+        null,
+        null
+    ],
+    "NezhaForTokenClassification": [
+        null,
+        null
+    ],
+    "NezhaModel": [
+        null,
+        null
+    ],
+    "NezhaPreTrainedModel": [
+        null,
+        null
+    ],
+    "NystromformerConfig": [
+        null,
+        null
+    ],
+    "NystromformerForMaskedLM": [
+        null,
+        null
+    ],
+    "NystromformerForMultipleChoice": [
+        null,
+        null
+    ],
+    "NystromformerForQuestionAnswering": [
+        null,
+        null
+    ],
+    "NystromformerForSequenceClassification": [
+        null,
+        null
+    ],
+    "NystromformerForTokenClassification": [
+        null,
+        null
+    ],
+    "NystromformerLayer": [
+        null,
+        null
+    ],
+    "NystromformerModel": [
+        null,
+        null
+    ],
+    "NystromformerPreTrainedModel": [
+        null,
+        null
+    ],
+    "OPTConfig": [
+        null,
+        null
     ],
     "OPTForCausalLM": [
         "theblackcat102/galactica-1.3b-v2",
@@ -7375,9 +10388,29 @@
         "theblackcat102/galactica-1.3b-v2",
         "sr5434/gptQuotes"
     ],
+    "OPTForQuestionAnswering": [
+        null,
+        null
+    ],
     "OPTForSequenceClassification": [
         "tianyisun/opt-350m-finetuned-sst2",
         "DravenTay/finetuning-sentiment-model-3000-samples"
+    ],
+    "OPTModel": [
+        null,
+        null
+    ],
+    "OPTPreTrainedModel": [
+        null,
+        null
+    ],
+    "OPT_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "OneFormerConfig": [
+        null,
+        null
     ],
     "OneFormerForUniversalSegmentation": [
         "shi-labs/oneformer_ade20k_swin_large",
@@ -7387,6 +10420,134 @@
         "shi-labs/oneformer_coco_dinat_large",
         "shi-labs/oneformer_cityscapes_swin_large",
         "shi-labs/oneformer_cityscapes_dinat_large"
+    ],
+    "OneFormerImageProcessor": [
+        null,
+        null
+    ],
+    "OneFormerModel": [
+        null,
+        null
+    ],
+    "OneFormerPreTrainedModel": [
+        null,
+        null
+    ],
+    "OneFormerProcessor": [
+        null,
+        null
+    ],
+    "OpenAIGPTConfig": [
+        null,
+        null
+    ],
+    "OpenAIGPTDoubleHeadsModel": [
+        null,
+        null
+    ],
+    "OpenAIGPTForSequenceClassification": [
+        null,
+        null
+    ],
+    "OpenAIGPTLMHeadModel": [
+        null,
+        null
+    ],
+    "OpenAIGPTModel": [
+        null,
+        null
+    ],
+    "OpenAIGPTPreTrainedModel": [
+        null,
+        null
+    ],
+    "OpenAIGPTTokenizer": [
+        null,
+        null
+    ],
+    "OpenAIGPTTokenizerFast": [
+        null,
+        null
+    ],
+    "OwlViTConfig": [
+        null,
+        null
+    ],
+    "OwlViTFeatureExtractor": [
+        null,
+        null
+    ],
+    "OwlViTForObjectDetection": [
+        null,
+        null
+    ],
+    "OwlViTImageProcessor": [
+        null,
+        null
+    ],
+    "OwlViTModel": [
+        null,
+        null
+    ],
+    "OwlViTPreTrainedModel": [
+        null,
+        null
+    ],
+    "OwlViTProcessor": [
+        null,
+        null
+    ],
+    "OwlViTTextConfig": [
+        null,
+        null
+    ],
+    "OwlViTTextModel": [
+        null,
+        null
+    ],
+    "OwlViTVisionConfig": [
+        null,
+        null
+    ],
+    "OwlViTVisionModel": [
+        null,
+        null
+    ],
+    "PLBartConfig": [
+        null,
+        null
+    ],
+    "PLBartForCausalLM": [
+        null,
+        null
+    ],
+    "PLBartForConditionalGeneration": [
+        null,
+        null
+    ],
+    "PLBartForSequenceClassification": [
+        null,
+        null
+    ],
+    "PLBartModel": [
+        null,
+        null
+    ],
+    "PLBartPreTrainedModel": [
+        null,
+        null
+    ],
+    "PLBartTokenizer": [
+        null,
+        null
+    ],
+    "PegasusConfig": [
+        null,
+        null
+    ],
+    "PegasusForCausalLM": [
+        null,
+        null
     ],
     "PegasusForConditionalGeneration": [
         "rmihaylov/pegasus-base-qag-bg",
@@ -7498,15 +10659,103 @@
         "PoseyATX/Self-Reliant_Bison",
         "PoseyATX/Bronze_Buffalo_89"
     ],
+    "PegasusModel": [
+        null,
+        null
+    ],
+    "PegasusPreTrainedModel": [
+        null,
+        null
+    ],
+    "PegasusTokenizer": [
+        null,
+        null
+    ],
+    "PegasusTokenizerFast": [
+        null,
+        null
+    ],
+    "PegasusXConfig": [
+        null,
+        null
+    ],
+    "PegasusXForConditionalGeneration": [
+        null,
+        null
+    ],
+    "PegasusXModel": [
+        null,
+        null
+    ],
+    "PegasusXPreTrainedModel": [
+        null,
+        null
+    ],
+    "PerceiverConfig": [
+        null,
+        null
+    ],
+    "PerceiverFeatureExtractor": [
+        null,
+        null
+    ],
+    "PerceiverForImageClassificationConvProcessing": [
+        null,
+        null
+    ],
+    "PerceiverForImageClassificationFourier": [
+        null,
+        null
+    ],
+    "PerceiverForImageClassificationLearned": [
+        null,
+        null
+    ],
     "PerceiverForMaskedLM": [
         "deepmind/language-perceiver",
         "deepmind/language-perceiver"
+    ],
+    "PerceiverForMultimodalAutoencoding": [
+        null,
+        null
+    ],
+    "PerceiverForOpticalFlow": [
+        null,
+        null
     ],
     "PerceiverForSequenceClassification": [
         "TomW/TOMFINSEN",
         "nuriafari/my_model",
         "oandreae/financial_sentiment_model",
         "warwickai/fin-perceiver"
+    ],
+    "PerceiverImageProcessor": [
+        null,
+        null
+    ],
+    "PerceiverLayer": [
+        null,
+        null
+    ],
+    "PerceiverModel": [
+        null,
+        null
+    ],
+    "PerceiverPreTrainedModel": [
+        null,
+        null
+    ],
+    "PerceiverTokenizer": [
+        null,
+        null
+    ],
+    "PoolFormerConfig": [
+        null,
+        null
+    ],
+    "PoolFormerFeatureExtractor": [
+        null,
+        null
     ],
     "PoolFormerForImageClassification": [
         "sail/poolformer_m36",
@@ -7515,13 +10764,181 @@
         "sail/poolformer_s24",
         "sail/poolformer_s36"
     ],
+    "PoolFormerImageProcessor": [
+        null,
+        null
+    ],
+    "PoolFormerModel": [
+        null,
+        null
+    ],
+    "PoolFormerPreTrainedModel": [
+        null,
+        null
+    ],
+    "PretrainedBartModel": [
+        null,
+        null
+    ],
+    "PretrainedConfig": [
+        null,
+        null
+    ],
+    "PretrainedFSMTModel": [
+        null,
+        null
+    ],
+    "ProphetNetConfig": [
+        null,
+        null
+    ],
+    "ProphetNetDecoder": [
+        null,
+        null
+    ],
+    "ProphetNetEncoder": [
+        null,
+        null
+    ],
+    "ProphetNetForCausalLM": [
+        null,
+        null
+    ],
     "ProphetNetForConditionalGeneration": [
         "microsoft/prophetnet-large-uncased-squad-qg",
         "microsoft/prophetnet-large-uncased-cnndm"
     ],
+    "ProphetNetModel": [
+        null,
+        null
+    ],
+    "ProphetNetPreTrainedModel": [
+        null,
+        null
+    ],
+    "ProphetNetTokenizer": [
+        null,
+        null
+    ],
+    "QDQBertConfig": [
+        null,
+        null
+    ],
+    "QDQBertForMaskedLM": [
+        null,
+        null
+    ],
+    "QDQBertForMultipleChoice": [
+        null,
+        null
+    ],
+    "QDQBertForNextSentencePrediction": [
+        null,
+        null
+    ],
+    "QDQBertForQuestionAnswering": [
+        null,
+        null
+    ],
+    "QDQBertForSequenceClassification": [
+        null,
+        null
+    ],
+    "QDQBertForTokenClassification": [
+        null,
+        null
+    ],
+    "QDQBertLMHeadModel": [
+        null,
+        null
+    ],
+    "QDQBertLayer": [
+        null,
+        null
+    ],
+    "QDQBertModel": [
+        null,
+        null
+    ],
+    "QDQBertPreTrainedModel": [
+        null,
+        null
+    ],
+    "RagConfig": [
+        null,
+        null
+    ],
+    "RagModel": [
+        null,
+        null
+    ],
+    "RagPreTrainedModel": [
+        null,
+        null
+    ],
+    "RagRetriever": [
+        null,
+        null
+    ],
+    "RagSequenceForGeneration": [
+        null,
+        null
+    ],
     "RagTokenForGeneration": [
         "facebook/rag-token-base",
         "facebook/rag-token-nq"
+    ],
+    "RagTokenizer": [
+        null,
+        null
+    ],
+    "RealmConfig": [
+        null,
+        null
+    ],
+    "RealmEmbedder": [
+        null,
+        null
+    ],
+    "RealmForOpenQA": [
+        null,
+        null
+    ],
+    "RealmKnowledgeAugEncoder": [
+        null,
+        null
+    ],
+    "RealmPreTrainedModel": [
+        null,
+        null
+    ],
+    "RealmReader": [
+        null,
+        null
+    ],
+    "RealmRetriever": [
+        null,
+        null
+    ],
+    "RealmScorer": [
+        null,
+        null
+    ],
+    "RealmTokenizer": [
+        null,
+        null
+    ],
+    "RealmTokenizerFast": [
+        null,
+        null
+    ],
+    "ReformerAttention": [
+        null,
+        null
+    ],
+    "ReformerConfig": [
+        null,
+        null
     ],
     "ReformerForMaskedLM": [
         "robingeibel/reformer-finetuned-big_patent-wikipedia-arxiv-16384",
@@ -7529,6 +10946,42 @@
         "robingeibel/reformer-finetuned-big_patent-16384",
         "robingeibel/reformer-big_patent-16384",
         "robingeibel/reformer-big_patent-wikipedia-arxiv-16384"
+    ],
+    "ReformerForQuestionAnswering": [
+        null,
+        null
+    ],
+    "ReformerForSequenceClassification": [
+        null,
+        null
+    ],
+    "ReformerLayer": [
+        null,
+        null
+    ],
+    "ReformerModel": [
+        null,
+        null
+    ],
+    "ReformerModelWithLMHead": [
+        null,
+        null
+    ],
+    "ReformerPreTrainedModel": [
+        null,
+        null
+    ],
+    "ReformerTokenizer": [
+        null,
+        null
+    ],
+    "ReformerTokenizerFast": [
+        null,
+        null
+    ],
+    "RegNetConfig": [
+        null,
+        null
     ],
     "RegNetForImageClassification": [
         "facebook/regnet-x-002",
@@ -7558,6 +11011,70 @@
         "facebook/regnet-y-640-seer-in1k",
         "facebook/regnet-y-1280-seer-in1k",
         "facebook/regnet-y-10b-seer-in1k"
+    ],
+    "RegNetModel": [
+        null,
+        null
+    ],
+    "RegNetPreTrainedModel": [
+        null,
+        null
+    ],
+    "RemBertConfig": [
+        null,
+        null
+    ],
+    "RemBertForCausalLM": [
+        null,
+        null
+    ],
+    "RemBertForMaskedLM": [
+        null,
+        null
+    ],
+    "RemBertForMultipleChoice": [
+        null,
+        null
+    ],
+    "RemBertForQuestionAnswering": [
+        null,
+        null
+    ],
+    "RemBertForSequenceClassification": [
+        null,
+        null
+    ],
+    "RemBertForTokenClassification": [
+        null,
+        null
+    ],
+    "RemBertLayer": [
+        null,
+        null
+    ],
+    "RemBertModel": [
+        null,
+        null
+    ],
+    "RemBertPreTrainedModel": [
+        null,
+        null
+    ],
+    "RemBertTokenizer": [
+        null,
+        null
+    ],
+    "RemBertTokenizerFast": [
+        null,
+        null
+    ],
+    "ResNetBackbone": [
+        null,
+        null
+    ],
+    "ResNetConfig": [
+        null,
+        null
     ],
     "ResNetForImageClassification": [
         "microsoft/resnet-152",
@@ -7589,6 +11106,134 @@
     "ResNetModel": [
         "Ramos-Ramos/dino-resnet-50",
         "Ramos-Ramos/vicreg-resnet-50"
+    ],
+    "ResNetPreTrainedModel": [
+        null,
+        null
+    ],
+    "RetriBertConfig": [
+        null,
+        null
+    ],
+    "RetriBertModel": [
+        null,
+        null
+    ],
+    "RetriBertPreTrainedModel": [
+        null,
+        null
+    ],
+    "RetriBertTokenizer": [
+        null,
+        null
+    ],
+    "RetriBertTokenizerFast": [
+        null,
+        null
+    ],
+    "RoCBertConfig": [
+        null,
+        null
+    ],
+    "RoCBertForCausalLM": [
+        null,
+        null
+    ],
+    "RoCBertForMaskedLM": [
+        null,
+        null
+    ],
+    "RoCBertForMultipleChoice": [
+        null,
+        null
+    ],
+    "RoCBertForPreTraining": [
+        null,
+        null
+    ],
+    "RoCBertForQuestionAnswering": [
+        null,
+        null
+    ],
+    "RoCBertForSequenceClassification": [
+        null,
+        null
+    ],
+    "RoCBertForTokenClassification": [
+        null,
+        null
+    ],
+    "RoCBertLayer": [
+        null,
+        null
+    ],
+    "RoCBertModel": [
+        null,
+        null
+    ],
+    "RoCBertPreTrainedModel": [
+        null,
+        null
+    ],
+    "RoCBertTokenizer": [
+        null,
+        null
+    ],
+    "RoFormerConfig": [
+        null,
+        null
+    ],
+    "RoFormerForCausalLM": [
+        null,
+        null
+    ],
+    "RoFormerForMaskedLM": [
+        null,
+        null
+    ],
+    "RoFormerForMultipleChoice": [
+        null,
+        null
+    ],
+    "RoFormerForQuestionAnswering": [
+        null,
+        null
+    ],
+    "RoFormerForSequenceClassification": [
+        null,
+        null
+    ],
+    "RoFormerForTokenClassification": [
+        null,
+        null
+    ],
+    "RoFormerLayer": [
+        null,
+        null
+    ],
+    "RoFormerModel": [
+        null,
+        null
+    ],
+    "RoFormerPreTrainedModel": [
+        null,
+        null
+    ],
+    "RoFormerTokenizer": [
+        null,
+        null
+    ],
+    "RoFormerTokenizerFast": [
+        null,
+        null
+    ],
+    "RobertaConfig": [
+        null,
+        null
+    ],
+    "RobertaForCausalLM": [
+        null,
+        null
     ],
     "RobertaForMaskedLM": [
         "roberta-base",
@@ -8883,11 +12528,71 @@
         "research-backup/relbert-roberta-base-semeval2012-v6-mask-prompt-e-loob-1-parent",
         "research-backup/relbert-roberta-large-semeval2012-v6-average-prompt-d-nce-0"
     ],
+    "RobertaPreLayerNormConfig": [
+        null,
+        null
+    ],
+    "RobertaPreLayerNormForCausalLM": [
+        null,
+        null
+    ],
+    "RobertaPreLayerNormForMaskedLM": [
+        null,
+        null
+    ],
+    "RobertaPreLayerNormForMultipleChoice": [
+        null,
+        null
+    ],
+    "RobertaPreLayerNormForQuestionAnswering": [
+        null,
+        null
+    ],
+    "RobertaPreLayerNormForSequenceClassification": [
+        null,
+        null
+    ],
+    "RobertaPreLayerNormForTokenClassification": [
+        null,
+        null
+    ],
+    "RobertaPreLayerNormModel": [
+        null,
+        null
+    ],
+    "RobertaPreLayerNormPreTrainedModel": [
+        null,
+        null
+    ],
+    "RobertaPreTrainedModel": [
+        null,
+        null
+    ],
+    "RobertaTokenizer": [
+        null,
+        null
+    ],
+    "RobertaTokenizerFast": [
+        null,
+        null
+    ],
+    "SEWConfig": [
+        null,
+        null
+    ],
+    "SEWDConfig": [
+        null,
+        null
+    ],
     "SEWDForCTC": [
         "asapp/sew-d-base-plus-400k-ft-ls100h",
         "asapp/sew-d-mid-400k-ft-ls100h",
         "asapp/sew-d-mid-k127-400k-ft-ls100h",
         "asapp/sew-d-tiny-100k-ft-ls100h"
+    ],
+    "SEWDForSequenceClassification": [
+        null,
+        null
     ],
     "SEWDModel": [
         "asapp/sew-d-base-100k",
@@ -8899,15 +12604,55 @@
         "asapp/sew-d-small-100k",
         "asapp/sew-d-tiny-100k"
     ],
+    "SEWDPreTrainedModel": [
+        null,
+        null
+    ],
     "SEWForCTC": [
         "lgris/sew-tiny-portuguese-cv7",
         "lgris/sew-tiny-portuguese-cv",
         "asapp/sew-tiny-100k-ft-ls100h"
     ],
+    "SEWForSequenceClassification": [
+        null,
+        null
+    ],
     "SEWModel": [
         "asapp/sew-mid-100k",
         "asapp/sew-small-100k",
         "asapp/sew-tiny-100k"
+    ],
+    "SEWPreTrainedModel": [
+        null,
+        null
+    ],
+    "SEW_D_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "SEW_D_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "SEW_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "SEW_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "SegformerConfig": [
+        null,
+        null
+    ],
+    "SegformerDecodeHead": [
+        null,
+        null
+    ],
+    "SegformerFeatureExtractor": [
+        null,
+        null
     ],
     "SegformerForImageClassification": [
         "Chandanab/mit-b0-finetuned-eurosat",
@@ -8958,6 +12703,50 @@
         "pablojrios/segformer-b4-finetuned-segments-sidewalk",
         "lapix/segformer-b3-finetuned-ccagt-400-300"
     ],
+    "SegformerImageProcessor": [
+        null,
+        null
+    ],
+    "SegformerLayer": [
+        null,
+        null
+    ],
+    "SegformerModel": [
+        null,
+        null
+    ],
+    "SegformerPreTrainedModel": [
+        null,
+        null
+    ],
+    "Speech2Text2Config": [
+        null,
+        null
+    ],
+    "Speech2Text2ForCausalLM": [
+        null,
+        null
+    ],
+    "Speech2Text2PreTrainedModel": [
+        null,
+        null
+    ],
+    "Speech2Text2Processor": [
+        null,
+        null
+    ],
+    "Speech2Text2Tokenizer": [
+        null,
+        null
+    ],
+    "Speech2TextConfig": [
+        null,
+        null
+    ],
+    "Speech2TextFeatureExtractor": [
+        null,
+        null
+    ],
     "Speech2TextForConditionalGeneration": [
         "facebook/s2t-large-librispeech-asr",
         "facebook/s2t-medium-librispeech-asr",
@@ -8979,6 +12768,26 @@
         "facebook/s2t-small-covost2-en-fa-st",
         "facebook/s2t-small-covost2-es-en-st",
         "facebook/s2t-small-covost2-fr-en-st"
+    ],
+    "Speech2TextModel": [
+        null,
+        null
+    ],
+    "Speech2TextPreTrainedModel": [
+        null,
+        null
+    ],
+    "Speech2TextProcessor": [
+        null,
+        null
+    ],
+    "Speech2TextTokenizer": [
+        null,
+        null
+    ],
+    "SpeechEncoderDecoderConfig": [
+        null,
+        null
     ],
     "SpeechEncoderDecoderModel": [
         "facebook/wav2vec2-xls-r-1b-21-to-en",
@@ -9055,6 +12864,58 @@
         "bond005/wav2vec2-mbart50-ru",
         "bond005/wav2vec2-mbart50-ru"
     ],
+    "SpeechT5Config": [
+        null,
+        null
+    ],
+    "SpeechT5FeatureExtractor": [
+        null,
+        null
+    ],
+    "SpeechT5ForSpeechToSpeech": [
+        null,
+        null
+    ],
+    "SpeechT5ForSpeechToText": [
+        null,
+        null
+    ],
+    "SpeechT5ForTextToSpeech": [
+        null,
+        null
+    ],
+    "SpeechT5HifiGan": [
+        null,
+        null
+    ],
+    "SpeechT5HifiGanConfig": [
+        null,
+        null
+    ],
+    "SpeechT5Model": [
+        null,
+        null
+    ],
+    "SpeechT5PreTrainedModel": [
+        null,
+        null
+    ],
+    "SpeechT5Processor": [
+        null,
+        null
+    ],
+    "SpeechT5Tokenizer": [
+        null,
+        null
+    ],
+    "SplinterConfig": [
+        null,
+        null
+    ],
+    "SplinterForPreTraining": [
+        null,
+        null
+    ],
     "SplinterForQuestionAnswering": [
         "anas-awadalla/splinter-large-few-shot-k-16-finetuned-squad-seed-0",
         "anas-awadalla/splinter-large-few-shot-k-16-finetuned-squad-seed-4",
@@ -9071,10 +12932,98 @@
         "anas-awadalla/splinter-large-finetuned-squad",
         "nbroad/splinter-base-squad2"
     ],
+    "SplinterLayer": [
+        null,
+        null
+    ],
+    "SplinterModel": [
+        null,
+        null
+    ],
+    "SplinterPreTrainedModel": [
+        null,
+        null
+    ],
+    "SplinterTokenizer": [
+        null,
+        null
+    ],
+    "SplinterTokenizerFast": [
+        null,
+        null
+    ],
+    "SqueezeBertConfig": [
+        null,
+        null
+    ],
+    "SqueezeBertForMaskedLM": [
+        null,
+        null
+    ],
+    "SqueezeBertForMultipleChoice": [
+        null,
+        null
+    ],
     "SqueezeBertForQuestionAnswering": [
         "SupriyaArun/squeezebert-uncased-finetuned-squad",
         "mrm8488/squeezebert-finetuned-squadv1",
         "mrm8488/squeezebert-finetuned-squadv2"
+    ],
+    "SqueezeBertForSequenceClassification": [
+        null,
+        null
+    ],
+    "SqueezeBertForTokenClassification": [
+        null,
+        null
+    ],
+    "SqueezeBertModel": [
+        null,
+        null
+    ],
+    "SqueezeBertModule": [
+        null,
+        null
+    ],
+    "SqueezeBertPreTrainedModel": [
+        null,
+        null
+    ],
+    "SqueezeBertTokenizer": [
+        null,
+        null
+    ],
+    "SqueezeBertTokenizerFast": [
+        null,
+        null
+    ],
+    "Swin2SRConfig": [
+        null,
+        null
+    ],
+    "Swin2SRForImageSuperResolution": [
+        null,
+        null
+    ],
+    "Swin2SRImageProcessor": [
+        null,
+        null
+    ],
+    "Swin2SRModel": [
+        null,
+        null
+    ],
+    "Swin2SRPreTrainedModel": [
+        null,
+        null
+    ],
+    "SwinBackbone": [
+        null,
+        null
+    ],
+    "SwinConfig": [
+        null,
+        null
     ],
     "SwinForImageClassification": [
         "nielsr/swin-tiny-patch4-window7-224-finetuned-cifar10",
@@ -9194,6 +13143,22 @@
         "sbrandeis-test-org/autotrain-retrain-db16d58-2983986070",
         "sbrandeis-test-org/autotrain-auto-retrain-190471b-3020886685"
     ],
+    "SwinForMaskedImageModeling": [
+        null,
+        null
+    ],
+    "SwinModel": [
+        null,
+        null
+    ],
+    "SwinPreTrainedModel": [
+        null,
+        null
+    ],
+    "Swinv2Config": [
+        null,
+        null
+    ],
     "Swinv2ForImageClassification": [
         "microsoft/swinv2-tiny-patch4-window8-256",
         "microsoft/swinv2-tiny-patch4-window16-256",
@@ -9207,6 +13172,26 @@
         "microsoft/swinv2-base-patch4-window12to24-192to384-22kto1k-ft",
         "microsoft/swinv2-large-patch4-window12to16-192to256-22kto1k-ft",
         "microsoft/swinv2-large-patch4-window12to24-192to384-22kto1k-ft"
+    ],
+    "Swinv2ForMaskedImageModeling": [
+        null,
+        null
+    ],
+    "Swinv2Model": [
+        null,
+        null
+    ],
+    "Swinv2PreTrainedModel": [
+        null,
+        null
+    ],
+    "SwitchTransformersConfig": [
+        null,
+        null
+    ],
+    "SwitchTransformersEncoderModel": [
+        null,
+        null
     ],
     "SwitchTransformersForConditionalGeneration": [
         "google/switch-base-8",
@@ -9223,11 +13208,35 @@
         "mrm8488/switch-base-16-finetuned-samsum",
         "emre/switch-base-8-finetuned-samsum"
     ],
+    "SwitchTransformersModel": [
+        null,
+        null
+    ],
+    "SwitchTransformersPreTrainedModel": [
+        null,
+        null
+    ],
+    "SwitchTransformersSparseMLP": [
+        null,
+        null
+    ],
+    "SwitchTransformersTop1Router": [
+        null,
+        null
+    ],
+    "T5Config": [
+        null,
+        null
+    ],
     "T5EncoderModel": [
         "hkunlp/instructor-large",
         "hkunlp/instructor-base",
         "hkunlp/instructor-xl",
         "Rostlab/prot_t5_xl_half_uniref50-enc"
+    ],
+    "T5ForConditionalGeneration": [
+        null,
+        null
     ],
     "T5Model": [
         "sonoisa/t5-base-japanese",
@@ -9237,6 +13246,50 @@
         "razent/cotext-1-cc",
         "razent/cotext-1-ccg",
         "razent/cotext-2-cc"
+    ],
+    "T5PreTrainedModel": [
+        null,
+        null
+    ],
+    "T5Tokenizer": [
+        null,
+        null
+    ],
+    "T5TokenizerFast": [
+        null,
+        null
+    ],
+    "T5_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "T5_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "TableTransformerConfig": [
+        null,
+        null
+    ],
+    "TableTransformerForObjectDetection": [
+        null,
+        null
+    ],
+    "TableTransformerModel": [
+        null,
+        null
+    ],
+    "TableTransformerPreTrainedModel": [
+        null,
+        null
+    ],
+    "TapasConfig": [
+        null,
+        null
+    ],
+    "TapasForMaskedLM": [
+        null,
+        null
     ],
     "TapasForQuestionAnswering": [
         "google/tapas-base-finetuned-wikisql-supervised",
@@ -9268,6 +13321,142 @@
         "google/tapas-mini-finetuned-tabfact",
         "google/tapas-small-finetuned-tabfact",
         "google/tapas-tiny-finetuned-tabfact"
+    ],
+    "TapasModel": [
+        null,
+        null
+    ],
+    "TapasPreTrainedModel": [
+        null,
+        null
+    ],
+    "TapasTokenizer": [
+        null,
+        null
+    ],
+    "TimeSeriesTransformerConfig": [
+        null,
+        null
+    ],
+    "TimeSeriesTransformerForPrediction": [
+        null,
+        null
+    ],
+    "TimeSeriesTransformerModel": [
+        null,
+        null
+    ],
+    "TimeSeriesTransformerPreTrainedModel": [
+        null,
+        null
+    ],
+    "TimesformerConfig": [
+        null,
+        null
+    ],
+    "TimesformerForVideoClassification": [
+        null,
+        null
+    ],
+    "TimesformerModel": [
+        null,
+        null
+    ],
+    "TimesformerPreTrainedModel": [
+        null,
+        null
+    ],
+    "TrOCRConfig": [
+        null,
+        null
+    ],
+    "TrOCRForCausalLM": [
+        null,
+        null
+    ],
+    "TrOCRPreTrainedModel": [
+        null,
+        null
+    ],
+    "TrOCRProcessor": [
+        null,
+        null
+    ],
+    "TrajectoryTransformerConfig": [
+        null,
+        null
+    ],
+    "TrajectoryTransformerModel": [
+        null,
+        null
+    ],
+    "TrajectoryTransformerPreTrainedModel": [
+        null,
+        null
+    ],
+    "TransfoXLConfig": [
+        null,
+        null
+    ],
+    "TransfoXLCorpus": [
+        null,
+        null
+    ],
+    "TransfoXLForSequenceClassification": [
+        null,
+        null
+    ],
+    "TransfoXLLMHeadModel": [
+        null,
+        null
+    ],
+    "TransfoXLModel": [
+        null,
+        null
+    ],
+    "TransfoXLPreTrainedModel": [
+        null,
+        null
+    ],
+    "TransfoXLTokenizer": [
+        null,
+        null
+    ],
+    "TvltConfig": [
+        null,
+        null
+    ],
+    "TvltFeatureExtractor": [
+        null,
+        null
+    ],
+    "TvltForAudioVisualClassification": [
+        null,
+        null
+    ],
+    "TvltForPreTraining": [
+        null,
+        null
+    ],
+    "TvltImageProcessor": [
+        null,
+        null
+    ],
+    "TvltModel": [
+        null,
+        null
+    ],
+    "TvltPreTrainedModel": [
+        null,
+        null
+    ],
+    "TvltProcessor": [
+        null,
+        null
+    ],
+    "UniSpeechConfig": [
+        null,
+        null
     ],
     "UniSpeechForCTC": [
         "jonatasgrosman/exp_w2v2t_en_unispeech_s227",
@@ -9329,6 +13518,30 @@
         "microsoft/unispeech-1350-en-353-fr-ft-1h",
         "patrickvonplaten/unispeech-large-1500h-cv-timit"
     ],
+    "UniSpeechForPreTraining": [
+        null,
+        null
+    ],
+    "UniSpeechForSequenceClassification": [
+        null,
+        null
+    ],
+    "UniSpeechModel": [
+        null,
+        null
+    ],
+    "UniSpeechPreTrainedModel": [
+        null,
+        null
+    ],
+    "UniSpeechSatConfig": [
+        null,
+        null
+    ],
+    "UniSpeechSatForAudioFrameClassification": [
+        null,
+        null
+    ],
     "UniSpeechSatForCTC": [
         "jonatasgrosman/exp_w2v2t_th_unispeech-sat_s658",
         "jonatasgrosman/exp_w2v2t_th_unispeech-sat_s772",
@@ -9347,12 +13560,64 @@
         "microsoft/unispeech-sat-base-100h-libri-ft",
         "patrickvonplaten/unispeech-sat-large-timit-ft"
     ],
+    "UniSpeechSatForPreTraining": [
+        null,
+        null
+    ],
+    "UniSpeechSatForSequenceClassification": [
+        null,
+        null
+    ],
+    "UniSpeechSatForXVector": [
+        null,
+        null
+    ],
+    "UniSpeechSatModel": [
+        null,
+        null
+    ],
+    "UniSpeechSatPreTrainedModel": [
+        null,
+        null
+    ],
+    "UperNetConfig": [
+        null,
+        null
+    ],
+    "UperNetForSemanticSegmentation": [
+        null,
+        null
+    ],
+    "UperNetPreTrainedModel": [
+        null,
+        null
+    ],
+    "VanConfig": [
+        null,
+        null
+    ],
     "VanForImageClassification": [
         "nielsr/van-base-finetuned-eurosat-imgaug",
         "Visual-Attention-Network/van-large",
         "Visual-Attention-Network/van-tiny",
         "Visual-Attention-Network/van-small",
         "Visual-Attention-Network/van-base"
+    ],
+    "VanModel": [
+        null,
+        null
+    ],
+    "VanPreTrainedModel": [
+        null,
+        null
+    ],
+    "ViTConfig": [
+        null,
+        null
+    ],
+    "ViTFeatureExtractor": [
+        null,
+        null
     ],
     "ViTForImageClassification": [
         "AkshatSurolia/ViT-FaceMask-Finetuned",
@@ -9523,10 +13788,62 @@
         "Pafebla/autotrain-reconocimiento_banderas-2960885598",
         "logannyeMD/autotrain-enchondroma-vs-low-grade-chondrosarcoma-histology-2962985627"
     ],
+    "ViTForMaskedImageModeling": [
+        null,
+        null
+    ],
+    "ViTHybridConfig": [
+        null,
+        null
+    ],
+    "ViTHybridForImageClassification": [
+        null,
+        null
+    ],
+    "ViTHybridImageProcessor": [
+        null,
+        null
+    ],
+    "ViTHybridModel": [
+        null,
+        null
+    ],
+    "ViTHybridPreTrainedModel": [
+        null,
+        null
+    ],
+    "ViTImageProcessor": [
+        null,
+        null
+    ],
+    "ViTMAEConfig": [
+        null,
+        null
+    ],
     "ViTMAEForPreTraining": [
         "facebook/vit-mae-base",
         "facebook/vit-mae-huge",
         "facebook/vit-mae-large"
+    ],
+    "ViTMAELayer": [
+        null,
+        null
+    ],
+    "ViTMAEModel": [
+        null,
+        null
+    ],
+    "ViTMAEPreTrainedModel": [
+        null,
+        null
+    ],
+    "ViTMSNConfig": [
+        null,
+        null
+    ],
+    "ViTMSNForImageClassification": [
+        null,
+        null
     ],
     "ViTMSNModel": [
         "facebook/vit-msn-small",
@@ -9534,6 +13851,10 @@
         "facebook/vit-msn-large",
         "facebook/vit-msn-base-4",
         "facebook/vit-msn-large-7"
+    ],
+    "ViTMSNPreTrainedModel": [
+        null,
+        null
     ],
     "ViTModel": [
         "google/vit-base-patch16-224-in21k",
@@ -9546,6 +13867,90 @@
         "facebook/dino-vitb8",
         "facebook/dino-vits16",
         "facebook/dino-vits8"
+    ],
+    "ViTPreTrainedModel": [
+        null,
+        null
+    ],
+    "VideoMAEConfig": [
+        null,
+        null
+    ],
+    "VideoMAEFeatureExtractor": [
+        null,
+        null
+    ],
+    "VideoMAEForPreTraining": [
+        null,
+        null
+    ],
+    "VideoMAEForVideoClassification": [
+        null,
+        null
+    ],
+    "VideoMAEImageProcessor": [
+        null,
+        null
+    ],
+    "VideoMAEModel": [
+        null,
+        null
+    ],
+    "VideoMAEPreTrainedModel": [
+        null,
+        null
+    ],
+    "ViltConfig": [
+        null,
+        null
+    ],
+    "ViltFeatureExtractor": [
+        null,
+        null
+    ],
+    "ViltForImageAndTextRetrieval": [
+        null,
+        null
+    ],
+    "ViltForImagesAndTextClassification": [
+        null,
+        null
+    ],
+    "ViltForMaskedLM": [
+        null,
+        null
+    ],
+    "ViltForQuestionAnswering": [
+        null,
+        null
+    ],
+    "ViltForTokenClassification": [
+        null,
+        null
+    ],
+    "ViltImageProcessor": [
+        null,
+        null
+    ],
+    "ViltLayer": [
+        null,
+        null
+    ],
+    "ViltModel": [
+        null,
+        null
+    ],
+    "ViltPreTrainedModel": [
+        null,
+        null
+    ],
+    "ViltProcessor": [
+        null,
+        null
+    ],
+    "VisionEncoderDecoderConfig": [
+        null,
+        null
     ],
     "VisionEncoderDecoderModel": [
         "kha-white/manga-ocr-base",
@@ -9586,6 +13991,10 @@
         "katanaml/donut-demo",
         "ivelin/donut-refexp-combined-v1"
     ],
+    "VisionTextDualEncoderConfig": [
+        null,
+        null
+    ],
     "VisionTextDualEncoderModel": [
         "clip-italian/clip-italian",
         "clip-italian/clip-italian",
@@ -9593,6 +14002,62 @@
         "adalbertojunior/clip-rpt",
         "aashiq/clip-roberta-finetuned",
         "ydshieh/dummy_debug"
+    ],
+    "VisionTextDualEncoderProcessor": [
+        null,
+        null
+    ],
+    "VisualBertConfig": [
+        null,
+        null
+    ],
+    "VisualBertForMultipleChoice": [
+        null,
+        null
+    ],
+    "VisualBertForPreTraining": [
+        null,
+        null
+    ],
+    "VisualBertForQuestionAnswering": [
+        null,
+        null
+    ],
+    "VisualBertForRegionToPhraseAlignment": [
+        null,
+        null
+    ],
+    "VisualBertForVisualReasoning": [
+        null,
+        null
+    ],
+    "VisualBertLayer": [
+        null,
+        null
+    ],
+    "VisualBertModel": [
+        null,
+        null
+    ],
+    "VisualBertPreTrainedModel": [
+        null,
+        null
+    ],
+    "Wav2Vec2CTCTokenizer": [
+        null,
+        null
+    ],
+    "Wav2Vec2Config": [
+        null,
+        null
+    ],
+    "Wav2Vec2ConformerConfig": [
+        null,
+        null
+    ],
+    "Wav2Vec2ConformerForAudioFrameClassification": [
+        null,
+        null
     ],
     "Wav2Vec2ConformerForCTC": [
         "facebook/wav2vec2-conformer-rel-pos-large-960h-ft",
@@ -9607,6 +14072,30 @@
     "Wav2Vec2ConformerForPreTraining": [
         "facebook/wav2vec2-conformer-rel-pos-large",
         "facebook/wav2vec2-conformer-rope-large"
+    ],
+    "Wav2Vec2ConformerForSequenceClassification": [
+        null,
+        null
+    ],
+    "Wav2Vec2ConformerForXVector": [
+        null,
+        null
+    ],
+    "Wav2Vec2ConformerModel": [
+        null,
+        null
+    ],
+    "Wav2Vec2ConformerPreTrainedModel": [
+        null,
+        null
+    ],
+    "Wav2Vec2FeatureExtractor": [
+        null,
+        null
+    ],
+    "Wav2Vec2ForAudioFrameClassification": [
+        null,
+        null
     ],
     "Wav2Vec2ForCTC": [
         "AigizK/wav2vec2-large-xls-r-300m-bashkir-cv7_opt",
@@ -11190,6 +15679,10 @@
         "gymeee/demo_code_switching",
         "Aditya3107/wav2vec2-Irish-common-voice-Fleurs-living-audio-300m"
     ],
+    "Wav2Vec2ForMaskedLM": [
+        null,
+        null
+    ],
     "Wav2Vec2ForPreTraining": [
         "Yehor/wav2vec2-xls-r-300m-uk-with-lm",
         "flax-community/wav2vec2-spanish",
@@ -11303,6 +15796,10 @@
         "suyuanliu/wav2vec2-base-finetuned-stop-classification",
         "DunnBC22/wav2vec2-base-Drum_Kit_Sounds"
     ],
+    "Wav2Vec2ForXVector": [
+        null,
+        null
+    ],
     "Wav2Vec2Model": [
         "dragonSwing/wav2vec2-base-vn-270h",
         "hoangbinhmta99/wav2vec-NCKH-2022",
@@ -11322,6 +15819,34 @@
         "speechbrain/asr-wav2vec2-dvoice-darija",
         "speechbrain/asr-wav2vec2-dvoice-swahili",
         "speechbrain/asr-wav2vec2-dvoice-amharic"
+    ],
+    "Wav2Vec2PhonemeCTCTokenizer": [
+        null,
+        null
+    ],
+    "Wav2Vec2PreTrainedModel": [
+        null,
+        null
+    ],
+    "Wav2Vec2Processor": [
+        null,
+        null
+    ],
+    "Wav2Vec2ProcessorWithLM": [
+        null,
+        null
+    ],
+    "Wav2Vec2Tokenizer": [
+        null,
+        null
+    ],
+    "WavLMConfig": [
+        null,
+        null
+    ],
+    "WavLMForAudioFrameClassification": [
+        null,
+        null
     ],
     "WavLMForCTC": [
         "jonatasgrosman/exp_w2v2t_en_wavlm_s767",
@@ -11353,6 +15878,34 @@
         "jonatasgrosman/exp_w2v2t_pt_wavlm_s51",
         "jonatasgrosman/exp_w2v2t_pt_wavlm_s118",
         "danieleV9H/wavlm-base-plus-ft-cv3"
+    ],
+    "WavLMForSequenceClassification": [
+        null,
+        null
+    ],
+    "WavLMForXVector": [
+        null,
+        null
+    ],
+    "WavLMModel": [
+        null,
+        null
+    ],
+    "WavLMPreTrainedModel": [
+        null,
+        null
+    ],
+    "WhisperConfig": [
+        null,
+        null
+    ],
+    "WhisperFeatureExtractor": [
+        null,
+        null
+    ],
+    "WhisperForAudioClassification": [
+        null,
+        null
     ],
     "WhisperForConditionalGeneration": [
         "BakhtUllah123/whisper-small-ur",
@@ -11943,6 +16496,30 @@
         "NathanRoll/psst-small-en",
         "Achitha/whisper_small_ta"
     ],
+    "WhisperModel": [
+        null,
+        null
+    ],
+    "WhisperPreTrainedModel": [
+        null,
+        null
+    ],
+    "WhisperProcessor": [
+        null,
+        null
+    ],
+    "WhisperTokenizer": [
+        null,
+        null
+    ],
+    "WhisperTokenizerFast": [
+        null,
+        null
+    ],
+    "XCLIPConfig": [
+        null,
+        null
+    ],
     "XCLIPModel": [
         "microsoft/xclip-base-patch32-16-frames",
         "microsoft/xclip-base-patch16",
@@ -11961,6 +16538,150 @@
         "microsoft/xclip-base-patch16-ucf-4-shot",
         "microsoft/xclip-base-patch16-ucf-8-shot",
         "microsoft/xclip-base-patch16-ucf-16-shot"
+    ],
+    "XCLIPPreTrainedModel": [
+        null,
+        null
+    ],
+    "XCLIPProcessor": [
+        null,
+        null
+    ],
+    "XCLIPTextConfig": [
+        null,
+        null
+    ],
+    "XCLIPTextModel": [
+        null,
+        null
+    ],
+    "XCLIPVisionConfig": [
+        null,
+        null
+    ],
+    "XCLIPVisionModel": [
+        null,
+        null
+    ],
+    "XCLIP_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "XCLIP_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "XGLMConfig": [
+        null,
+        null
+    ],
+    "XGLMForCausalLM": [
+        null,
+        null
+    ],
+    "XGLMModel": [
+        null,
+        null
+    ],
+    "XGLMPreTrainedModel": [
+        null,
+        null
+    ],
+    "XGLMTokenizer": [
+        null,
+        null
+    ],
+    "XGLMTokenizerFast": [
+        null,
+        null
+    ],
+    "XGLM_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "XGLM_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "XLMConfig": [
+        null,
+        null
+    ],
+    "XLMForMultipleChoice": [
+        null,
+        null
+    ],
+    "XLMForQuestionAnswering": [
+        null,
+        null
+    ],
+    "XLMForQuestionAnsweringSimple": [
+        null,
+        null
+    ],
+    "XLMForSequenceClassification": [
+        null,
+        null
+    ],
+    "XLMForTokenClassification": [
+        null,
+        null
+    ],
+    "XLMModel": [
+        null,
+        null
+    ],
+    "XLMPreTrainedModel": [
+        null,
+        null
+    ],
+    "XLMProphetNetConfig": [
+        null,
+        null
+    ],
+    "XLMProphetNetDecoder": [
+        null,
+        null
+    ],
+    "XLMProphetNetEncoder": [
+        null,
+        null
+    ],
+    "XLMProphetNetForCausalLM": [
+        null,
+        null
+    ],
+    "XLMProphetNetForConditionalGeneration": [
+        null,
+        null
+    ],
+    "XLMProphetNetModel": [
+        null,
+        null
+    ],
+    "XLMProphetNetPreTrainedModel": [
+        null,
+        null
+    ],
+    "XLMProphetNetTokenizer": [
+        null,
+        null
+    ],
+    "XLMRobertaConfig": [
+        null,
+        null
+    ],
+    "XLMRobertaForCausalLM": [
+        null,
+        null
+    ],
+    "XLMRobertaForMaskedLM": [
+        null,
+        null
+    ],
+    "XLMRobertaForMultipleChoice": [
+        null,
+        null
     ],
     "XLMRobertaForQuestionAnswering": [
         "Palak/xlm-roberta-base_squad",
@@ -12380,6 +17101,110 @@
         "rmihaylov/roberta-base-use-qa-bg",
         "rmihaylov/roberta-base-use-qa-theseus-bg"
     ],
+    "XLMRobertaPreTrainedModel": [
+        null,
+        null
+    ],
+    "XLMRobertaTokenizer": [
+        null,
+        null
+    ],
+    "XLMRobertaTokenizerFast": [
+        null,
+        null
+    ],
+    "XLMRobertaXLConfig": [
+        null,
+        null
+    ],
+    "XLMRobertaXLForCausalLM": [
+        null,
+        null
+    ],
+    "XLMRobertaXLForMaskedLM": [
+        null,
+        null
+    ],
+    "XLMRobertaXLForMultipleChoice": [
+        null,
+        null
+    ],
+    "XLMRobertaXLForQuestionAnswering": [
+        null,
+        null
+    ],
+    "XLMRobertaXLForSequenceClassification": [
+        null,
+        null
+    ],
+    "XLMRobertaXLForTokenClassification": [
+        null,
+        null
+    ],
+    "XLMRobertaXLModel": [
+        null,
+        null
+    ],
+    "XLMRobertaXLPreTrainedModel": [
+        null,
+        null
+    ],
+    "XLMTokenizer": [
+        null,
+        null
+    ],
+    "XLMWithLMHeadModel": [
+        null,
+        null
+    ],
+    "XLM_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "XLM_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "XLM_PROPHETNET_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "XLM_PROPHETNET_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "XLM_ROBERTA_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "XLM_ROBERTA_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "XLM_ROBERTA_XL_PRETRAINED_CONFIG_ARCHIVE_MAP": [
+        null,
+        null
+    ],
+    "XLM_ROBERTA_XL_PRETRAINED_MODEL_ARCHIVE_LIST": [
+        null,
+        null
+    ],
+    "XLNetConfig": [
+        null,
+        null
+    ],
+    "XLNetForMultipleChoice": [
+        null,
+        null
+    ],
+    "XLNetForQuestionAnswering": [
+        null,
+        null
+    ],
+    "XLNetForQuestionAnsweringSimple": [
+        null,
+        null
+    ],
     "XLNetForSequenceClassification": [
         "anirudh21/xlnet-base-cased-finetuned-rte",
         "anirudh21/xlnet-base-cased-finetuned-wnli",
@@ -12391,6 +17216,10 @@
         "pig4431/rtm_XLNET_5E",
         "pig4431/Sentiment140_XLNET_5E"
     ],
+    "XLNetForTokenClassification": [
+        null,
+        null
+    ],
     "XLNetLMHeadModel": [
         "xlnet-base-cased",
         "xlnet-large-cased",
@@ -12399,6 +17228,66 @@
         "xlnet-large-cased",
         "model-attribution-challenge/xlnet-base-cased",
         "hajime9652/xlnet-japanese"
+    ],
+    "XLNetModel": [
+        null,
+        null
+    ],
+    "XLNetPreTrainedModel": [
+        null,
+        null
+    ],
+    "XLNetTokenizer": [
+        null,
+        null
+    ],
+    "XLNetTokenizerFast": [
+        null,
+        null
+    ],
+    "XmodConfig": [
+        null,
+        null
+    ],
+    "XmodForCausalLM": [
+        null,
+        null
+    ],
+    "XmodForMaskedLM": [
+        null,
+        null
+    ],
+    "XmodForMultipleChoice": [
+        null,
+        null
+    ],
+    "XmodForQuestionAnswering": [
+        null,
+        null
+    ],
+    "XmodForSequenceClassification": [
+        null,
+        null
+    ],
+    "XmodForTokenClassification": [
+        null,
+        null
+    ],
+    "XmodModel": [
+        null,
+        null
+    ],
+    "XmodPreTrainedModel": [
+        null,
+        null
+    ],
+    "YolosConfig": [
+        null,
+        null
+    ],
+    "YolosFeatureExtractor": [
+        null,
+        null
     ],
     "YolosForObjectDetection": [
         "hustvl/yolos-tiny",
@@ -12410,5 +17299,53 @@
         "nickmuchi/yolos-small-rego-plates-detection",
         "nickmuchi/yolos-small-finetuned-masks",
         "nickmuchi/yolos-small-rego-plates-detection"
+    ],
+    "YolosImageProcessor": [
+        null,
+        null
+    ],
+    "YolosModel": [
+        null,
+        null
+    ],
+    "YolosPreTrainedModel": [
+        null,
+        null
+    ],
+    "YosoConfig": [
+        null,
+        null
+    ],
+    "YosoForMaskedLM": [
+        null,
+        null
+    ],
+    "YosoForMultipleChoice": [
+        null,
+        null
+    ],
+    "YosoForQuestionAnswering": [
+        null,
+        null
+    ],
+    "YosoForSequenceClassification": [
+        null,
+        null
+    ],
+    "YosoForTokenClassification": [
+        null,
+        null
+    ],
+    "YosoLayer": [
+        null,
+        null
+    ],
+    "YosoModel": [
+        null,
+        null
+    ],
+    "YosoPreTrainedModel": [
+        null,
+        null
     ]
 }
