@@ -40,9 +40,9 @@ def download_model(filtered_models='filtered_models.json', download_path='./down
                     hf_hub_download(local_dir=model_path, repo_id=model, filename="pytorch_model.bin")
                 except:
                     logger.error(f'Error downloading {model} pytorch model.\n')
-            break
+        break
     return
 
 
 if __name__=='__main__':
-    download_model(metadata_only=False)
+    download_model(metadata_only=True)
