@@ -38,7 +38,32 @@ class NodeInfo():
 
     UNUSED_PARAM_SET = {
         'inplace',
-        'training'
+        'training',
+        'training_mode'
+    }
+
+    PARAMETERS_DEFAULT_ONNX = {
+        'BatchNormalization': {
+            'epsilon': [9.999999747378752e-06],
+            'momentum': [0.8999999761581421],
+            'spatial': [1],
+            'consumed_inputs': []
+        },
+        'MaxPool': {
+            'auto_pad': ["NOTSET"],
+            'ceil_mode': [0],
+            'dilation': [1],
+            'strides': [1]
+        },
+        'Gemm': {
+            'alpha': [1.0],
+            'beta': [1.0],
+            'transA': [0],
+            'transB': [0]
+        },
+        'Flatten': {
+            'axis': [1]
+        }
     }
 
     def __init__(
@@ -51,6 +76,7 @@ class NodeInfo():
         is_input_node: bool = False,
         is_output_node: bool = False,
         sorting_identifier: str = None,
+        sorting_hash: int = None,
         preorder_visited: bool = False,
         postorder_visited: bool = False # handles cyclic graphs
     ) -> None:
@@ -62,6 +88,7 @@ class NodeInfo():
         self.is_input_node = is_input_node
         self.is_output_node = is_output_node
         self.sorting_identifier = sorting_identifier
+        self.sorting_hash = sorting_hash
         self.preorder_visited = preorder_visited
         self.postorder_visited = postorder_visited
 
@@ -100,13 +127,13 @@ class NodeInfo():
     def fill_info_from_onnx(
             self, 
             node: NodeProto = None, 
-            node_name: str = None,
             input: List[Tuple[int, ...]] = None, 
             output: List[Tuple[int, ...]] = None,
             is_input: bool = False,
-            is_output: bool = False
+            is_output: bool = False,
+            custom_id: int = -501
         ) -> None:
-        self.node_id = id(node_name)
+        self.node_id = custom_id
         self.input_shape = input
         self.output_shape = output
         self.is_input_node = is_input
@@ -114,29 +141,38 @@ class NodeInfo():
         if not (is_input or is_output):
             self.operation = node.op_type
 
+            self.parameters = []
+
             for attr in node.attribute:
-                if attr.HasField('f'):
+                if attr.type == onnx.AttributeProto.FLOAT:
                     self.parameters.append(ParamInfo(attr.name, attr.f))
-                elif attr.HasField('i'):
+                elif attr.type == onnx.AttributeProto.INT:
                     self.parameters.append(ParamInfo(attr.name, attr.i))
-                elif attr.HasField('s'):
+                elif attr.type == onnx.AttributeProto.STRING:
                     self.parameters.append(ParamInfo(attr.name, attr.s))
-                elif attr.HasField('t'):
+                elif attr.type == onnx.AttributeProto.TENSOR:
                     self.parameters.append(ParamInfo(attr.name, attr.t))
-                elif attr.HasField('g'):
+                elif attr.type == onnx.AttributeProto.GRAPH:
                     self.parameters.append(ParamInfo(attr.name, attr.g))
-                elif attr.HasField('ints'):
+                elif attr.type == onnx.AttributeProto.INTS:
                     self.parameters.append(ParamInfo(attr.name, tuple(attr.ints)))
-                elif attr.HasField('floats'):
+                elif attr.type == onnx.AttributeProto.FLOATS:
                     self.parameters.append(ParamInfo(attr.name, tuple(attr.floats)))
-                elif attr.HasField('strings'):
+                elif attr.type == onnx.AttributeProto.STRINGS:
                     self.parameters.append(ParamInfo(attr.name, tuple(attr.strings)))
-                elif attr.HasField('tensors'):
+                elif attr.type == onnx.AttributeProto.TENSORS:
                     self.parameters.append(ParamInfo(attr.name, tuple(attr.tensors)))
-                elif attr.HasField('graphs'):
+                elif attr.type == onnx.AttributeProto.GRAPHS:
                     self.parameters.append(ParamInfo(attr.name, tuple(attr.graphs)))
                 else:
                     self.parameters.append(ParamInfo(attr.name, None))
+                
+                if self.operation in self.PARAMETERS_DEFAULT_ONNX:
+                    if attr.name in self.PARAMETERS_DEFAULT_ONNX[self.operation]:
+                        if self.parameters[-1].param_value == self.PARAMETERS_DEFAULT_ONNX[self.operation][attr.name][0]:
+                            self.parameters.pop()      
+                if attr.name in self.UNUSED_PARAM_SET:
+                    self.parameters.pop()
 
     def param_compare(self, other) -> bool:
         if self.parameters == None:
@@ -195,6 +231,9 @@ class NodeInfo():
             return '[{}/{}/{}/{}]'.format(str(self.input_shape), str(self.output_shape), self.operation, str(pm_list))
         else:
             return '[{}/{}/{}]'.format(str(self.input_shape), str(self.output_shape), self.operation)
+    
+    def generate_sorting_hash(self) -> int:
+        return hash(self.generate_sorting_identifier_head())
 
     # to string function
     def __str__(self) -> str:
@@ -262,72 +301,135 @@ class Mapper():
         self.node_info_obj_set = set()
         self.node_id_to_node_obj_mapping = {}
         self.edge_node_info_list = []
-        
-        in2idx_map = {}
-        idx2out_map = []
 
         node_list = onnx_model.graph.node
-    
+
+        # create input name -> index map
+        in2idx_map = {}
+
+        for i in range(len(node_list)):
+            for input in node_list[i].input:
+                if input not in in2idx_map:
+                    in2idx_map[input] = []
+                in2idx_map[input].append(i)
+
+        # create input name -> tensor shape map, this could be buggy
+        '''
         inname2shape_map: dict = {
             input_tensor.name: [dim.dim_value for dim in input_tensor.type.tensor_type.shape.dim]
             for input_tensor in onnx_model.graph.input
-        }
+        }'''
+        
+        inname2shape_map: dict = {init.name: init.dims for init in onnx_model.graph.initializer}
+
+        # Add input and output nodes
+        # Assumes all node names are unique
         initializer_names = set(init.name for init in onnx_model.graph.initializer)
         actual_inputs = [inp for inp in onnx_model.graph.input if inp.name not in initializer_names]
 
-        input_node_names = actual_inputs
-        output_node_names = onnx_model.graph.output
+        input_nodes = actual_inputs
+        output_nodes = onnx_model.graph.output
         
         input_node_info_list = []
         output_node_info_list = []
-        for i_n in input_node_names:
+        io_id_cnt = -500 # use to calculate an id for an input/output NodeInfo obj
+        # input node id = -500 + node index in input_nodes
+        # output node id = -500 + len(input_nodes) + node index in output_nodes
+        for input in input_nodes:
             input_node_info = NodeInfo()
-            input_node_info.fill_info_from_onnx(node_name=i_n, is_input=True)
+            input_node_info.fill_info_from_onnx(custom_id=io_id_cnt, is_input=True)
             self.node_info_obj_set.add(input_node_info)
-            self.node_id_to_node_obj_mapping[id(i_n)] = input_node_info
+            self.node_id_to_node_obj_mapping[io_id_cnt] = input_node_info
+            io_id_cnt += 1
             input_node_info_list.append(input_node_info)
-        for o_n in output_node_names:
+        for output in output_nodes:
             output_node_info = NodeInfo()
-            output_node_info.fill_info_from_onnx(node_name=o_n, is_output=True)
+            output_node_info.fill_info_from_onnx(custom_id=io_id_cnt, is_output=True)
             self.node_info_obj_set.add(output_node_info)
-            self.node_id_to_node_obj_mapping[id(o_n)] = output_node_info
+            self.node_id_to_node_obj_mapping[io_id_cnt] = output_node_info
+            io_id_cnt += 1
             output_node_info_list.append(output_node_info)
 
-        node_info_list = []
-        output_name_set = set()
-        for i in range(len(node_list)):
-            node = node_list[i]
-            idx2out_map.append(node.output)
-            for output_name in node.output:
-                output_name_set.add(output_name)
 
-        for k, v in inname2shape_map.items():
-            print(k, v)
+        output_name_set = {output for node in node_list for output in node.output}
+        input_nodes_name = [i.name for i in input_nodes]
+        output_nodes_name = [o.name for o in output_nodes]
+
+        # create index -> input tensor shape map
+        idx2shape_map = {}
+
+        for i in range(len(node_list)):
+            shape_list = []
+            for input in node_list[i].input:
+                if input in inname2shape_map and input not in input_nodes_name:
+                    shape_list.append(tuple(inname2shape_map[input]))
+
+            idx2shape_map[i] = shape_list
+
+        #for k, v in inname2shape_map.items():
+        #    print(k, v)
         
-        # TODO: fix onnx batchnorm multiple input issue
-        for i in range(len(node_list)):
-            node = node_list[i]
-            input_shape_list = []
-            for input in node.input:
-                if input in output_name_set or input in input_node_names:
-                    print(input)
-                    if input in inname2shape_map:
-                        input_shape_list.append(tuple(inname2shape_map[input]))
-                    else:
-                        input_shape_list.append(tuple())
-                    if input not in in2idx_map:
-                        in2idx_map[input] = []
-                    in2idx_map[input].append(i)
-            
-            #print(input_shape_list)
+        for input_name, indexes in in2idx_map.items():
+            # omit unused inputs
+            if input_name not in output_name_set and input_name not in input_nodes_name:
+                continue
+            for in_idx in indexes:
+                # 
+                for output_name in node_list[in_idx].output:
+                    # successfully find a connection
+                    if output_name in output_nodes_name or output_name in in2idx_map:
+                        if output_name in in2idx_map:
+                            out_indexes = in2idx_map[output_name]
+                        else:
+                            out_indexes = [-500 + len(input_nodes) + output_nodes_name.index(output_name)]
 
-        '''
-        for i in range(len(node_list)):
-            node = node_list[i]
-            outputs = idx2out_map[i]
-            for o in outputs:
-                print(o)'''
+                        if input_name in input_nodes_name:
+                            start_node_info = input_node_info_list[input_nodes_name.index(input_name)]
 
+                            # Fix issue that this program omits the first layer
+                            if in_idx in self.node_id_to_node_obj_mapping:
+                                end_node_info = self.node_id_to_node_obj_mapping[in_idx]
+                            else:
+                                end_node_info = NodeInfo()
+                                end_node_info.fill_info_from_onnx(
+                                    node = node_list[in_idx],
+                                    input = idx2shape_map[in_idx],
+                                    custom_id = in_idx
+                                )
+                                self.node_id_to_node_obj_mapping[in_idx] = end_node_info
+                                self.node_info_obj_set.add(end_node_info)
+                            
+                            self.edge_node_info_list.append((start_node_info, end_node_info))
+                            start_node_info = end_node_info #???
+                            #
+
+                        elif in_idx in self.node_id_to_node_obj_mapping:
+                            start_node_info = self.node_id_to_node_obj_mapping[in_idx]
+                        else:
+                            start_node_info = NodeInfo()
+                            start_node_info.fill_info_from_onnx(
+                                node = node_list[in_idx], 
+                                input = idx2shape_map[in_idx],
+                                custom_id = in_idx
+                            )
+                            self.node_id_to_node_obj_mapping[in_idx] = start_node_info
+                            self.node_info_obj_set.add(start_node_info)
+                        
+                        for out_idx in out_indexes:
+
+                            if out_idx in self.node_id_to_node_obj_mapping:
+                                end_node_info = self.node_id_to_node_obj_mapping[out_idx]
+                            else:
+                                end_node_info = NodeInfo()
+                                end_node_info.fill_info_from_onnx(
+                                    node = node_list[out_idx],
+                                    input = idx2shape_map[out_idx],
+                                    custom_id = out_idx
+                                )
+                                self.node_id_to_node_obj_mapping[out_idx] = end_node_info
+                                self.node_info_obj_set.add(end_node_info)
+                            
+                            self.edge_node_info_list.append((start_node_info, end_node_info))
         
 
     # returns an adjacency 'dictionary' that maps NodeInfo.node_id to a list of all the 'next node's it points to
@@ -361,11 +463,13 @@ class Traverser():
 
     def __init__(
         self,
-        mapper: Mapper
+        mapper: Mapper,
+        use_hash: bool = False
     ):
         self.mapper = mapper
         self.input_node_info_obj_list: List[TensorNode] = []
         self.output_node_info_obj_list: List[TensorNode] = []
+        self.use_hash = use_hash
         for edge_node_info_tuple in mapper.edge_node_info_list: # identify input/output node and put them into the class var
             if edge_node_info_tuple[0].is_input_node and edge_node_info_tuple[0] not in self.input_node_info_obj_list:
                 self.input_node_info_obj_list.append(edge_node_info_tuple[0])
@@ -375,6 +479,7 @@ class Traverser():
 
     # A helper function that helps to sort a list of node based on their sorting identifiers
     def sorted_node_info_list(self, node_info_list: List[NodeInfo]):
+        if self.use_hash: return sorted(node_info_list, key=lambda obj: obj.sorting_hash)
         return sorted(node_info_list, key=lambda obj: obj.sorting_identifier)
 
     # A function that clears the visited class var for future traversals
@@ -389,15 +494,45 @@ class Traverser():
     def assign_sorting_identifier(self) -> None:
 
         self.reset_visited_field()
+        
+        def remove_common_suffix(strlist: List[str]) -> Tuple[List[str], str]:
+            # If list is empty, return it as is
+            if not strlist:
+                return strlist, ""
+                
+            # Initialize the common suffix to the reversed first string in the list
+            suffix = strlist[0][::-1]
+            min_len = len(suffix)
 
+            # Compare the reversed strings from left to right (original strings from right to left)
+            for string in strlist[1:]:
+                string = string[::-1]
+                min_len = min(min_len, len(string))
+                for i in range(min_len):
+                    if string[i] != suffix[i]:
+                        min_len = i
+                        break
+                # Truncate the common suffix to its common part
+                suffix = suffix[:min_len]
+
+            # Remove the common suffix from each string
+            if min_len > 0:
+                return [string[:-min_len] for string in strlist], suffix[::-1]
+            else:
+                return strlist, ""
+            
         def traverse(curr_node_info_obj: NodeInfo) -> None:
 
             curr_node_info_obj.preorder_visited = True
-            sorting_identifier: str = curr_node_info_obj.generate_sorting_identifier_head()
+
+            sorting_identifier, sorting_hash = None, None
+            if self.use_hash: sorting_hash: int = curr_node_info_obj.generate_sorting_hash()
+            else: sorting_identifier: str = curr_node_info_obj.generate_sorting_identifier_head()
 
             if curr_node_info_obj.node_id not in self.adj_dict: # output node
-
-                curr_node_info_obj.sorting_identifier = sorting_identifier
+                
+                if self.use_hash: curr_node_info_obj.sorting_hash = sorting_hash
+                else: curr_node_info_obj.sorting_identifier = sorting_identifier
 
             else:
 
@@ -408,13 +543,27 @@ class Traverser():
 
                 sorted_next_obj_list = self.sorted_node_info_list(self.adj_dict[curr_node_info_obj.node_id]) # sort the next nodes
 
-                for next_node_info_obj in sorted_next_obj_list:
-                    sorting_identifier += next_node_info_obj.sorting_identifier
 
-                curr_node_info_obj.sorting_identifier = sorting_identifier
+                if self.use_hash: # hash option
+                    hash_sum = sorting_hash
+                    for next_node_info_obj in sorted_next_obj_list:
+                        hash_sum += next_node_info_obj.sorting_hash
+                    curr_node_info_obj.sorting_hash = hash(hash_sum)
+                    
+                else:
+                    sorting_identifier_list: List[str] = []
 
-                #for obj in self.adj_dict[curr_node_info_obj.node_id]: print(obj.sorting_identifier)
-            #print(curr_node_info_obj, id(curr_node_info_obj), sorting_identifier)
+                    for next_node_info_obj in sorted_next_obj_list:
+                        sorting_identifier_list.append(next_node_info_obj.sorting_identifier)
+
+                    sorting_identifier_list, suffix = remove_common_suffix(sorting_identifier_list)
+
+                    for s in sorting_identifier_list:
+                        sorting_identifier += s
+                    
+                    sorting_identifier += suffix
+
+                    curr_node_info_obj.sorting_identifier = sorting_identifier
 
             curr_node_info_obj.postorder_visited = True
 
@@ -422,6 +571,8 @@ class Traverser():
 
         for input_node_info_obj in self.input_node_info_obj_list: # Do the same traversal for all the inputs
             traverse(input_node_info_obj)
+
+    
 
     # A function that generates a list of graph nodes based on the order of the sorting identifier
     # similar to the above func
@@ -466,7 +617,8 @@ def generate_ordered_layer_list_from_pytorch_model(
         model: Any, 
         inputs: Tuple[torch.Tensor], 
         graph_name: str = 'Untitled',
-        depth: int = 16
+        depth: int = 16,
+        use_hash: bool = False
     ) -> List[NodeInfo]:
     
     model_graph: ComputationGraph = torchview.draw_graph(
@@ -479,15 +631,20 @@ def generate_ordered_layer_list_from_pytorch_model(
     mapper = Mapper()
     mapper.populate_class_var(model_graph.edge_list)
 
-    traverser = Traverser(mapper)
+    traverser = Traverser(mapper, use_hash)
     l = traverser.generate_ordered_layer_list()
     return l
 
 def generate_ordered_layer_list_from_onnx_model(
-        model: Any
+        model: Any,
+        use_hash: bool = False
     ) -> List[NodeInfo]:
     mapper = Mapper()
     mapper.populate_class_var_from_onnx(model)
+
+    traverser = Traverser(mapper, use_hash)
+    l = traverser.generate_ordered_layer_list()
+    return l
 
 def generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(
         model: Any, 
@@ -506,8 +663,12 @@ def generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(
     mapper = Mapper()
     mapper.populate_class_var(model_graph.edge_list)
 
+    print('Mapper Populated')
+
     traverser = Traverser(mapper)
     l = traverser.generate_ordered_layer_list()
+
+    print('Ordered List Generated')
 
     layer_id_connection_list: List[Tuple[int, List[int]]] = []
 
