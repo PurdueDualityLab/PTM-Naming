@@ -1,22 +1,16 @@
 
 from transformers import ResNetForImageClassification
-from transformers import AlbertTokenizer, AlbertModel, AutoModelForMaskedLM
-
 from comp import OrderedListComparator
 from utils import print_list
 import timm
 import torch
 
-'''
+m1 = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
+m2 = timm.create_model('resnet50.a1_in1k', pretrained=True)
+m2.eval()
 comp = OrderedListComparator()
-d1 = '/depot/davisjam/data/chingwo/PTM-Naming/model_for_validation/resnet101-v1-onnx.onnx' # ONNX resnet101v1
-d2 = '/depot/davisjam/data/chingwo/PTM-Naming/model_for_validation/resnet101-v1-torch.onnx' # keras resnet101v1
-comp.from_ONNX_model_directory(d1, d2)
-comp.get_diff()
-print(comp.get_ngram_cosine_similarity())
-'''
-
-comp = OrderedListComparator()
-comp.from_NLP_model_name("albert-base-v1", "asafaya/albert-base-arabic")
-print(comp.get_nlayer_cosine_similarity())
-print(comp.get_param_cosine_similarity())
+comp.from_model(m1, m2, torch.zeros(1, 3, 224, 224))
+#print_list(comp.l1)
+#print('======')
+#print_list(comp.l2)
+print(comp.get_diff())
