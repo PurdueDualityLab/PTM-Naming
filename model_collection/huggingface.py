@@ -53,21 +53,18 @@ def get_model_from_arch(model_arch: str, metadata_dict: dict):
         model_metadata = metadata_dict[model_arch]
         
         # Get the model downloads
+        filtered_model_metadata = set()
         for model in model_metadata:
             model_download = get_downloads(model)
-            if model_download is None:
-                logger.debug(f'{model} does not exist, continue to next model.')
-                model_metadata.remove(model)
-            elif model_download < 10:
-                logger.debug(f'{model} has less than 10 downloads, continue to next model.')
-                model_metadata.remove(model)
-        logger.debug(f'Loading {len(model_metadata)} {model_arch} models.')
+            if model_download is not None and model_download >= 10:
+                filtered_model_metadata.add(model)
+        logger.debug(f'Loading {len(filtered_model_metadata)} {model_arch} models.')
         # Saving the model_archs with more than 2 models
-        if len(model_metadata) > 1:
-            return model_metadata
+        if len(filtered_model_metadata) > 1:
+            return list(filtered_model_metadata)
         else:
             logger.debug(f'Only 1 model for {model_arch}, continue to next model.')
-    return None, None
+    return
 
 
 def filter_downloads(filtered_models: dict) -> dict:
@@ -96,7 +93,7 @@ def load_model(model_list: list, metadata_dict: dict):
         models_metadata = get_model_from_arch(model_arch, metadata_dict)
        
     
-        if models_metadata:
+        if models_metadata is not None:
             logger.debug(f'Saving {model_arch} to filtered_models...')
             filtered_models[model_arch] = models_metadata
         
