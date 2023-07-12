@@ -41,7 +41,7 @@ class OrderedListGenerator():
             print(layer_node)
 
     def get_connection(self) -> List[Tuple[int, List[int]]]:
-        l = generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(self.model, self.inputs)
+        l = generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(self.model, self.inputs, use_hash=self.use_hash)
         return l[0], l[1]
     
     def print_connection(self) -> None:
@@ -120,8 +120,30 @@ class OrderedListGenerator():
             
             return freq_vec
         
+        def get_freq_vec_d(layer_list):
+            freq_vec_d, freq_vec_dn = dict(), dict()
+            for l in layer_list:
+                d_list = []
+                if l.input_shape != None:
+                    for s_in in l.input_shape: 
+                        d_list.append(s_in)
+                if l.output_shape != None:
+                    for s_out in l.output_shape: 
+                        d_list.append(s_out)
+                for t in d_list:
+                    if str(t) not in freq_vec_d:
+                        freq_vec_d[str(t)] = 0
+                    freq_vec_d[str(t)] += 1
+                    for n in t:
+                        if n not in freq_vec_dn:
+                            freq_vec_dn[n] = 0
+                        freq_vec_dn[n] += 1
+                
+            return freq_vec_d, freq_vec_dn
+        
         fv_l = get_freq_vec_l(l_l, c_i)
         fv_p = get_freq_vec_p(l_l)
         fv_pl = get_freq_vec_pl(l_l, c_i)
+        fv_d, fv_dn = get_freq_vec_d(l_l)
 
-        return fv_l, fv_p, fv_pl
+        return fv_l, fv_p, fv_pl, fv_d, fv_dn

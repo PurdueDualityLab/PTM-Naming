@@ -372,11 +372,31 @@ def SkipConnection_Test():
     genb.print_ordered_list()
 
 def Custom_Test():
-    t = AutoTokenizer.from_pretrained("albert-base-v2")
-    m = AutoModel.from_pretrained('albert-base-v2')
+    t = AutoTokenizer.from_pretrained("bert-base-cased")
+    m = AutoModel.from_pretrained('mlcorelib/deberta-base-uncased')
     i = t("Test Input", return_tensors="pt")
     gen = OrderedListGenerator(m, i)
     gen.print_ordered_list()
+
+def Custom3_Test():
+    t = AutoTokenizer.from_pretrained("bert-base-cased")
+    m = AutoModel.from_pretrained('bert-base-cased')
+    i = t("Test Input", return_tensors="pt")
+    gen = OrderedListGenerator(m, i)
+    gen.print_ordered_list()
+    print('\n\n-=-=-=-=-=-==-=-==-=-=-=-=\n\n')
+    t = AutoTokenizer.from_pretrained("mlcorelib/deberta-base-uncased")
+    m = AutoModel.from_pretrained('mlcorelib/deberta-base-uncased')
+    i = t("Test Input", return_tensors="pt")
+    gen = OrderedListGenerator(m, i)
+    gen.print_ordered_list()
+
+def Custom2_Test():
+    t = AutoTokenizer.from_pretrained("saghar/xtremedistil-l12-h384-uncased-finetuned-wikitext103")
+    m = AutoModel.from_pretrained('saghar/xtremedistil-l12-h384-uncased-finetuned-wikitext103')
+    i = t("Test Input", return_tensors="pt")
+    gen = OrderedListGenerator(m, i, use_hash=True)
+    gen.get_connection()
 
 def AN_TORCHONNX_Val_Test():
     an = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/model_for_validation/alexnet-torch.onnx')
@@ -425,4 +445,5 @@ def Vector_ResNet50_Test():
 #BigResNet_Hash_Comp_Test()
 #HugeNet_Hash_Comp_Test()
 #ParallelNet_Hash_Comp_Test()
-Vector_ResNet50_Test()
+#Vector_ResNet50_Test()
+Custom3_Test()

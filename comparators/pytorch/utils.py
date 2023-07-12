@@ -37,7 +37,6 @@ class ParamInfo():
 class NodeInfo():
 
     UNUSED_PARAM_SET = {
-        'inplace',
         'training',
         'training_mode'
     }
@@ -114,8 +113,10 @@ class NodeInfo():
         self.node_id = node.node_id
         if node.name == 'auxiliary-tensor':
             self.is_input_node = True
+            self.output_shape = node.tensor_shape
         if node.name == 'output-tensor':
             self.is_output_node = True
+            self.input_shape = node.tensor_shape
 
     # fill in the class var for function node type
     def fill_info_function_node(self, node: FunctionNode) -> None:
@@ -222,8 +223,8 @@ class NodeInfo():
 
     # Generate the 'head' of the sorting identifier(sequence) for this node
     def generate_sorting_identifier_head(self) -> str:
-        if self.is_input_node: return '[INPUT]'
-        if self.is_output_node: return '[OUTPUT]'
+        if self.is_input_node: return '[INPUT/{}]'.format(self.output_shape)
+        if self.is_output_node: return '[OUTPUT/{}]'.format(self.input_shape)
         if self.parameters != None:
             pm_list = []
             for pm in self.parameters:
@@ -237,8 +238,8 @@ class NodeInfo():
 
     # to string function
     def __str__(self) -> str:
-        if self.is_input_node: return '[INPUT]'
-        if self.is_output_node: return '[OUTPUT]'
+        if self.is_input_node: return '[INPUT] out: {}'.format(self.output_shape)
+        if self.is_output_node: return '[OUTPUT] in: {}'.format(self.input_shape)
         if self.parameters != None:
             pm_list = []
             for pm in self.parameters:
@@ -631,8 +632,11 @@ def generate_ordered_layer_list_from_pytorch_model(
     mapper = Mapper()
     mapper.populate_class_var(model_graph.edge_list)
 
+    print('Mapper Populated')
+
     traverser = Traverser(mapper, use_hash)
     l = traverser.generate_ordered_layer_list()
+    print('Ordered List Generated')
     return l
 
 def generate_ordered_layer_list_from_onnx_model(
@@ -650,7 +654,8 @@ def generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(
         model: Any, 
         inputs: Tuple[torch.Tensor], 
         graph_name: str = 'Untitled',
-        depth: int = 16
+        depth: int = 16,
+        use_hash: bool = False
     ) -> List[Tuple[int, List[int]]]:
     
     model_graph: ComputationGraph = torchview.draw_graph(
@@ -665,11 +670,11 @@ def generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(
 
     print('Mapper Populated')
 
-    traverser = Traverser(mapper)
+    traverser = Traverser(mapper, use_hash)
     l = traverser.generate_ordered_layer_list()
 
     print('Ordered List Generated')
-
+    
     layer_id_connection_list: List[Tuple[int, List[int]]] = []
 
     for layer in l:
