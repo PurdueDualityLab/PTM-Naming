@@ -18,11 +18,15 @@ from tqdm import tqdm
 import plotly.graph_objs as go
 from mpl_toolkits.mplot3d import Axes3D
 
-# load pickle files
+# load HF internal vectors
 D_PATH = "./vectors/vec_d.pkl"
 L_PATH = "./vectors/vec_l.pkl"
 P_PATH = "./vectors/vec_p.pkl"
 
+# load external vectors 
+ONNX_D_PATH = "../vectors/vec_d.pkl"
+ONNX_L_PATH = "../vectors/vec_l.pkl"
+ONNX_P_PATH = "../vectors/vec_p.pkl"
 
 def load_vec(path):
     # load pickle file from path
@@ -351,4 +355,6 @@ def main(save_vec=False):
 
 
 if __name__ == "__main__":
-    main()
+    json_files = load_json_files(["../comparators/pytorch/ptm_vectors/vec_d.json", "../comparators/pytorch/ptm_vectors/vec_l.json", "../comparators/pytorch/ptm_vectors/vec_p.json"])
+    descriptions = extract_descriptions(json_files)
+    cluster_and_visualize(descriptions)
