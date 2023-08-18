@@ -105,14 +105,14 @@ def write_vec(d, l, p, model_hub_type, model_name):
         json.dump(pf, f)
 
 
-    
+if __name__ == "__main__":
 
-lfn, lbn = find_files('/scratch/gilbreth/cheung59/PTMTorrent/PTMTorrent/ptm_torrent/onnxmodelzoo','*.onnx')
+    lfn, lbn = find_files('/scratch/gilbreth/cheung59/PTMTorrent/PTMTorrent/ptm_torrent/onnxmodelzoo','*.onnx')
 
-for i in range(len(lfn)):
-    d, l, p = vectorize(lfn[i])
-    write_vec(d, l, p, 'OnnxModelZoo', lbn[i])
-    #print(lbn[i], len(p.keys()), sum([len(k) for k in p.keys()]))
+    for i in range(len(lfn)):
+        d, l, p = vectorize(lfn[i])
+        write_vec(d, l, p, 'OnnxModelZoo', lbn[i])
+        #print(lbn[i], len(p.keys()), sum([len(k) for k in p.keys()]))
 
-print('2pickle in progress')
-auto_vectorize_from_model_pickle()
+    print('2pickle in progress')
+    auto_vectorize_from_model_pickle()
