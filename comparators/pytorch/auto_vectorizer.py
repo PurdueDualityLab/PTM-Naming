@@ -8,6 +8,7 @@ from transformers import AutoModel, AutoTokenizer
 from utils import NodeInfo
 from typing import List, Tuple
 from list_to_json import read_node_list_from_json
+import pickle
 
 # Set the cache directory
 os.environ["HF_HOME"] = "/scratch/gilbreth/cheung59/cache_huggingface"
@@ -71,7 +72,7 @@ auto_vectorize_nlp(
     '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/test_dn.json'
     )
     '''
-def auto_vectorize(l_l, c_i):
+def auto_vectorize(l_l, c_i, mode='pytorch'):
 
     def get_freq_vec_l(layer_list, connection_info):
         freq_vec = dict()
@@ -81,11 +82,17 @@ def auto_vectorize(l_l, c_i):
             
         def make_node_string(n: NodeInfo):
             if n.is_input_node:
-                return '[INPUT] {}'.format(n.output_shape)
+                if mode == 'pytorch': return '[INPUT] {}'.format(n.output_shape)
+                if mode == 'onnx': return '[INPUT]'
             if n.is_output_node:
-                return '[OUTPUT] {}'.format(n.input_shape)
-            return '{} {}->{}'.format(n.operation, n.input_shape, n.output_shape)
-
+                if mode == 'pytorch': return '[OUTPUT] {}'.format(n.input_shape)
+                if mode == 'onnx': return '[OUTPUT]'
+            if mode == 'pytorch': return '{} {}->{}'.format(n.operation, n.input_shape, n.output_shape)
+            if mode == 'onnx': 
+                if len(n.input_shape) == 0:
+                    return '{}'.format(n.operation)
+                return '{} {}'.format(n.operation, n.input_shape)
+            
         for layer_node, layer_connection_info in zip(layer_list, connection_info):
             curr_node_str = make_node_string(layer_node)
             for next_layer_id in layer_connection_info[1]:
@@ -97,6 +104,12 @@ def auto_vectorize(l_l, c_i):
         
         return freq_vec
     
+    def check_long_str(s):
+        s = str(s)
+        if len(s) > 500:
+            s = 'long str: ' + str(hash(s))
+        return s
+
     def get_freq_vec_p(layer_list: List[NodeInfo]):
         freq_vec = dict()
         for l in layer_list:
@@ -104,6 +117,7 @@ def auto_vectorize(l_l, c_i):
             if l.parameters != None:
                 for p in l.parameters:
                     p_str_list.append('<{}, {}>'.format(p.param_name, p.param_value))
+            p_str_list = check_long_str(p_str_list)
             if l.is_input_node:
                 l_str = '[INPUT]'
             elif l.is_output_node:
@@ -165,12 +179,29 @@ def auto_vectorize(l_l, c_i):
 
 def auto_vectorize_from_model_json(input_dir, models_dict, output_dir_l, output_dir_p, output_dir_d):
     d_l, d_p, d_d = dict(), dict(), dict()
+    with open(output_dir_l) as f:
+        d_l = json.load(f)
+    with open(output_dir_p) as f:
+        d_p = json.load(f)
+    with open(output_dir_d) as f:
+        d_d = json.load(f)
     for model_arch in models_dict.keys():
-        d_l[model_arch], d_p[model_arch], d_d[model_arch] = dict(), dict(), dict()
         for model_name in models_dict[model_arch]:
             if model_name == None:
                 continue
+            if model_arch in d_l.keys():
+                if model_name in d_l[model_arch].keys():
+                    print('Skipped file', input_dir + '/' + model_name + '.json:')
+                    continue
             new_model_name = ''
+            with open(output_dir_l) as f:
+                d_l = json.load(f)
+            with open(output_dir_p) as f:
+                d_p = json.load(f)
+            with open(output_dir_d) as f:
+                d_d = json.load(f)
+            if model_arch not in d_l.keys():
+                d_l[model_arch], d_p[model_arch], d_d[model_arch] = dict(), dict(), dict()
             for ch in model_name:
                 nch = ch
                 if ch == '/':
@@ -180,6 +211,10 @@ def auto_vectorize_from_model_json(input_dir, models_dict, output_dir_l, output_
                 l_l, c_i = read_node_list_from_json(input_dir + '/' + new_model_name + '.json')
             except Exception as e:
                 print('Cannot read file', input_dir + '/' + model_name + '.json:', e)
+                if d_l[model_arch] == dict():
+                    del d_l[model_arch]
+                    del d_p[model_arch]
+                    del d_d[model_arch]
                 continue
             print('Vectorizing', input_dir + '/' + model_name + '.json')
             fvs = auto_vectorize(l_l, c_i)
@@ -193,6 +228,81 @@ def auto_vectorize_from_model_json(input_dir, models_dict, output_dir_l, output_
             with open(output_dir_d, 'w') as f:
                 json.dump(d_d, f)
 
+def auto_vectorize_from_model_pickle(
+    
+    ):
+    '''
+    with open(output_dir_l) as f:
+        d_l = pickle.load(f)
+    with open(output_dir_p) as f:
+        d_p = pickle.load(f)
+    with open(output_dir_d) as f:
+        d_d = pickle.load(f)
+    with open(output_dir_lk) as f:
+        d_lk = pickle.load(f)
+    with open(output_dir_pk) as f:
+        d_pk = pickle.load(f)
+    with open(output_dir_dk) as f:
+        d_dk = pickle.load(f)
+    '''
+    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/vec_p.json') as f:
+        vec_p = json.load(f)
+    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/vec_d.json') as f:
+        vec_d = json.load(f)
+    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/vec_l.json') as f:
+        vec_l = json.load(f)
+    
+    def get_key_set(d):
+        k_set = set()
+        for k, v in d.items():
+            for kk, vv in v.items():
+                for kkk, vvv in vv.items():
+                    k_set.add(kkk)
+        return sorted(list(k_set))
+
+    def create_default_list(ks):
+        return [0 for key in ks]
+    
+    def add_padding(vec, ks):
+        k2i_map = dict()
+        for i, k in enumerate(ks):
+            k2i_map[k] = i
+        padded = dict()
+        for arch, model_dict in vec.items():
+            new_model_dict = dict()
+            for model_name, model_vec in model_dict.items():
+                new_model_vec = create_default_list(ks)
+                for k, v in model_vec.items():
+                    new_model_vec[k2i_map[k]] += v
+                new_model_dict[model_name] = new_model_vec
+            padded[arch] = new_model_dict
+        return padded
+                    
+    
+    k_p = get_key_set(vec_p)
+    k_d = get_key_set(vec_d)
+    k_l = get_key_set(vec_l)
+
+    
+    p_vec_l = add_padding(vec_l, k_l)
+    p_vec_d = add_padding(vec_d, k_d)
+    p_vec_p = add_padding(vec_p, k_p)
+    
+
+    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/vec_l.pkl', 'wb') as f:
+        pickle.dump(p_vec_l, f)
+    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/vec_d.pkl', 'wb') as f:
+        pickle.dump(p_vec_d, f)
+    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/vec_p.pkl', 'wb') as f:
+        pickle.dump(p_vec_p, f)
+    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/k_l.pkl', 'wb') as f:
+        pickle.dump(k_l, f)
+    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/k_d.pkl', 'wb') as f:
+        pickle.dump(k_d, f)
+    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/k_p.pkl', 'wb') as f:
+        pickle.dump(k_p, f)
+
+'''
 with open('/depot/davisjam/data/chingwo/PTM-Naming/model_collection/filtered_models.json') as f:
         models_dict = json.load(f)
 
@@ -203,3 +313,6 @@ auto_vectorize_from_model_json(
     '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/vec_p.json',
     '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/vec_d.json'
     )
+'''
+
+auto_vectorize_from_model_pickle()
