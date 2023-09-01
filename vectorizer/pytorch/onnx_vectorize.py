@@ -2,9 +2,17 @@ from list_gen import OrderedListGenerator
 from auto_vectorizer import auto_vectorize
 import onnx, json, os, fnmatch, pickle
 
-# find all the files in a directory given a specific pattern
-# returns a list of file names and a list of base names
 def find_files(directory, pattern):
+    """
+    Find all the files in a directory given a specific pattern
+
+    Parameters:
+    directory (str): The target directory
+    pattern (str): The pattern to look for
+
+    Returns:
+    l_fn, l_bn (tuple): A tuple of a list of file names and a list of base names (without extension)
+    """
     l_fn, l_bn = [], []
     for root, dirs, files in os.walk(directory):
         for basename in files:
@@ -14,9 +22,17 @@ def find_files(directory, pattern):
                 l_bn.append(basename[:-5])
     return l_fn, l_bn
 
-# vectorize a model given the path of the model
-# returns dimension, parameter, and layer vectors
 def vectorize(path):
+    """
+    Vectorize an ONNX model
+
+    Parameters:
+    path (str): The path of the ONNX model
+
+    Returns:
+    d, l, p (tuple): A tuple consists of dimension, parameter, and layer vectors
+    of a single model
+    """
     print('vectorizing', path)
     m1 = onnx.load(path)
     gen1 = OrderedListGenerator(model=m1, mode='onnx', use_hash=True)
@@ -25,7 +41,17 @@ def vectorize(path):
     return d, l, p
 
 def pad_vector_to_pickle(directory):
+    """
+    Add padding to the vectors in a directory, and generates lists of keys and 
+    present vector with arrays where the key each index is the content of the 
+    same index in the key array
 
+    Parameters:
+    directory (str): The directory of the three vectors
+
+    Returns:
+    None
+    """
     with open(f'{directory}/vec_p.json') as f:
         vec_p = json.load(f)
     with open(f'{directory}/vec_d.json') as f:
@@ -83,8 +109,17 @@ def pad_vector_to_pickle(directory):
     with open(f'{directory}/k_p.pkl', 'wb') as f:
         pickle.dump(k_p, f)
 
-# read the dim, layer, and param vectors in a given directory
 def read_vec(directory):
+    """
+    Read the three vectors from a directory
+
+    Parameters:
+    directory (str): The directory of the three vectors
+
+    Returns:
+    df, lf, pf (tuple): A tuple consists of dimension, parameter, and layer vectors
+    of all models
+    """
     with open(f'{directory}/vec_d.json', 'r') as f:
         df = json.load(f)
     with open(f'{directory}/vec_l.json', 'r') as f:
@@ -94,6 +129,22 @@ def read_vec(directory):
     return df, lf, pf
 
 def write_vec(d, l, p, model_hub_type, model_name, directory):
+    """
+    Write the three vectors to a directory. It appends the given three vectors
+    of a single model to the three vectors in the directory that contains
+    multiple models.
+
+    Parameters:
+    d (dict): The dimension vector
+    l (dict): The layer vector
+    p (dict): The parameter vector
+    model_hub_type (str): The name of the model hub
+    model_name (str): The name of the model
+    directory (str): The directory containing the three vectors
+
+    Returns:
+    None
+    """
     df, lf, pf = read_vec(directory)
     if model_hub_type not in df:
         df[model_hub_type] = dict()
