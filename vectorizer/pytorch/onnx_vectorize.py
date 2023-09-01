@@ -2,6 +2,8 @@ from list_gen import OrderedListGenerator
 from auto_vectorizer import auto_vectorize
 import onnx, json, os, fnmatch, pickle
 
+# find all the files in a directory given a specific pattern
+# returns a list of file names and a list of base names
 def find_files(directory, pattern):
     l_fn, l_bn = [], []
     for root, dirs, files in os.walk(directory):
@@ -12,6 +14,8 @@ def find_files(directory, pattern):
                 l_bn.append(basename[:-5])
     return l_fn, l_bn
 
+# vectorize a model given the path of the model
+# returns dimension, parameter, and layer vectors
 def vectorize(path):
     print('vectorizing', path)
     m1 = onnx.load(path)
@@ -20,13 +24,13 @@ def vectorize(path):
     _, p, l, d = auto_vectorize(l, c, mode='onnx')
     return d, l, p
 
-def auto_vectorize_from_model_pickle():
+def pad_vector_to_pickle(directory):
 
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_p.json') as f:
+    with open(f'{directory}/vec_p.json') as f:
         vec_p = json.load(f)
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_d.json') as f:
+    with open(f'{directory}/vec_d.json') as f:
         vec_d = json.load(f)
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_l.json') as f:
+    with open(f'{directory}/vec_l.json') as f:
         vec_l = json.load(f)
     
     def get_key_set(d):
@@ -66,30 +70,31 @@ def auto_vectorize_from_model_pickle():
     p_vec_p = add_padding(vec_p, k_p)
     
 
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_l.pkl', 'wb') as f:
+    with open(f'{directory}/vec_l.pkl', 'wb') as f:
         pickle.dump(p_vec_l, f)
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_d.pkl', 'wb') as f:
+    with open(f'{directory}/vec_d.pkl', 'wb') as f:
         pickle.dump(p_vec_d, f)
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_p.pkl', 'wb') as f:
+    with open(f'{directory}/vec_p.pkl', 'wb') as f:
         pickle.dump(p_vec_p, f)
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/k_l.pkl', 'wb') as f:
+    with open(f'{directory}/k_l.pkl', 'wb') as f:
         pickle.dump(k_l, f)
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/k_d.pkl', 'wb') as f:
+    with open(f'{directory}/k_d.pkl', 'wb') as f:
         pickle.dump(k_d, f)
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/k_p.pkl', 'wb') as f:
+    with open(f'{directory}/k_p.pkl', 'wb') as f:
         pickle.dump(k_p, f)
 
-def read_vec():
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_d.json', 'r') as f:
+# read the dim, layer, and param vectors in a given directory
+def read_vec(directory):
+    with open(f'{directory}/vec_d.json', 'r') as f:
         df = json.load(f)
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_l.json', 'r') as f:
+    with open(f'{directory}/vec_l.json', 'r') as f:
         lf = json.load(f)
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_p.json', 'r') as f:
+    with open(f'{directory}/vec_p.json', 'r') as f:
         pf = json.load(f)
     return df, lf, pf
 
-def write_vec(d, l, p, model_hub_type, model_name):
-    df, lf, pf = read_vec()
+def write_vec(d, l, p, model_hub_type, model_name, directory):
+    df, lf, pf = read_vec(directory)
     if model_hub_type not in df:
         df[model_hub_type] = dict()
         lf[model_hub_type] = dict()
@@ -97,22 +102,10 @@ def write_vec(d, l, p, model_hub_type, model_name):
     df[model_hub_type][model_name] = d
     lf[model_hub_type][model_name] = l
     pf[model_hub_type][model_name] = p
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_d.json', 'w') as f:
+    with open(f'{directory}/vec_d.json', 'w') as f:
         json.dump(df, f)
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_l.json', 'w') as f:
+    with open(f'{directory}/vec_l.json', 'w') as f:
         json.dump(lf, f)
-    with open('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_vectors/onnx_vec/vec_p.json', 'w') as f:
+    with open(f'{directory}/vec_p.json', 'w') as f:
         json.dump(pf, f)
 
-
-if __name__ == "__main__":
-
-    lfn, lbn = find_files('/scratch/gilbreth/cheung59/PTMTorrent/PTMTorrent/ptm_torrent/onnxmodelzoo','*.onnx')
-
-    for i in range(len(lfn)):
-        d, l, p = vectorize(lfn[i])
-        write_vec(d, l, p, 'OnnxModelZoo', lbn[i])
-        #print(lbn[i], len(p.keys()), sum([len(k) for k in p.keys()]))
-
-    print('2pickle in progress')
-    auto_vectorize_from_model_pickle()
