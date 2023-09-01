@@ -19,6 +19,21 @@ class OrderedListGenerator():
         mode: str = 'pytorch',
         use_hash: bool = False
     ) -> None:
+        """
+        OrderedListGenerator constructor function
+
+        Parameters:
+        model (Any): Any model type from pytorch or onnx
+        inputs (tuple): Input of the model for tracing, not necessary for
+        onnx model
+        mode (str): Specify the list generator on generating list for onnx
+        or pytorch model
+        use_hash (bool): Use hash while assigning layer identifiers, set
+        it to True for increase performance
+
+        Returns:
+        None
+        """
         self.model = model
         self.inputs = inputs
         self.mode = mode
@@ -26,7 +41,16 @@ class OrderedListGenerator():
         patch()
 
     def get_ordered_list(self) -> List[NodeInfo]:
-        #print(self.mode)
+        """
+        Returns an ordered list for the model
+
+        Parameters:
+        None
+
+        Returns:
+        list: A list of NodeInfo objects which contains all the information
+        of a layer in the model
+        """
         if self.mode == 'pytorch':
             return generate_ordered_layer_list_from_pytorch_model(self.model, self.inputs, use_hash=self.use_hash)
         if self.mode == 'onnx':
@@ -34,6 +58,15 @@ class OrderedListGenerator():
 
 
     def print_ordered_list(self) -> None:
+        """
+        Print an ordered list for the model
+
+        Parameters:
+        None
+
+        Returns:
+        None
+        """
         if self.mode == 'pytorch':
             ordered_list = generate_ordered_layer_list_from_pytorch_model(self.model, self.inputs, use_hash=self.use_hash)
         if self.mode == 'onnx':
@@ -42,6 +75,16 @@ class OrderedListGenerator():
             print(layer_node)
 
     def get_connection(self) -> List[Tuple[int, List[int]]]:
+        """
+        Return an ordered list for the model as well as the connection information,
+        essentially making the ordered list an adjacency list.
+
+        Parameters:
+        None
+
+        Returns:
+        list: An ordered list with connection information
+        """
         if self.mode == 'pytorch':
             l = generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(self.model, self.inputs, use_hash=self.use_hash)
         if self.mode == 'onnx':
@@ -49,13 +92,27 @@ class OrderedListGenerator():
         return l[0], l[1]
     
     def print_connection(self) -> None:
+        """
+        Print an ordered list for the model as well as the connection information,
+        essentially making the ordered list an adjacency list
+
+        Parameters:
+        None
+
+        Returns:
+        None
+        """
         l = generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(self.model, self.inputs)
         for layer_node, connection_info in zip(l[0], l[1]):
             print('[{}] {} -> {}'.format(connection_info[0], layer_node, connection_info[1]))
 
 
     def vectorize(self):
+        """
+        Vectorize the model using an n-gram like approach
 
+        Unused Function
+        """
         l_l, c_i = self.get_connection()        
 
         def get_freq_vec_l(layer_list, connection_info):
