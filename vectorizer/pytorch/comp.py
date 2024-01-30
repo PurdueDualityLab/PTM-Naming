@@ -1,5 +1,5 @@
 
-from utils import NodeInfo, generate_ordered_layer_list_from_pytorch_model, patch, generate_ordered_layer_list_from_onnx_model, generate_ordered_layer_list_from_pytorch_model_with_id_and_connection
+from utils import AbstractNNLayer, generate_ordered_layer_list_from_pytorch_model, patch, generate_ordered_layer_list_from_onnx_model, generate_ordered_layer_list_from_pytorch_model_with_id_and_connection
 from transformers import AutoModel, AutoTokenizer
 import difflib
 import onnx
@@ -118,7 +118,7 @@ class OrderedListComparator():
             for layer_node, layer_connection_info in zip(layer_list, connection_info): # assume no repetitive layer in ordered list
                 id_to_node_map[layer_connection_info[0]] = layer_node
                 
-            def make_node_string(n: NodeInfo):
+            def make_node_string(n: AbstractNNLayer):
                 if n.is_input_node:
                     return '[INPUT]'
                 if n.is_output_node:
@@ -150,7 +150,7 @@ class OrderedListComparator():
     
     def get_param_cosine_similarity(self) -> int:
 
-        def get_freq_vec(layer_list: List[NodeInfo]):
+        def get_freq_vec(layer_list: List[AbstractNNLayer]):
             freq_vec = dict()
             for l in layer_list:
                 p_str_list = []

@@ -1,11 +1,11 @@
 
 from transformers import AutoModel, AutoTokenizer
 import json
-from list_gen import OrderedListGenerator
+from vectorizer.pytorch.AbstractNNGenerator import OrderedListGenerator
 from utils import patch
 import os
 from transformers import AutoModel, AutoTokenizer
-from utils import NodeInfo
+from utils import AbstractNNLayer
 from typing import List, Tuple
 from list_to_json import read_node_list_from_json
 import pickle
@@ -80,7 +80,7 @@ def auto_vectorize(l_l, c_i, mode='pytorch'):
         for layer_node, layer_connection_info in zip(layer_list, connection_info): # assume no repetitive layer in ordered list
             id_to_node_map[layer_connection_info[0]] = layer_node
             
-        def make_node_string(n: NodeInfo):
+        def make_node_string(n: AbstractNNLayer):
             if n.is_input_node:
                 if mode == 'pytorch': return '[INPUT] {}'.format(n.output_shape)
                 if mode == 'onnx': return '[INPUT]'
@@ -110,7 +110,7 @@ def auto_vectorize(l_l, c_i, mode='pytorch'):
             s = 'long str: ' + str(hash(s))
         return s
 
-    def get_freq_vec_p(layer_list: List[NodeInfo]):
+    def get_freq_vec_p(layer_list: List[AbstractNNLayer]):
         freq_vec = dict()
         for l in layer_list:
             p_str_list = []
@@ -135,7 +135,7 @@ def auto_vectorize(l_l, c_i, mode='pytorch'):
         for layer_node, layer_connection_info in zip(layer_list, connection_info): # assume no repetitive layer in ordered list
             id_to_node_map[layer_connection_info[0]] = layer_node
             
-        def make_node_string(n: NodeInfo):
+        def make_node_string(n: AbstractNNLayer):
             if n.is_input_node:
                 return '[INPUT]'
             if n.is_output_node:

@@ -1,11 +1,11 @@
 import json
-from utils import NodeInfo, ParamInfo
+from utils import AbstractNNLayer, AbstractNNLayerParam
 from typing import List, Tuple
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import AutoModel, AutoTokenizer
-from list_gen import OrderedListGenerator
+from vectorizer.pytorch.AbstractNNGenerator import OrderedListGenerator
 
-def node_list_to_json(layer_list: List[NodeInfo], connection_info: List[Tuple[int, List[int]]], output_dir):
+def node_list_to_json(layer_list: List[AbstractNNLayer], connection_info: List[Tuple[int, List[int]]], output_dir):
     if len(layer_list) != len(connection_info): 
         print('Unrecognized connection info')
         return None
@@ -53,7 +53,7 @@ def read_node_list_from_json(json_dir):
     l_l = []
     c_i = []
     for node in data:
-        new_node_info = NodeInfo()
+        new_node_info = AbstractNNLayer()
         new_node_info.operation = node['operation']
         new_node_info.input_shape = node['input_shape']
         new_node_info.output_shape = node['output_shape']
@@ -61,7 +61,7 @@ def read_node_list_from_json(json_dir):
         if node['parameters'] != None:
             params = []
             for k, v in node['parameters'].items():
-                params.append(ParamInfo(k, v))
+                params.append(AbstractNNLayerParam(k, v))
             new_node_info.parameters = params
         new_node_info.is_input_node = node['type'] == 'Input'
         new_node_info.is_output_node = node['type'] == 'Output'

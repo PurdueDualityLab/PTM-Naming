@@ -1,7 +1,7 @@
 
 import torch
 import torch.nn as nn
-from list_gen import OrderedListGenerator
+from vectorizer.pytorch.AbstractNNGenerator import OrderedListGenerator
 import onnx
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import (
