@@ -1,5 +1,5 @@
 from list_to_json import node_list_to_json
-from list_gen import OrderedListGenerator
+from vectorizer.pytorch.AbstractNNGenerator import OrderedListGenerator
 from transformers import AutoModel, AutoTokenizer, AutoFeatureExtractor, AutoImageProcessor, AutoProcessor
 import json
 import os

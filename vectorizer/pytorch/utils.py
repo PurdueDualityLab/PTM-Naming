@@ -8,10 +8,19 @@ from torchview.computation_graph import ComputationGraph
 import onnx
 from onnx import NodeProto, GraphProto
 
+class AbstractNN():
+    def __init__(
+        self,
+        abstract_node_list
+    ):
+        self.content = abstract_node_list
+
+    def get_content(self):
+        return self.content
 
 # A class that stores a parameter-value pair
 
-class ParamInfo():
+class AbstractNNLayerParam():
     def __init__(
         self,
         param_name: str,
@@ -34,7 +43,7 @@ class ParamInfo():
 
 # A class that stores useful information of a node(layer)
 
-class NodeInfo():
+class AbstractNNLayer():
 
     UNUSED_PARAM_SET = {
         'training',
@@ -71,7 +80,7 @@ class NodeInfo():
         input_shape: List[Tuple[int, ...]] = None,
         output_shape: List[Tuple[int, ...]] = None,
         operation: str = 'Undefined',
-        parameters: List[ParamInfo] = None,
+        parameters: List[AbstractNNLayerParam] = None,
         is_input_node: bool = False,
         is_output_node: bool = False,
         sorting_identifier: str = None,
@@ -104,7 +113,7 @@ class NodeInfo():
         
         for attr_name, attr_val in node.module_unit.__dict__.items():
             if attr_name[0] != '_' and attr_name not in self.UNUSED_PARAM_SET and 'All' not in self.UNUSED_PARAM_SET: # include non-private attributes
-                self.parameters.append(ParamInfo(attr_name, attr_val))
+                self.parameters.append(AbstractNNLayerParam(attr_name, attr_val))
 
         if 'All' in self.UNUSED_PARAM_SET: self.parameters = None
 
@@ -146,27 +155,27 @@ class NodeInfo():
 
             for attr in node.attribute:
                 if attr.type == onnx.AttributeProto.FLOAT:
-                    self.parameters.append(ParamInfo(attr.name, attr.f))
+                    self.parameters.append(AbstractNNLayerParam(attr.name, attr.f))
                 elif attr.type == onnx.AttributeProto.INT:
-                    self.parameters.append(ParamInfo(attr.name, attr.i))
+                    self.parameters.append(AbstractNNLayerParam(attr.name, attr.i))
                 elif attr.type == onnx.AttributeProto.STRING:
-                    self.parameters.append(ParamInfo(attr.name, attr.s))
+                    self.parameters.append(AbstractNNLayerParam(attr.name, attr.s))
                 elif attr.type == onnx.AttributeProto.TENSOR:
-                    self.parameters.append(ParamInfo(attr.name, attr.t))
+                    self.parameters.append(AbstractNNLayerParam(attr.name, attr.t))
                 elif attr.type == onnx.AttributeProto.GRAPH:
-                    self.parameters.append(ParamInfo(attr.name, attr.g))
+                    self.parameters.append(AbstractNNLayerParam(attr.name, attr.g))
                 elif attr.type == onnx.AttributeProto.INTS:
-                    self.parameters.append(ParamInfo(attr.name, tuple(attr.ints)))
+                    self.parameters.append(AbstractNNLayerParam(attr.name, tuple(attr.ints)))
                 elif attr.type == onnx.AttributeProto.FLOATS:
-                    self.parameters.append(ParamInfo(attr.name, tuple(attr.floats)))
+                    self.parameters.append(AbstractNNLayerParam(attr.name, tuple(attr.floats)))
                 elif attr.type == onnx.AttributeProto.STRINGS:
-                    self.parameters.append(ParamInfo(attr.name, tuple(attr.strings)))
+                    self.parameters.append(AbstractNNLayerParam(attr.name, tuple(attr.strings)))
                 elif attr.type == onnx.AttributeProto.TENSORS:
-                    self.parameters.append(ParamInfo(attr.name, tuple(attr.tensors)))
+                    self.parameters.append(AbstractNNLayerParam(attr.name, tuple(attr.tensors)))
                 elif attr.type == onnx.AttributeProto.GRAPHS:
-                    self.parameters.append(ParamInfo(attr.name, tuple(attr.graphs)))
+                    self.parameters.append(AbstractNNLayerParam(attr.name, tuple(attr.graphs)))
                 else:
-                    self.parameters.append(ParamInfo(attr.name, None))
+                    self.parameters.append(AbstractNNLayerParam(attr.name, None))
                 
                 if self.operation in self.PARAMETERS_DEFAULT_ONNX:
                     if attr.name in self.PARAMETERS_DEFAULT_ONNX[self.operation]:
@@ -255,9 +264,9 @@ class Mapper():
 
     def __init__(
         self,
-        node_info_obj_set: Set[NodeInfo] = None,
-        node_id_to_node_obj_mapping: Dict[int, NodeInfo] = None,
-        edge_node_info_list: List[Tuple[NodeInfo, NodeInfo]] = None
+        node_info_obj_set: Set[AbstractNNLayer] = None,
+        node_id_to_node_obj_mapping: Dict[int, AbstractNNLayer] = None,
+        edge_node_info_list: List[Tuple[AbstractNNLayer, AbstractNNLayer]] = None
     ) -> None:
         self.node_info_obj_set = node_info_obj_set
         self.node_id_to_node_obj_mapping = node_id_to_node_obj_mapping
@@ -277,7 +286,7 @@ class Mapper():
         for edge_tuple in edge_list:
             
             if edge_tuple[0].node_id not in self.node_id_to_node_obj_mapping:
-                n_info_0 = NodeInfo()
+                n_info_0 = AbstractNNLayer()
                 n_info_0.fill_info(edge_tuple[0])
                 self.node_info_obj_set.add(n_info_0)
                 self.node_id_to_node_obj_mapping[n_info_0.node_id] = n_info_0
@@ -286,7 +295,7 @@ class Mapper():
 
 
             if edge_tuple[1].node_id not in self.node_id_to_node_obj_mapping:
-                n_info_1 = NodeInfo()
+                n_info_1 = AbstractNNLayer()
                 n_info_1.fill_info(edge_tuple[1])
                 self.node_info_obj_set.add(n_info_1)
                 self.node_id_to_node_obj_mapping[n_info_1.node_id] = n_info_1
@@ -337,14 +346,14 @@ class Mapper():
         # input node id = -500 + node index in input_nodes
         # output node id = -500 + len(input_nodes) + node index in output_nodes
         for input in input_nodes:
-            input_node_info = NodeInfo()
+            input_node_info = AbstractNNLayer()
             input_node_info.fill_info_from_onnx(custom_id=io_id_cnt, is_input=True)
             self.node_info_obj_set.add(input_node_info)
             self.node_id_to_node_obj_mapping[io_id_cnt] = input_node_info
             io_id_cnt += 1
             input_node_info_list.append(input_node_info)
         for output in output_nodes:
-            output_node_info = NodeInfo()
+            output_node_info = AbstractNNLayer()
             output_node_info.fill_info_from_onnx(custom_id=io_id_cnt, is_output=True)
             self.node_info_obj_set.add(output_node_info)
             self.node_id_to_node_obj_mapping[io_id_cnt] = output_node_info
@@ -391,7 +400,7 @@ class Mapper():
                             if in_idx in self.node_id_to_node_obj_mapping:
                                 end_node_info = self.node_id_to_node_obj_mapping[in_idx]
                             else:
-                                end_node_info = NodeInfo()
+                                end_node_info = AbstractNNLayer()
                                 end_node_info.fill_info_from_onnx(
                                     node = node_list[in_idx],
                                     input = idx2shape_map[in_idx],
@@ -407,7 +416,7 @@ class Mapper():
                         elif in_idx in self.node_id_to_node_obj_mapping:
                             start_node_info = self.node_id_to_node_obj_mapping[in_idx]
                         else:
-                            start_node_info = NodeInfo()
+                            start_node_info = AbstractNNLayer()
                             start_node_info.fill_info_from_onnx(
                                 node = node_list[in_idx], 
                                 input = idx2shape_map[in_idx],
@@ -421,7 +430,7 @@ class Mapper():
                             if out_idx in self.node_id_to_node_obj_mapping:
                                 end_node_info = self.node_id_to_node_obj_mapping[out_idx]
                             else:
-                                end_node_info = NodeInfo()
+                                end_node_info = AbstractNNLayer()
                                 end_node_info.fill_info_from_onnx(
                                     node = node_list[out_idx],
                                     input = idx2shape_map[out_idx],
@@ -434,8 +443,8 @@ class Mapper():
         
 
     # returns an adjacency 'dictionary' that maps NodeInfo.node_id to a list of all the 'next node's it points to
-    def get_adj_dict(self, options: Set = None) -> Dict[int, List[NodeInfo]]:
-        adj_dict: Dict[int, List[NodeInfo]] = dict()
+    def get_adj_dict(self, options: Set = None) -> Dict[int, List[AbstractNNLayer]]:
+        adj_dict: Dict[int, List[AbstractNNLayer]] = dict()
         for node_info_tuple in self.edge_node_info_list:
             if node_info_tuple[0].node_id not in adj_dict:
                 adj_dict[node_info_tuple[0].node_id] = []
@@ -476,10 +485,10 @@ class Traverser():
                 self.input_node_info_obj_list.append(edge_node_info_tuple[0])
             if edge_node_info_tuple[1].is_output_node and edge_node_info_tuple[1] not in self.output_node_info_obj_list:
                 self.output_node_info_obj_list.append(edge_node_info_tuple[1])
-        self.adj_dict: Dict[int, List[NodeInfo]] = mapper.get_adj_dict({'remove_identity'})
+        self.adj_dict: Dict[int, List[AbstractNNLayer]] = mapper.get_adj_dict({'remove_identity'})
 
     # A helper function that helps to sort a list of node based on their sorting identifiers
-    def sorted_node_info_list(self, node_info_list: List[NodeInfo]):
+    def sorted_node_info_list(self, node_info_list: List[AbstractNNLayer]):
         if self.use_hash: return sorted(node_info_list, key=lambda obj: obj.sorting_hash)
         return sorted(node_info_list, key=lambda obj: obj.sorting_identifier)
 
@@ -522,7 +531,7 @@ class Traverser():
             else:
                 return strlist, ""
             
-        def traverse(curr_node_info_obj: NodeInfo) -> None:
+        def traverse(curr_node_info_obj: AbstractNNLayer) -> None:
 
             curr_node_info_obj.preorder_visited = True
 
@@ -577,16 +586,16 @@ class Traverser():
 
     # A function that generates a list of graph nodes based on the order of the sorting identifier
     # similar to the above func
-    def generate_ordered_layer_list(self) -> List[NodeInfo]:
+    def generate_ordered_layer_list(self) -> List[AbstractNNLayer]:
 
         self.assign_sorting_identifier()
         self.reset_visited_field()
 
-        sorted_inputs: List[NodeInfo] = self.sorted_node_info_list(self.input_node_info_obj_list)
+        sorted_inputs: List[AbstractNNLayer] = self.sorted_node_info_list(self.input_node_info_obj_list)
 
-        ordered_layer_list: List[NodeInfo] = []
+        ordered_layer_list: List[AbstractNNLayer] = []
 
-        def traverse(curr_node_info_obj: NodeInfo) -> None:
+        def traverse(curr_node_info_obj: AbstractNNLayer) -> None:
 
             curr_node_info_obj.preorder_visited = True
 
@@ -620,7 +629,7 @@ def generate_ordered_layer_list_from_pytorch_model(
         graph_name: str = 'Untitled',
         depth: int = 16,
         use_hash: bool = False
-    ) -> List[NodeInfo]:
+    ) -> List[AbstractNNLayer]:
     
     model_graph: ComputationGraph = torchview.draw_graph(
         model, inputs,
@@ -642,7 +651,7 @@ def generate_ordered_layer_list_from_pytorch_model(
 def generate_ordered_layer_list_from_onnx_model(
         model: Any,
         use_hash: bool = False
-    ) -> List[NodeInfo]:
+    ) -> List[AbstractNNLayer]:
     mapper = Mapper()
     mapper.populate_class_var_from_onnx(model)
 
