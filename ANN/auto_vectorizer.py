@@ -1,11 +1,11 @@
 
 from transformers import AutoModel, AutoTokenizer
 import json
-from vectorizer.pytorch.AbstractNNGenerator import OrderedListGenerator
-from utils import patch
+from ANN.AbstractNNGenerator import OrderedListGenerator
+from ANN.AbstractNN import patch
 import os
 from transformers import AutoModel, AutoTokenizer
-from utils import AbstractNNLayer
+from ANN.AbstractNN import AbstractNNLayer
 from typing import List, Tuple
 from list_to_json import read_node_list_from_json
 import pickle

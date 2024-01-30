@@ -1,5 +1,5 @@
 
-from utils import AbstractNNLayer, generate_ordered_layer_list_from_pytorch_model, patch, generate_ordered_layer_list_from_onnx_model, generate_ordered_layer_list_from_pytorch_model_with_id_and_connection
+from ANN.AbstractNN import AbstractNNLayer, generate_ordered_layer_list_from_pytorch_model, patch, generate_ordered_layer_list_from_onnx_model, generate_ordered_layer_list_from_pytorch_model_with_id_and_connection
 from transformers import AutoModel, AutoTokenizer
 import difflib
 import onnx

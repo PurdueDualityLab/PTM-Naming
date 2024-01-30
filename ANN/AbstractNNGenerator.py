@@ -1,5 +1,5 @@
 
-from utils import (
+from ANN.AbstractNN import (
     AbstractNNLayer, 
     generate_ordered_layer_list_from_pytorch_model, 
     patch, 

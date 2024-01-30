@@ -3,7 +3,7 @@ from transformers import ResNetForImageClassification
 from transformers import AlbertTokenizer, AlbertModel, AutoModelForMaskedLM
 
 from comp import OrderedListComparator
-from utils import print_list
+from ANN.AbstractNN import print_list
 import timm
 import torch
 
