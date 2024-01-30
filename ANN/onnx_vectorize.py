@@ -1,4 +1,4 @@
-from list_gen import OrderedListGenerator
+from ANN.AbstractNNGenerator import OrderedListGenerator
 from auto_vectorizer import auto_vectorize
 import onnx, json, os, fnmatch, pickle
 

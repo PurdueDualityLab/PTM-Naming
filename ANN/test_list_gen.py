@@ -1,7 +1,7 @@
 
 import torch
 import torch.nn as nn
-from vectorizer.pytorch.AbstractNNGenerator import OrderedListGenerator
+from ANN.AbstractNNGenerator import OrderedListGenerator
 import onnx
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import (
@@ -18,7 +18,7 @@ import time
 import sys
 from PIL import Image
 
-from utils import generate_ordered_layer_list_from_onnx_model
+from ANN.AbstractNN import generate_ordered_layer_list_from_onnx_model
 
 import pandas as pd
 import numpy as np

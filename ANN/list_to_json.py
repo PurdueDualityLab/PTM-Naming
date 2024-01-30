@@ -1,9 +1,9 @@
 import json
-from utils import AbstractNNLayer, AbstractNNLayerParam
+from ANN.AbstractNN import AbstractNNLayer, AbstractNNLayerParam
 from typing import List, Tuple
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import AutoModel, AutoTokenizer
-from vectorizer.pytorch.AbstractNNGenerator import OrderedListGenerator
+from ANN.AbstractNNGenerator import OrderedListGenerator
 
 def node_list_to_json(layer_list: List[AbstractNNLayer], connection_info: List[Tuple[int, List[int]]], output_dir):
     if len(layer_list) != len(connection_info): 
