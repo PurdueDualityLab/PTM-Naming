@@ -10,6 +10,7 @@ import onnx
 from onnx import NodeProto, GraphProto
 from loguru import logger
 from tqdm import tqdm
+import time
 
 from ANN.utils import overwrite_torchview_func
 
@@ -22,8 +23,12 @@ class AbstractNN():
     ):
         self.content = abstract_node_list
         self.connection_info = connection_info
+        self.layer_connection_vector, self.layer_with_parameter_vector = \
+            self.vectorize()
 
-    def from_huggingface(model, tracing_input):
+    def from_huggingface(model, tracing_input, verbose=True):
+        start_time = time.time()
+
         ann_gen = AbstractNNGenerator(
             model=model,
             inputs=tracing_input,
@@ -31,8 +36,20 @@ class AbstractNN():
             use_hash=True,
             verbose=True
         )
+        
         layer_list, conn_info = ann_gen.generate_annlayer_list(include_connection=True)
-        return AbstractNN(layer_list, conn_info)
+
+        end_time = time.time()
+
+        if verbose:
+            logger.success(f"ANN generated. Time taken: {round(end_time - start_time, 4)}s")
+            logger.info("Vectorizing...")
+
+        ret_ann = AbstractNN(layer_list, conn_info)
+
+        if verbose:
+            logger.success("Success.")
+        return ret_ann
     
     # TODO: need some name changes
     def vectorize(self):
