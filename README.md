@@ -32,17 +32,17 @@ Run the following commands:
 
 #### Functions
 
-#### __init__ (AbstractNN constructor)
+#### AbstractNN constructor
 - **Description**: The constructor of AbstractNN, not necessary to use. When this object is created, the vectorization process is automated.
 - **Parameters**: 
-  - `annlayer_list` (List[AbstractNNLayer]) - A list of AbstractNNLayer objects.
-  - `connection_info` (List[Tuple[int, List[int]]]) - A list showing the computation graph connections.
+  - `annlayer_list: List[AbstractNNLayer]` - A list of AbstractNNLayer objects.
+  - `connection_info: List[Tuple[int, List[int]]]` - A list showing the computation graph connections.
 
 #### from_huggingface
 - **Description**: A pipeline to automatically convert huggingface model to create an AbstractNN object
 - **Parameters**: 
-  - `hf_repo_name` (str) - The name of the huggingface repo that contains the PTM.
-  - `tracing_input` (Tensor | Tensors) - Tensor or some tensors that consists of a valid input for the specified PTM.
+  - `hf_repo_name: str` - The name of the huggingface repo that contains the PTM.
+  - `tracing_input: Tensor | Tensors` - Tensor or some tensors that consists of a valid input for the specified PTM.
   - `verbose` (bool) - Controls the printing of debug messages.
 - **Returns**: An AbstractNN object with the structure of specified PTM.
 
@@ -60,4 +60,18 @@ from ANN.AbstractNN import *
 ann = AbstractNN.from_huggingface(hf_repo_name, torch.randn(1, 3, 224, 224))
 print(ann.layer_connection_vector)
 print(ann.layer_with_parameter_vector)
+```
+
+#### Example Result
+
+```
+2024-01-31 01:11:50.609 | INFO     | ANN.AbstractNN:from_huggingface:32 - Looking for model in microsoft/resnet-18...
+2024-01-31 01:12:32.229 | SUCCESS  | ANN.AbstractNN:from_huggingface:35 - Successfully load the model.
+2024-01-31 01:12:32.229 | INFO     | ANN.AbstractNN:from_huggingface:36 - Generating ANN...
+Converting onnx Graph to ANN: 100%|██████████████████████████████████████████████| 3/3 [00:03<00:00,  1.30s/it]
+2024-01-31 01:12:36.211 | SUCCESS  | ANN.AbstractNN:from_huggingface:53 - ANN generated. Time taken: 3.9816s
+2024-01-31 01:12:36.211 | INFO     | ANN.AbstractNN:from_huggingface:54 - Vectorizing...
+2024-01-31 01:12:36.213 | SUCCESS  | ANN.AbstractNN:from_huggingface:59 - Success.
+{'([INPUT], Conv2d)': 1, '(Conv2d, BatchNorm2d)': 20, '(BatchNorm2d, ReLU)': 9, '(ReLU, MaxPool2d)': 1, '(MaxPool2d, Conv2d)': 1, '(MaxPool2d, add_)': 1, '(add_, ReLU)': 8, '(ReLU, Conv2d)': 18, '(ReLU, add_)': 4, '(BatchNorm2d, add_)': 11, '(ReLU, AdaptiveAvgPool2d)': 1, '(ReLU, [OUTPUT])': 1, '(AdaptiveAvgPool2d, [OUTPUT])': 1}
+{'[INPUT]': 1, "Conv2d ['<in_channels, 3>', '<out_channels, 64>', '<kernel_size, (7, 7)>', '<stride, (2, 2)>', '<padding, (3, 3)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "BatchNorm2d ['<num_features, 64>', '<eps, 1e-05>', '<momentum, 0.1>', '<affine, True>', '<track_running_stats, True>']": 5, "ReLU ['<inplace, False>']": 17, ...}
 ```
