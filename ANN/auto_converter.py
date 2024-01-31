@@ -1,5 +1,5 @@
 from list_to_json import node_list_to_json
-from ANN.AbstractNNGenerator import OrderedListGenerator
+from ANN.AbstractNNGenerator import ANNGenerator
 from transformers import AutoModel, AutoTokenizer, AutoFeatureExtractor, AutoImageProcessor, AutoProcessor
 import json
 import os
@@ -100,7 +100,7 @@ def download_and_convert_model_to_json(models_dict_json_dir, output_dir, d):
             emsg0, emsg1, emsg2, emsg3 = None, None, None, None
             gc = 0
             try:
-                gen = OrderedListGenerator(m, inp0, use_hash=True)
+                gen = ANNGenerator(m, inp0, use_hash=True)
                 l_l, c_i = gen.get_connection()
                 node_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
             except Exception as e:
@@ -109,7 +109,7 @@ def download_and_convert_model_to_json(models_dict_json_dir, output_dir, d):
                 emsg0 = str(e)
             if gc == 1:
                 try:
-                    gen = OrderedListGenerator(m, inp1, use_hash=True)
+                    gen = ANNGenerator(m, inp1, use_hash=True)
                     l_l, c_i = gen.get_connection()
                     node_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
                 except Exception as e:
@@ -118,7 +118,7 @@ def download_and_convert_model_to_json(models_dict_json_dir, output_dir, d):
                     emsg1 = str(e)
             if gc == 2:
                 try:
-                    gen = OrderedListGenerator(m, inp2, use_hash=True)
+                    gen = ANNGenerator(m, inp2, use_hash=True)
                     l_l, c_i = gen.get_connection()
                     node_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
                 except Exception as e:
@@ -127,7 +127,7 @@ def download_and_convert_model_to_json(models_dict_json_dir, output_dir, d):
                     emsg2 = str(e)         
             if gc == 3:
                 try:
-                    gen = OrderedListGenerator(m, inp3, use_hash=True)
+                    gen = ANNGenerator(m, inp3, use_hash=True)
                     l_l, c_i = gen.get_connection()
                     node_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
                 except Exception as e:

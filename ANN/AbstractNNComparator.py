@@ -8,7 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
 import numpy as np
 
-class OrderedListComparator():
+class ANNComparator():
 
     def __init__(self, l1=None, l2=None, c1=None, c2=None):
         self.l1 = l1

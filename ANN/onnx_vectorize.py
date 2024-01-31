@@ -1,4 +1,4 @@
-from ANN.AbstractNNGenerator import OrderedListGenerator
+from ANN.AbstractNNGenerator import ANNGenerator
 from auto_vectorizer import auto_vectorize
 import onnx, json, os, fnmatch, pickle
 
@@ -35,7 +35,7 @@ def vectorize(path):
     """
     print('vectorizing', path)
     m1 = onnx.load(path)
-    gen1 = OrderedListGenerator(model=m1, mode='onnx', use_hash=True)
+    gen1 = ANNGenerator(model=m1, mode='onnx', use_hash=True)
     l, c = gen1.get_connection()
     _, p, l, d = auto_vectorize(l, c, mode='onnx')
     return d, l, p

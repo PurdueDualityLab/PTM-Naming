@@ -1,7 +1,7 @@
 
 import torch
 import torch.nn as nn
-from ANN.AbstractNNGenerator import OrderedListGenerator
+from ANN.AbstractNNGenerator import ANNGenerator
 import onnx
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import (
@@ -214,36 +214,36 @@ class ParallelNet(nn.Module):
         return x
 
 def RNN_test():
-    gen = OrderedListGenerator(TestRNN(), torch.randn(2, 3))
+    gen = ANNGenerator(TestRNN(), torch.randn(2, 3))
     gen.print_connection()
 
 def MLP_Test():
-    gen = OrderedListGenerator(TestMLP(), torch.randn(2, 128))
+    gen = ANNGenerator(TestMLP(), torch.randn(2, 128))
     gen.print_connection()
 
 def ResNet18_Test():
     rn18 = ResNetForImageClassification.from_pretrained("microsoft/resnet-18")
-    gen = OrderedListGenerator(rn18, torch.randn(1, 3, 224, 224))
+    gen = ANNGenerator(rn18, torch.randn(1, 3, 224, 224))
     gen.print_connection()
 
 def ResNet50_Test():
     rn50 = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
-    gen = OrderedListGenerator(rn50, torch.randn(1, 3, 224, 224))
+    gen = ANNGenerator(rn50, torch.randn(1, 3, 224, 224))
     gen.print_connection()
 
 def ResNet50_Hash_Comp_Test():
     print('50 TEST')
     rn50 = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
     st = time.time()
-    genN = OrderedListGenerator(rn50, torch.randn(1, 3, 224, 224))
+    genN = ANNGenerator(rn50, torch.randn(1, 3, 224, 224))
     #genN.print_ordered_list()
-    l1 = genN.get_ordered_list()
+    l1 = genN.get_ann()
     ed = time.time()
     t1 = ed - st
     st = time.time()
-    genH = OrderedListGenerator(rn50, torch.randn(1, 3, 224, 224))
+    genH = ANNGenerator(rn50, torch.randn(1, 3, 224, 224))
     #genH.print_ordered_list()
-    l2 = genH.get_ordered_list()
+    l2 = genH.get_ann()
     ed = time.time()
     t2 = ed - st
     print(t1, t2)
@@ -253,15 +253,15 @@ def ResNet101_Hash_Comp_Test():
     print('101 TEST')
     rn101 = ResNetForImageClassification.from_pretrained("microsoft/resnet-101")
     st = time.time()
-    genN = OrderedListGenerator(rn101, torch.randn(1, 3, 224, 224))
+    genN = ANNGenerator(rn101, torch.randn(1, 3, 224, 224))
     #genN.print_ordered_list()
-    l1 = genN.get_ordered_list()
+    l1 = genN.get_ann()
     ed = time.time()
     t1 = ed - st
     st = time.time()
-    genH = OrderedListGenerator(rn101, torch.randn(1, 3, 224, 224))
+    genH = ANNGenerator(rn101, torch.randn(1, 3, 224, 224))
     #genH.print_ordered_list()
-    l2 = genH.get_ordered_list()
+    l2 = genH.get_ann()
     ed = time.time()
     t2 = ed - st
     print(t1, t2)
@@ -272,15 +272,15 @@ def BigNet_Hash_Comp_Test():
     sys.setrecursionlimit(5000)
     bn = BigNet()
     st = time.time()
-    genN = OrderedListGenerator(bn, torch.randn(100, 100))
+    genN = ANNGenerator(bn, torch.randn(100, 100))
     #genN.print_ordered_list()
-    l1 = genN.get_ordered_list()
+    l1 = genN.get_ann()
     ed = time.time()
     t1 = ed - st
     st = time.time()
-    genH = OrderedListGenerator(bn, torch.randn(100, 100))
+    genH = ANNGenerator(bn, torch.randn(100, 100))
     #genH.print_ordered_list()
-    l2 = genH.get_ordered_list()
+    l2 = genH.get_ann()
     ed = time.time()
     t2 = ed - st
     print(t1, t2)
@@ -291,15 +291,15 @@ def BigResNet_Hash_Comp_Test():
     sys.setrecursionlimit(5000)
     bn = BigResNet()
     st = time.time()
-    genN = OrderedListGenerator(bn, torch.randn(100, 100))
+    genN = ANNGenerator(bn, torch.randn(100, 100))
     #genN.print_ordered_list()
-    l1 = genN.get_ordered_list()
+    l1 = genN.get_ann()
     ed = time.time()
     t1 = ed - st
     st = time.time()
-    genH = OrderedListGenerator(bn, torch.randn(100, 100))
+    genH = ANNGenerator(bn, torch.randn(100, 100))
     #genH.print_ordered_list()
-    l2 = genH.get_ordered_list()
+    l2 = genH.get_ann()
     ed = time.time()
     t2 = ed - st
     print(t1, t2)
@@ -310,15 +310,15 @@ def ParallelNet_Hash_Comp_Test():
     sys.setrecursionlimit(5000)
     bn = ParallelNet()
     st = time.time()
-    genN = OrderedListGenerator(bn, torch.randn(100, 100))
+    genN = ANNGenerator(bn, torch.randn(100, 100))
     #genN.print_ordered_list()
-    l1 = genN.get_ordered_list()
+    l1 = genN.get_ann()
     ed = time.time()
     t1 = ed - st
     st = time.time()
-    genH = OrderedListGenerator(bn, torch.randn(100, 100))
+    genH = ANNGenerator(bn, torch.randn(100, 100))
     #genH.print_ordered_list()
-    l2 = genH.get_ordered_list()
+    l2 = genH.get_ann()
     ed = time.time()
     t2 = ed - st
     print(t1, t2)
@@ -337,9 +337,9 @@ def HugeNet_Hash_Comp_Test():
     t1 = ed - st
     '''
     st = time.time()
-    genH = OrderedListGenerator(bn, torch.randn(100, 100))
+    genH = ANNGenerator(bn, torch.randn(100, 100))
     #genH.print_ordered_list()
-    l2 = genH.get_ordered_list()
+    l2 = genH.get_ann()
     ed = time.time()
     t2 = ed - st
     #print(t1, t2)
@@ -350,84 +350,84 @@ def Order_Test():
     orderA = OrderATest()
     orderB = OrderBTest()
     i = (torch.randn(1, 10))
-    genA = OrderedListGenerator(orderA, i)
-    genA.print_ordered_list()
+    genA = ANNGenerator(orderA, i)
+    genA.print_ann()
     print()
-    genB = OrderedListGenerator(orderB, i) 
-    genB.print_ordered_list()
+    genB = ANNGenerator(orderB, i) 
+    genB.print_ann()
 
 def Hash_Order_Test():
     orderA = OrderATest()
     orderB = OrderBTest()
     i = (torch.randn(1, 10))
-    genA = OrderedListGenerator(orderA, i, use_hash=True)
-    genA.print_ordered_list()
+    genA = ANNGenerator(orderA, i, use_hash=True)
+    genA.print_ann()
     print()
-    genB = OrderedListGenerator(orderB, i, use_hash=True) 
-    genB.print_ordered_list()
+    genB = ANNGenerator(orderB, i, use_hash=True) 
+    genB.print_ann()
 
 def ResNet18_Onnx_Test():
     rn18 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/models/resnet18-v1-7.onnx')
-    gen = OrderedListGenerator(model=rn18, mode='onnx')
-    gen.print_ordered_list()
+    gen = ANNGenerator(model=rn18, mode='onnx')
+    gen.print_ann()
 
 def ResNet101_Onnx_Test():
     rn101 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/test_models/resnet101-v1-torch.onnx')
-    gen = OrderedListGenerator(model=rn101, mode='onnx')
-    gen.print_ordered_list()
+    gen = ANNGenerator(model=rn101, mode='onnx')
+    gen.print_ann()
 
 def SkipConnection_Test():
     skta = SkipConnectionATest()
     sktb = SkipConnectionBTest()
     i = (torch.randn(1, 10))
-    gena = OrderedListGenerator(skta, i)
-    gena.print_ordered_list()
+    gena = ANNGenerator(skta, i)
+    gena.print_ann()
     print('-=-=-=')
-    genb = OrderedListGenerator(sktb, i)
-    genb.print_ordered_list()
+    genb = ANNGenerator(sktb, i)
+    genb.print_ann()
 
 def Custom_Test():
     t = AutoTokenizer.from_pretrained("bert-base-cased")
     m = AutoModel.from_pretrained('mlcorelib/deberta-base-uncased')
     i = t("Test Input", return_tensors="pt")
-    gen = OrderedListGenerator(m, i)
-    gen.print_ordered_list()
+    gen = ANNGenerator(m, i)
+    gen.print_ann()
 
 def Custom3_Test():
     t = AutoTokenizer.from_pretrained("bert-base-cased")
     m = AutoModel.from_pretrained('bert-base-cased')
     i = t("Test Input", return_tensors="pt")
-    gen = OrderedListGenerator(m, i)
-    gen.print_ordered_list()
+    gen = ANNGenerator(m, i)
+    gen.print_ann()
     print('\n\n-=-=-=-=-=-==-=-==-=-=-=-=\n\n')
     t = AutoTokenizer.from_pretrained("mlcorelib/deberta-base-uncased")
     m = AutoModel.from_pretrained('mlcorelib/deberta-base-uncased')
     i = t("Test Input", return_tensors="pt")
-    gen = OrderedListGenerator(m, i)
-    gen.print_ordered_list()
+    gen = ANNGenerator(m, i)
+    gen.print_ann()
 
 def Custom2_Test():
     t = AutoTokenizer.from_pretrained("saghar/xtremedistil-l12-h384-uncased-finetuned-wikitext103")
     m = AutoModel.from_pretrained('saghar/xtremedistil-l12-h384-uncased-finetuned-wikitext103')
     i = t("Test Input", return_tensors="pt")
-    gen = OrderedListGenerator(m, i, use_hash=True)
+    gen = ANNGenerator(m, i, use_hash=True)
     gen.get_connection()
 
 def AN_TORCHONNX_Val_Test():
     an = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/model_for_validation/alexnet-torch.onnx')
-    gen = OrderedListGenerator(model=an, mode='onnx')
-    gen.print_ordered_list()
+    gen = ANNGenerator(model=an, mode='onnx')
+    gen.print_ann()
 
 def ResNet101_comp_Test():
     d1 = '/depot/davisjam/data/chingwo/PTM-Naming/model_for_validation/resnet101-v1-onnx.onnx' # ONNX resnet101v1
     d2 = '/depot/davisjam/data/chingwo/PTM-Naming/model_for_validation/resnet101-v1-torch.onnx' # keras resnet101v1
     rn101onnx = onnx.load(d1)
-    gen = OrderedListGenerator(model=rn101onnx, mode='onnx')
-    gen.print_ordered_list()
+    gen = ANNGenerator(model=rn101onnx, mode='onnx')
+    gen.print_ann()
     print('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
     rn101t = onnx.load(d2)
-    gen = OrderedListGenerator(model=rn101t, mode='onnx')
-    gen.print_ordered_list()
+    gen = ANNGenerator(model=rn101t, mode='onnx')
+    gen.print_ann()
 
 def print_dict(d):
     for k, v in d.items():
@@ -435,7 +435,7 @@ def print_dict(d):
 
 def Vector_ResNet50_Test():
     rn50 = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
-    gen = OrderedListGenerator(rn50, torch.randn(1, 3, 224, 224))
+    gen = ANNGenerator(rn50, torch.randn(1, 3, 224, 224))
     fv1, fv2 = gen.vectorize()
     print_dict(fv1)
     print('\n-=-=-=\n')
@@ -447,7 +447,7 @@ def HF_Failed_Model_Test_Fix0(model_name):
     #inp = p(text="", return_tensors="pt")
     inp = p.encode("test", return_tensors='pt')
 
-    gen = OrderedListGenerator(m, inp, use_hash=True)
+    gen = ANNGenerator(m, inp, use_hash=True)
     gen.get_connection()
 
 def HF_Failed_Model_Test_Fix1(model_name):
@@ -456,7 +456,7 @@ def HF_Failed_Model_Test_Fix1(model_name):
     #inp = p(text="", return_tensors="pt")
     inp = p.encode("test", return_tensors='pt')
 
-    gen = OrderedListGenerator(m, inp, use_hash=True)
+    gen = ANNGenerator(m, inp, use_hash=True)
     gen.get_connection()
 
 def HF_Failed_Model_Test_Fix2(model_name):
@@ -466,7 +466,7 @@ def HF_Failed_Model_Test_Fix2(model_name):
     #inp = p(text="", return_tensors="pt")
     inp = p(images=image, return_tensors='pt')
 
-    gen = OrderedListGenerator(m, inp, use_hash=True)
+    gen = ANNGenerator(m, inp, use_hash=True)
     gen.get_connection()
 
 def HF_Failed_Model_Test_Fix3(model_name):
@@ -475,7 +475,7 @@ def HF_Failed_Model_Test_Fix3(model_name):
     #inp = p(text="", return_tensors="pt")
     inp = p('t', return_tensors='pt')
 
-    gen = OrderedListGenerator(m, inp, use_hash=True)
+    gen = ANNGenerator(m, inp, use_hash=True)
     gen.get_connection()
 
 def HF_Failed_Model_Test_Fix4(model_name):
@@ -484,7 +484,7 @@ def HF_Failed_Model_Test_Fix4(model_name):
     #inp = p(text="", return_tensors="pt")
     inp = p(pd.DataFrame(), return_tensors='pt')
 
-    gen = OrderedListGenerator(m, inp, use_hash=True)
+    gen = ANNGenerator(m, inp, use_hash=True)
     gen.get_connection()
 
 def HF_Failed_Model_Test_Fix5(model_name):
@@ -492,7 +492,7 @@ def HF_Failed_Model_Test_Fix5(model_name):
     m = AutoModel.from_pretrained(model_name, cache_dir=cache_dir)
     inp = p(np.random.randn(1, 16000), sampling_rate=16000, return_tensors='pt')
 
-    gen = OrderedListGenerator(m, inp, use_hash=True)
+    gen = ANNGenerator(m, inp, use_hash=True)
     gen.get_connection()
 
 def HF_Failed_Model_Test_Fix6(model_name):
@@ -500,7 +500,7 @@ def HF_Failed_Model_Test_Fix6(model_name):
     m = AutoModel.from_pretrained(model_name, cache_dir=cache_dir)
     inp = p(np.random.randn(1, 16000), sampling_rate=16000, return_tensors='pt')
 
-    gen = OrderedListGenerator(m, inp, use_hash=True)
+    gen = ANNGenerator(m, inp, use_hash=True)
     gen.get_connection()
 
 def HF_Failed_Model_0_Test(): HF_Failed_Model_Test_Fix0("p208p2002/bart-drcd-qg-hl")

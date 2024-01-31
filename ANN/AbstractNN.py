@@ -266,11 +266,11 @@ class Mapper():
         self,
         node_info_obj_set: Set[AbstractNNLayer] = None,
         node_id_to_node_obj_mapping: Dict[int, AbstractNNLayer] = None,
-        edge_node_info_list: List[Tuple[AbstractNNLayer, AbstractNNLayer]] = None
+        ann_layer_edge_list: List[Tuple[AbstractNNLayer, AbstractNNLayer]] = None
     ) -> None:
-        self.node_info_obj_set = node_info_obj_set
-        self.node_id_to_node_obj_mapping = node_id_to_node_obj_mapping
-        self.edge_node_info_list = edge_node_info_list
+        self.ann_layer_set = node_info_obj_set
+        self.ann_layer_id_to_ann_layer_obj_mapping = node_id_to_node_obj_mapping
+        self.ann_layer_edge_list = ann_layer_edge_list
 
     # populate the class var
     # node_info_obj_set: A set of all NodeInfo objects
@@ -280,37 +280,37 @@ class Mapper():
         self,
         edge_list: List[Tuple[Node, Node]]
     ) -> None:
-        self.node_info_obj_set = set()
-        self.node_id_to_node_obj_mapping = {}
-        self.edge_node_info_list = []
+        self.ann_layer_set = set()
+        self.ann_layer_id_to_ann_layer_obj_mapping = {}
+        self.ann_layer_edge_list = []
         for edge_tuple in edge_list:
             
-            if edge_tuple[0].node_id not in self.node_id_to_node_obj_mapping:
+            if edge_tuple[0].node_id not in self.ann_layer_id_to_ann_layer_obj_mapping:
                 n_info_0 = AbstractNNLayer()
                 n_info_0.fill_info(edge_tuple[0])
-                self.node_info_obj_set.add(n_info_0)
-                self.node_id_to_node_obj_mapping[n_info_0.node_id] = n_info_0
+                self.ann_layer_set.add(n_info_0)
+                self.ann_layer_id_to_ann_layer_obj_mapping[n_info_0.node_id] = n_info_0
             else:
-                n_info_0 = self.node_id_to_node_obj_mapping[edge_tuple[0].node_id]
+                n_info_0 = self.ann_layer_id_to_ann_layer_obj_mapping[edge_tuple[0].node_id]
 
 
-            if edge_tuple[1].node_id not in self.node_id_to_node_obj_mapping:
+            if edge_tuple[1].node_id not in self.ann_layer_id_to_ann_layer_obj_mapping:
                 n_info_1 = AbstractNNLayer()
                 n_info_1.fill_info(edge_tuple[1])
-                self.node_info_obj_set.add(n_info_1)
-                self.node_id_to_node_obj_mapping[n_info_1.node_id] = n_info_1
+                self.ann_layer_set.add(n_info_1)
+                self.ann_layer_id_to_ann_layer_obj_mapping[n_info_1.node_id] = n_info_1
             else:
-                n_info_1 = self.node_id_to_node_obj_mapping[edge_tuple[1].node_id]
+                n_info_1 = self.ann_layer_id_to_ann_layer_obj_mapping[edge_tuple[1].node_id]
 
-            self.edge_node_info_list.append((n_info_0, n_info_1))
+            self.ann_layer_edge_list.append((n_info_0, n_info_1))
 
     def populate_class_var_from_onnx(
         self,
         onnx_model: Any
     ):
-        self.node_info_obj_set = set()
-        self.node_id_to_node_obj_mapping = {}
-        self.edge_node_info_list = []
+        self.ann_layer_set = set()
+        self.ann_layer_id_to_ann_layer_obj_mapping = {}
+        self.ann_layer_edge_list = []
 
         node_list = onnx_model.graph.node
 
@@ -348,15 +348,15 @@ class Mapper():
         for input in input_nodes:
             input_node_info = AbstractNNLayer()
             input_node_info.fill_info_from_onnx(custom_id=io_id_cnt, is_input=True)
-            self.node_info_obj_set.add(input_node_info)
-            self.node_id_to_node_obj_mapping[io_id_cnt] = input_node_info
+            self.ann_layer_set.add(input_node_info)
+            self.ann_layer_id_to_ann_layer_obj_mapping[io_id_cnt] = input_node_info
             io_id_cnt += 1
             input_node_info_list.append(input_node_info)
         for output in output_nodes:
             output_node_info = AbstractNNLayer()
             output_node_info.fill_info_from_onnx(custom_id=io_id_cnt, is_output=True)
-            self.node_info_obj_set.add(output_node_info)
-            self.node_id_to_node_obj_mapping[io_id_cnt] = output_node_info
+            self.ann_layer_set.add(output_node_info)
+            self.ann_layer_id_to_ann_layer_obj_mapping[io_id_cnt] = output_node_info
             io_id_cnt += 1
             output_node_info_list.append(output_node_info)
 
@@ -397,8 +397,8 @@ class Mapper():
                             start_node_info = input_node_info_list[input_nodes_name.index(input_name)]
 
                             # Fix issue that this program omits the first layer
-                            if in_idx in self.node_id_to_node_obj_mapping:
-                                end_node_info = self.node_id_to_node_obj_mapping[in_idx]
+                            if in_idx in self.ann_layer_id_to_ann_layer_obj_mapping:
+                                end_node_info = self.ann_layer_id_to_ann_layer_obj_mapping[in_idx]
                             else:
                                 end_node_info = AbstractNNLayer()
                                 end_node_info.fill_info_from_onnx(
@@ -406,15 +406,15 @@ class Mapper():
                                     input = idx2shape_map[in_idx],
                                     custom_id = in_idx
                                 )
-                                self.node_id_to_node_obj_mapping[in_idx] = end_node_info
-                                self.node_info_obj_set.add(end_node_info)
+                                self.ann_layer_id_to_ann_layer_obj_mapping[in_idx] = end_node_info
+                                self.ann_layer_set.add(end_node_info)
                             
-                            self.edge_node_info_list.append((start_node_info, end_node_info))
+                            self.ann_layer_edge_list.append((start_node_info, end_node_info))
                             start_node_info = end_node_info #???
                             #
 
-                        elif in_idx in self.node_id_to_node_obj_mapping:
-                            start_node_info = self.node_id_to_node_obj_mapping[in_idx]
+                        elif in_idx in self.ann_layer_id_to_ann_layer_obj_mapping:
+                            start_node_info = self.ann_layer_id_to_ann_layer_obj_mapping[in_idx]
                         else:
                             start_node_info = AbstractNNLayer()
                             start_node_info.fill_info_from_onnx(
@@ -422,13 +422,13 @@ class Mapper():
                                 input = idx2shape_map[in_idx],
                                 custom_id = in_idx
                             )
-                            self.node_id_to_node_obj_mapping[in_idx] = start_node_info
-                            self.node_info_obj_set.add(start_node_info)
+                            self.ann_layer_id_to_ann_layer_obj_mapping[in_idx] = start_node_info
+                            self.ann_layer_set.add(start_node_info)
                         
                         for out_idx in out_indexes:
 
-                            if out_idx in self.node_id_to_node_obj_mapping:
-                                end_node_info = self.node_id_to_node_obj_mapping[out_idx]
+                            if out_idx in self.ann_layer_id_to_ann_layer_obj_mapping:
+                                end_node_info = self.ann_layer_id_to_ann_layer_obj_mapping[out_idx]
                             else:
                                 end_node_info = AbstractNNLayer()
                                 end_node_info.fill_info_from_onnx(
@@ -436,16 +436,16 @@ class Mapper():
                                     input = idx2shape_map[out_idx],
                                     custom_id = out_idx
                                 )
-                                self.node_id_to_node_obj_mapping[out_idx] = end_node_info
-                                self.node_info_obj_set.add(end_node_info)
+                                self.ann_layer_id_to_ann_layer_obj_mapping[out_idx] = end_node_info
+                                self.ann_layer_set.add(end_node_info)
                             
-                            self.edge_node_info_list.append((start_node_info, end_node_info))
+                            self.ann_layer_edge_list.append((start_node_info, end_node_info))
         
 
     # returns an adjacency 'dictionary' that maps NodeInfo.node_id to a list of all the 'next node's it points to
     def get_adj_dict(self, options: Set = None) -> Dict[int, List[AbstractNNLayer]]:
         adj_dict: Dict[int, List[AbstractNNLayer]] = dict()
-        for node_info_tuple in self.edge_node_info_list:
+        for node_info_tuple in self.ann_layer_edge_list:
             if node_info_tuple[0].node_id not in adj_dict:
                 adj_dict[node_info_tuple[0].node_id] = []
             adj_dict[node_info_tuple[0].node_id].append(node_info_tuple[1])
@@ -480,7 +480,7 @@ class Traverser():
         self.input_node_info_obj_list: List[TensorNode] = []
         self.output_node_info_obj_list: List[TensorNode] = []
         self.use_hash = use_hash
-        for edge_node_info_tuple in mapper.edge_node_info_list: # identify input/output node and put them into the class var
+        for edge_node_info_tuple in mapper.ann_layer_edge_list: # identify input/output node and put them into the class var
             if edge_node_info_tuple[0].is_input_node and edge_node_info_tuple[0] not in self.input_node_info_obj_list:
                 self.input_node_info_obj_list.append(edge_node_info_tuple[0])
             if edge_node_info_tuple[1].is_output_node and edge_node_info_tuple[1] not in self.output_node_info_obj_list:
@@ -494,7 +494,7 @@ class Traverser():
 
     # A function that clears the visited class var for future traversals
     def reset_visited_field(self) -> None:
-        node_info_obj_set = self.mapper.node_info_obj_set
+        node_info_obj_set = self.mapper.ann_layer_set
         for node_info_obj in node_info_obj_set:
             node_info_obj.preorder_visited = False
             node_info_obj.postorder_visited = False
