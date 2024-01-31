@@ -9,8 +9,7 @@ class ANNGeneratorTest():
         pass
 
     def test_HF_img_224_template(self, hf_repo_name):
-        model = AutoModel.from_pretrained(hf_repo_name)
-        ann = AbstractNN.from_huggingface(model, torch.randn(1, 3, 224, 224))
+        ann = AbstractNN.from_huggingface(hf_repo_name, torch.randn(1, 3, 224, 224))
         print(ann.layer_connection_vector)
         print(ann.layer_with_parameter_vector)
 

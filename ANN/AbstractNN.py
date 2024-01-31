@@ -11,6 +11,7 @@ from onnx import NodeProto, GraphProto
 from loguru import logger
 from tqdm import tqdm
 import time
+from transformers import AutoModel
 
 from ANN.utils import overwrite_torchview_func
 
@@ -18,15 +19,22 @@ from ANN.utils import overwrite_torchview_func
 class AbstractNN():
     def __init__(
         self,
-        abstract_node_list=None,
+        annlayer_list=None,
         connection_info=None
     ):
-        self.content = abstract_node_list
+        self.content = annlayer_list
         self.connection_info = connection_info
         self.layer_connection_vector, self.layer_with_parameter_vector = \
             self.vectorize()
 
-    def from_huggingface(model, tracing_input, verbose=True):
+    def from_huggingface(hf_repo_name, tracing_input, verbose=True):
+        
+        if verbose: logger.info(f"Looking for model in {hf_repo_name}...")
+        model = AutoModel.from_pretrained(hf_repo_name)
+        if verbose: 
+            logger.success(f"Successfully load the model.")
+            logger.info(f"Generating ANN...")
+
         start_time = time.time()
 
         ann_gen = AbstractNNGenerator(
