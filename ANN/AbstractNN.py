@@ -621,108 +621,6 @@ class AbstractNNSorter():
             traverse(input)
         
         return ordered_layer_list
-
-
-# A helper function that combines all the process into one
-def generate_ordered_layer_list_from_pytorch_model(
-        model: Any, 
-        inputs: Tuple[torch.Tensor], 
-        graph_name: str = 'Untitled',
-        depth: int = 16,
-        use_hash: bool = False
-    ) -> List[AbstractNNLayer]:
-    
-    model_graph: ComputationGraph = torchview.draw_graph(
-        model, inputs,
-        graph_name=graph_name,
-        depth=depth, 
-        expand_nested=True
-    )
-    
-    mapper = AbstractNNConversionHandler()
-    mapper.populate_class_var_from_torchview(model_graph.edge_list)
-
-    print('Mapper Populated')
-
-    traverser = AbstractNNSorter(mapper, use_hash)
-    l = traverser.generate_ordered_layer_list()
-    print('Ordered List Generated')
-    return l
-
-def generate_ordered_layer_list_from_onnx_model(
-        model: Any,
-        use_hash: bool = False
-    ) -> List[AbstractNNLayer]:
-    mapper = AbstractNNConversionHandler()
-    mapper.populate_class_var_from_onnx(model)
-
-    traverser = AbstractNNSorter(mapper, use_hash)
-    l = traverser.generate_ordered_layer_list()
-    return l
-
-def generate_ordered_layer_list_from_onnx_model_with_id_and_connection(
-        model: Any, 
-        use_hash: bool = False
-    ) -> List[Tuple[int, List[int]]]:
-    
-    mapper = AbstractNNConversionHandler()
-    mapper.populate_class_var_from_onnx(model)
-
-    #print('Mapper Populated')
-
-    traverser = AbstractNNSorter(mapper, use_hash)
-    l = traverser.generate_ordered_layer_list()
-
-    #print('Ordered List Generated')
-    
-    layer_id_connection_list: List[Tuple[int, List[int]]] = []
-
-    for layer in l:
-        connection_list = traverser.adj_dict[layer.node_id] if layer.node_id in traverser.adj_dict else []
-        connection_id_list = []
-        for node in connection_list:
-            connection_id_list.append(node.node_id)
-        layer_id_connection_list.append((layer.node_id, connection_id_list))
-    return l, layer_id_connection_list
-
-def generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(
-        model: Any, 
-        inputs: Tuple[torch.Tensor], 
-        graph_name: str = 'Untitled',
-        depth: int = 16,
-        use_hash: bool = False
-    ) -> List[Tuple[int, List[int]]]:
-    
-    print('Preparing tracing')
-
-    model_graph: ComputationGraph = torchview.draw_graph(
-        model, inputs,
-        graph_name=graph_name,
-        depth=depth, 
-        expand_nested=True
-    )
-
-    print('Tracing successful')
-    
-    mapper = AbstractNNConversionHandler()
-    mapper.populate_class_var_from_torchview(model_graph.edge_list)
-
-    print('Mapper Populated')
-
-    traverser = AbstractNNSorter(mapper, use_hash)
-    l = traverser.generate_ordered_layer_list()
-
-    print('Ordered List Generated')
-    
-    layer_id_connection_list: List[Tuple[int, List[int]]] = []
-
-    for layer in l:
-        connection_list = traverser.adj_dict[layer.node_id] if layer.node_id in traverser.adj_dict else []
-        connection_id_list = []
-        for node in connection_list:
-            connection_id_list.append(node.node_id)
-        layer_id_connection_list.append((layer.node_id, connection_id_list))
-    return l, layer_id_connection_list
         
 # Adding a class var to torchview Node classes so the original Tensor/Module can be accessed
 def patch():
@@ -812,9 +710,9 @@ class ANNGenerator():
         of a layer in the model
         """
         if self.mode == 'pytorch':
-            return generate_ordered_layer_list_from_pytorch_model(self.model, self.inputs, use_hash=self.use_hash)
+            return self.generate_ann_from_pytorch_model(self.model, self.inputs, use_hash=self.use_hash)
         if self.mode == 'onnx':
-            return generate_ordered_layer_list_from_onnx_model(self.model, use_hash=self.use_hash)
+            return self.generate_ann_from_onnx_model(self.model, use_hash=self.use_hash)
 
 
     def print_ann(self) -> None:
@@ -828,9 +726,9 @@ class ANNGenerator():
         None
         """
         if self.mode == 'pytorch':
-            ordered_list = generate_ordered_layer_list_from_pytorch_model(self.model, self.inputs, use_hash=self.use_hash)
+            ordered_list = self.generate_ann_from_pytorch_model(self.model, self.inputs, use_hash=self.use_hash)
         if self.mode == 'onnx':
-            ordered_list = generate_ordered_layer_list_from_onnx_model(self.model, use_hash=self.use_hash)
+            ordered_list = self.generate_ann_from_onnx_model(self.model, use_hash=self.use_hash)
         for layer_node in ordered_list:
             print(layer_node)
 
@@ -846,9 +744,9 @@ class ANNGenerator():
         list: An ordered list with connection information
         """
         if self.mode == 'pytorch':
-            l = generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(self.model, self.inputs, use_hash=self.use_hash)
+            l = self.generate_ann_from_pytorch_model_with_id_and_connection(self.model, self.inputs, use_hash=self.use_hash)
         if self.mode == 'onnx':
-            l = generate_ordered_layer_list_from_onnx_model_with_id_and_connection(self.model, use_hash=self.use_hash)
+            l = self.generate_ann_from_onnx_model_with_id_and_connection(self.model, use_hash=self.use_hash)
         return l[0], l[1]
 
     def print_connection(self) -> None:
@@ -862,10 +760,152 @@ class ANNGenerator():
         Returns:
         None
         """
-        l = generate_ordered_layer_list_from_pytorch_model_with_id_and_connection(self.model, self.inputs)
+        l = self.generate_ann_from_pytorch_model_with_id_and_connection(self.model, self.inputs)
         for layer_node, connection_info in zip(l[0], l[1]):
             print('[{}] {} -> {}'.format(connection_info[0], layer_node, connection_info[1]))
 
+    # A helper function that combines all the process into one
+    def generate_ann_from_pytorch_model(
+            model: Any, 
+            inputs: Tuple[torch.Tensor], 
+            graph_name: str = 'Untitled',
+            depth: int = 16,
+            use_hash: bool = False
+        ) -> List[AbstractNNLayer]:
+        
+        model_graph: ComputationGraph = torchview.draw_graph(
+            model, inputs,
+            graph_name=graph_name,
+            depth=depth, 
+            expand_nested=True
+        )
+        
+        mapper = AbstractNNConversionHandler()
+        mapper.populate_class_var_from_torchview(model_graph.edge_list)
+
+        print('Mapper Populated')
+
+        traverser = AbstractNNSorter(mapper, use_hash)
+        l = traverser.generate_ordered_layer_list()
+        print('Ordered List Generated')
+        return l
+
+    def generate_ann_from_onnx_model(
+            model: Any,
+            use_hash: bool = False
+        ) -> List[AbstractNNLayer]:
+        mapper = AbstractNNConversionHandler()
+        mapper.populate_class_var_from_onnx(model)
+
+        traverser = AbstractNNSorter(mapper, use_hash)
+        l = traverser.generate_ordered_layer_list()
+        return l
+
+    def generate_ann_from_onnx_model_with_id_and_connection(
+            model: Any, 
+            use_hash: bool = False
+        ) -> List[Tuple[int, List[int]]]:
+        
+        mapper = AbstractNNConversionHandler()
+        mapper.populate_class_var_from_onnx(model)
+
+        #print('Mapper Populated')
+
+        traverser = AbstractNNSorter(mapper, use_hash)
+        l = traverser.generate_ordered_layer_list()
+
+        #print('Ordered List Generated')
+        
+        layer_id_connection_list: List[Tuple[int, List[int]]] = []
+
+        for layer in l:
+            connection_list = traverser.adj_dict[layer.node_id] if layer.node_id in traverser.adj_dict else []
+            connection_id_list = []
+            for node in connection_list:
+                connection_id_list.append(node.node_id)
+            layer_id_connection_list.append((layer.node_id, connection_id_list))
+        return l, layer_id_connection_list
+
+    def generate_ann_from_pytorch_model_with_id_and_connection(
+            model: Any, 
+            inputs: Tuple[torch.Tensor], 
+            graph_name: str = 'Untitled',
+            depth: int = 16,
+            use_hash: bool = False
+        ) -> List[Tuple[int, List[int]]]:
+        
+        print('Preparing tracing')
+
+        model_graph: ComputationGraph = torchview.draw_graph(
+            model, inputs,
+            graph_name=graph_name,
+            depth=depth, 
+            expand_nested=True
+        )
+
+        print('Tracing successful')
+        
+        mapper = AbstractNNConversionHandler()
+        mapper.populate_class_var_from_torchview(model_graph.edge_list)
+
+        print('Mapper Populated')
+
+        traverser = AbstractNNSorter(mapper, use_hash)
+        l = traverser.generate_ordered_layer_list()
+
+        print('Ordered List Generated')
+        
+        layer_id_connection_list: List[Tuple[int, List[int]]] = []
+
+        for layer in l:
+            connection_list = traverser.adj_dict[layer.node_id] if layer.node_id in traverser.adj_dict else []
+            connection_id_list = []
+            for node in connection_list:
+                connection_id_list.append(node.node_id)
+            layer_id_connection_list.append((layer.node_id, connection_id_list))
+        return l, layer_id_connection_list
+
+    def generate_ann(
+        self,
+        framework: str,
+        tracing_inputs: Tuple[torch.Tensor] = None, 
+        graph_name: str = 'Untitled',
+        depth: int = 16,
+        use_hash: bool = False,
+        include_connection: bool = False
+    ):
+        # check integrity
+        if framework == "pytorch" and tracing_inputs == None:
+            raise ValueError("PyTorch framework need an input to trace the computation graph.")
+        elif framework not in ["pytorch", "onnx"]:
+            raise ValueError(f"Unsupported framework {framework}.")
+        
+        result = None
+        if include_connection:
+            if framework == "pytorch":
+                result = self.generate_ann_from_pytorch_model_with_id_and_connection(
+                    tracing_inputs,
+                    graph_name,
+                    depth,
+                    use_hash
+                )
+            elif framework == "onnx":
+                result = self.generate_ann_from_onnx_model_with_id_and_connection(
+                    use_hash
+                )
+        else:
+            if framework == "pytorch":
+                result = self.generate_ann_from_pytorch_model(
+                    tracing_inputs,
+                    graph_name,
+                    depth,
+                    use_hash
+                )
+            elif framework == "onnx":
+                result = self.generate_ann_from_onnx_model(
+                    use_hash
+                )
+        return result
 
     def vectorize(self):
         """
