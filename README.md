@@ -45,7 +45,7 @@ pip install -e .
 - **Description**: A pipeline to automatically convert huggingface model to create an `AbstractNN` object.
 - **Parameters**: 
   - `hf_repo_name: str` - The name of the huggingface repo that contains the PTM.
-  - `tracing_input: str | Tensor | Tensors` - Tensor or some tensors that consists of a valid input for the specified PTM, or `auto` to automatically search for a suitable input.
+  - `tracing_input: str | Tensor | Tensors` - Tensor or some tensors that consists of a valid input for the specified PTM, `auto` to automatically search for a suitable input, default value is `auto`.
   - `verbose: bool` - Controls the printing of debug messages.
 - **Returns**: An `AbstractNN` object with the structure of specified PTM.
 
@@ -99,7 +99,7 @@ Converting onnx Graph to ANN: 100%|███████████████
 import torch
 from ANN.AbstractNN import *
 
-ann = AbstractNN.from_huggingface(hf_repo_name, torch.randn(1, 3, 224, 224))
+ann = AbstractNN.from_huggingface(hf_repo_name)
 print(ann.layer_connection_vector)
 print(ann.layer_with_parameter_vector)
 ```
