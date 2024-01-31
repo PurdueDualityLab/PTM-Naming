@@ -1,4 +1,4 @@
-from ANN.AbstractNN import ANNGenerator
+from ANN.AbstractNN import AbstractNNGenerator
 from ANN.pipelines.ANNToVectorPipeline import auto_vectorize
 import onnx, json, os, fnmatch, pickle
 
@@ -35,7 +35,7 @@ def vectorize(path):
     """
     print('vectorizing', path)
     m1 = onnx.load(path)
-    gen1 = ANNGenerator(model=m1, mode='onnx', use_hash=True)
+    gen1 = AbstractNNGenerator(model=m1, framework='onnx', use_hash=True)
     l, c = gen1.get_connection()
     _, p, l, d = auto_vectorize(l, c, mode='onnx')
     return d, l, p

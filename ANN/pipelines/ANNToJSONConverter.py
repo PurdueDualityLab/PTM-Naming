@@ -3,7 +3,7 @@ from ANN.AbstractNN import AbstractNNLayer, AbstractNNLayerParam
 from typing import List, Tuple
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import AutoModel, AutoTokenizer
-from ANN.AbstractNN import ANNGenerator
+from ANN.AbstractNN import AbstractNNGenerator
 
 def node_list_to_json(layer_list: List[AbstractNNLayer], connection_info: List[Tuple[int, List[int]]], output_dir):
     if len(layer_list) != len(connection_info): 
@@ -73,7 +73,7 @@ def Custom_Test():
     t = AutoTokenizer.from_pretrained("bert-base-cased")
     m = AutoModel.from_pretrained('bert-base-cased')
     i = t("Test Input", return_tensors="pt")
-    gen = ANNGenerator(m, i)
+    gen = AbstractNNGenerator(m, i)
     l_l, c_i = gen.get_connection()
     node_list_to_json(l_l, c_i, '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test.json')
     ll2, ci2 = read_node_list_from_json('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test.json')
