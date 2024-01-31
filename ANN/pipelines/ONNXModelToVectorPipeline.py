@@ -1,5 +1,5 @@
 from ANN.AbstractNN import ANNGenerator
-from ANN.ANNToVectorPipeline import auto_vectorize
+from ANN.pipelines.ANNToVectorPipeline import auto_vectorize
 import onnx, json, os, fnmatch, pickle
 
 def find_files(directory, pattern):
