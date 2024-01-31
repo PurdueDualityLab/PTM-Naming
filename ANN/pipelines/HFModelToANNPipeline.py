@@ -1,4 +1,4 @@
-from ANN.ANNToJSONConverter import node_list_to_json
+from ANN.pipelines.ANNToJSONConverter import node_list_to_json
 from ANN.AbstractNN import ANNGenerator
 from transformers import AutoModel, AutoTokenizer, AutoFeatureExtractor, AutoImageProcessor, AutoProcessor
 import json
