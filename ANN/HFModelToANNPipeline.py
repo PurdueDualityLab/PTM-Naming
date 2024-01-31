@@ -1,4 +1,4 @@
-from list_to_json import node_list_to_json
+from ANN.ANNToJSONConverter import node_list_to_json
 from ANN.AbstractNN import ANNGenerator
 from transformers import AutoModel, AutoTokenizer, AutoFeatureExtractor, AutoImageProcessor, AutoProcessor
 import json
@@ -147,11 +147,10 @@ def download_and_convert_model_to_json(models_dict_json_dir, output_dir, d):
                     print('CUDA Error')
                     del failed_model[model_name]
 
-download_and_convert_model_to_json(
-    '/depot/davisjam/data/chingwo/PTM-Naming/model_collection/filtered_models.json',
-    '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_data',
-    "/scratch/gilbreth/cheung59/cache_huggingface"
-    )
+if __name__ == "__main__":
 
-# end at bigbird-pegasus-large-bigpatent.json
-# python PTM-Naming/comparators/pytorch/auto_converter.py 
+    download_and_convert_model_to_json(
+        '/depot/davisjam/data/chingwo/PTM-Naming/model_collection/filtered_models.json',
+        '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/ptm_data',
+        "/scratch/gilbreth/cheung59/cache_huggingface"
+        )

@@ -7,7 +7,7 @@ import os
 from transformers import AutoModel, AutoTokenizer
 from ANN.AbstractNN import AbstractNNLayer
 from typing import List, Tuple
-from list_to_json import read_node_list_from_json
+from ANN.ANNToJSONConverter import read_node_list_from_json
 import pickle
 
 # Set the cache directory
