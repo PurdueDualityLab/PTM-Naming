@@ -1,5 +1,5 @@
 
-from ANN.AbstractNN import AbstractNNLayer, generate_ordered_layer_list_from_pytorch_model, patch, generate_ordered_layer_list_from_onnx_model, generate_ordered_layer_list_from_pytorch_model_with_id_and_connection
+from ANN.AbstractNN import AbstractNNLayer, generate_ordered_layer_list_from_pytorch_model, generate_ordered_layer_list_from_onnx_model, generate_ordered_layer_list_from_pytorch_model_with_id_and_connection
 from transformers import AutoModel, AutoTokenizer
 import difflib
 import onnx
@@ -7,6 +7,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
 import numpy as np
+
+from ANN.utils import overwrite_torchview_func
 
 class ANNComparator():
 
@@ -17,12 +19,12 @@ class ANNComparator():
         self.c2 = c2
 
     def from_model(self, m1, m2, inp):
-        patch()
+        overwrite_torchview_func()
         self.l1 = generate_ordered_layer_list_from_pytorch_model(m1, inp)
         self.l2 = generate_ordered_layer_list_from_pytorch_model(m2, inp)
     
     def from_NLP_model_name(self, n1, n2):
-        patch()
+        overwrite_torchview_func()
         t = AutoTokenizer.from_pretrained(n1)
         m1 = AutoModel.from_pretrained(n1)
         inp = t("Test Input", return_tensors="pt")
