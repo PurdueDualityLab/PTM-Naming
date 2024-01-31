@@ -1,11 +1,12 @@
 import json
-from ANN.AbstractNN import AbstractNNLayer, AbstractNNLayerParam
+from ANN.AbstractNNLayer import AbstractNNLayer
 from typing import List, Tuple
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import AutoModel, AutoTokenizer
-from ANN.AbstractNN import AbstractNNGenerator
+from ANN.AbstractNNGenerator import AbstractNNGenerator
+from ANN.AbstractNNLayerParam import AbstractNNLayerParam
 
-def node_list_to_json(layer_list: List[AbstractNNLayer], connection_info: List[Tuple[int, List[int]]], output_dir):
+def annlayer_list_to_json(layer_list: List[AbstractNNLayer], connection_info: List[Tuple[int, List[int]]], output_loc):
     if len(layer_list) != len(connection_info): 
         print('Unrecognized connection info')
         return None
@@ -44,11 +45,11 @@ def node_list_to_json(layer_list: List[AbstractNNLayer], connection_info: List[T
             node_dict['parameters'] = param_dict
         json_compat_list.append(node_dict)
     
-    with open(output_dir, 'w') as f:
+    with open(output_loc, 'w') as f:
         json.dump(json_compat_list, f)
 
-def read_node_list_from_json(json_dir):
-    with open(json_dir) as f:
+def read_annlayer_list_from_json(json_loc):
+    with open(json_loc) as f:
         data = json.load(f)
     l_l = []
     c_i = []
@@ -75,8 +76,8 @@ def Custom_Test():
     i = t("Test Input", return_tensors="pt")
     gen = AbstractNNGenerator(m, i)
     l_l, c_i = gen.get_connection()
-    node_list_to_json(l_l, c_i, '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test.json')
-    ll2, ci2 = read_node_list_from_json('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test.json')
-    node_list_to_json(ll2, ci2, '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test2.json')
+    annlayer_list_to_json(l_l, c_i, '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test.json')
+    ll2, ci2 = read_annlayer_list_from_json('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test.json')
+    annlayer_list_to_json(ll2, ci2, '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test2.json')
 
 #Custom_Test()

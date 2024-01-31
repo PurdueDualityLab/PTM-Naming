@@ -1,5 +1,5 @@
 
-from ANN.AbstractNN import AbstractNNLayer, generate_ordered_layer_list_from_pytorch_model, generate_ordered_layer_list_from_onnx_model, generate_ordered_layer_list_from_pytorch_model_with_id_and_connection
+from ANN.AbstractNN import generate_ordered_layer_list_from_pytorch_model, generate_ordered_layer_list_from_onnx_model, generate_ordered_layer_list_from_pytorch_model_with_id_and_connection
 from transformers import AutoModel, AutoTokenizer
 import difflib
 import onnx
@@ -7,6 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
 import numpy as np
+from ANN.AbstractNNLayer import AbstractNNLayer
 
 from ANN.utils import overwrite_torchview_func
 
