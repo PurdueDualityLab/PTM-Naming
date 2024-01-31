@@ -1,4 +1,4 @@
-from ANN.AbstractNNGenerator import ANNGenerator
+from ANN.AbstractNN import ANNGenerator
 from auto_vectorizer import auto_vectorize
 import onnx, json, os, fnmatch, pickle
 

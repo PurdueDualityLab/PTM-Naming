@@ -1,0 +1,7 @@
+LICENSE
+README.md
+setup.py
+ptm_naming.egg-info/PKG-INFO
+ptm_naming.egg-info/SOURCES.txt
+ptm_naming.egg-info/dependency_links.txt
+ptm_naming.egg-info/top_level.txt

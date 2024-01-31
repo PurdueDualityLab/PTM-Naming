@@ -1,7 +1,7 @@
 
 from transformers import AutoModel, AutoTokenizer
 import json
-from ANN.AbstractNNGenerator import ANNGenerator
+from ANN.AbstractNN import ANNGenerator
 from ANN.AbstractNN import patch
 import os
 from transformers import AutoModel, AutoTokenizer
