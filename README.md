@@ -22,15 +22,18 @@ A tool to analyze defects in PTM repositories.
 ## Installation
 
 Run the following commands:
-`git clone -b Evaluation https://github.com/PurdueDualityLab/PTM-Naming.git`
-`pip install -r requirements.txt`
-`pip install -e .`
+
+```
+git clone -b Evaluation https://github.com/PurdueDualityLab/PTM-Naming.git
+pip install -r requirements.txt
+pip install -e .
+```
 
 ## High level class description
 
 ### `AbstractNN` Class
 
-#### Class Methos
+#### Class Methods
 
 #### `AbstractNN` constructor
 - **Description**: The constructor of `AbstractNN`, not necessary to use. When this object is created, the vectorization process is automated.
