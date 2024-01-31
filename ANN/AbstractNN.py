@@ -9,6 +9,8 @@ from torchview.computation_graph import ComputationGraph
 import onnx
 from onnx import NodeProto, GraphProto
 
+from ANN.utils import overwrite_torchview_func
+
 class AbstractNN():
     def __init__(
         self,
@@ -621,52 +623,6 @@ class AbstractNNSorter():
             traverse(input)
         
         return ordered_layer_list
-        
-# Adding a class var to torchview Node classes so the original Tensor/Module can be accessed
-def patch():
-    def new_tn_init(
-            self,
-            tensor,
-            depth,
-            parents=None,
-            children=None,
-            name='tensor',
-            context=None,
-            is_aux=False,
-            main_node=None,
-            parent_hierarchy=None,
-        ):
-        
-        old_tn_init(
-            self, tensor, depth, parents, children, name, context,
-            is_aux, main_node, parent_hierarchy
-        )
-        
-        self.tensor = tensor
-
-    old_tn_init = torchview.computation_node.TensorNode.__init__
-
-    torchview.computation_node.TensorNode.__init__ = new_tn_init
-
-    def new_mn_init(
-            self,
-            module_unit,
-            depth,
-            parents = None,
-            children = None,
-            name = 'module-node',
-            output_nodes = None,
-        ):
-        old_mn_init(self, module_unit, depth, parents, children, name, output_nodes)
-        self.module_unit = module_unit
-
-    old_mn_init = torchview.computation_node.ModuleNode.__init__
-
-    torchview.computation_node.ModuleNode.__init__ = new_mn_init
-
-def print_list(l):
-    for i in l: print(i)
-
 
 class ANNGenerator():
 
@@ -696,7 +652,7 @@ class ANNGenerator():
         self.inputs = inputs
         self.mode = mode
         self.use_hash = use_hash
-        patch()
+        overwrite_torchview_func()
 
     def get_ann(self) -> List[AbstractNNLayer]:
         """

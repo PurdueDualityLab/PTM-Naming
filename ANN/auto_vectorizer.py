@@ -2,7 +2,7 @@
 from transformers import AutoModel, AutoTokenizer
 import json
 from ANN.AbstractNN import ANNGenerator
-from ANN.AbstractNN import patch
+from ANN.utils import overwrite_torchview_func
 import os
 from transformers import AutoModel, AutoTokenizer
 from ANN.AbstractNN import AbstractNNLayer
@@ -25,7 +25,7 @@ def read_json(dir):
     return data
 
 def auto_vectorize_nlp(model_name_list, output_dir_l, output_dir_p, output_dir_pl, output_dir_d, output_dir_dn):
-    patch()
+    overwrite_torchview_func()
     #d_l, d_p, d_pl, d_d, d_dn = read_json(output_dir_l), read_json(output_dir_p), read_json(output_dir_pl)
     d_l, d_p, d_pl, d_d, d_dn = dict(), dict(), dict(), dict(), dict()
     for n in model_name_list:
