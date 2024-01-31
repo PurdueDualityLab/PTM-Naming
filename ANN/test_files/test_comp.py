@@ -2,7 +2,7 @@
 from transformers import ResNetForImageClassification
 from transformers import AlbertTokenizer, AlbertModel, AutoModelForMaskedLM
 
-from comp import OrderedListComparator
+from ANN.AbstractNNComparator import ANNComparator
 from ANN.AbstractNN import print_list
 import timm
 import torch
@@ -16,7 +16,7 @@ comp.get_diff()
 print(comp.get_ngram_cosine_similarity())
 '''
 
-comp = OrderedListComparator()
+comp = ANNComparator()
 comp.from_NLP_model_name("albert-base-v1", "asafaya/albert-base-arabic")
 print(comp.get_nlayer_cosine_similarity())
 print(comp.get_param_cosine_similarity())

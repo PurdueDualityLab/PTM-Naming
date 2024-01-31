@@ -10,7 +10,7 @@ from ANN.AbstractNN import (
 from typing import Any, Tuple, List
 from torch import Tensor
 
-class OrderedListGenerator():
+class ANNGenerator():
 
     def __init__(
         self,
@@ -20,7 +20,7 @@ class OrderedListGenerator():
         use_hash: bool = False
     ) -> None:
         """
-        OrderedListGenerator constructor function
+        ANNGenerator constructor function
 
         Parameters:
         model (Any): Any model type from pytorch or onnx
@@ -40,7 +40,7 @@ class OrderedListGenerator():
         self.use_hash = use_hash
         patch()
 
-    def get_ordered_list(self) -> List[AbstractNNLayer]:
+    def get_ann(self) -> List[AbstractNNLayer]:
         """
         Returns an ordered list for the model
 
@@ -57,7 +57,7 @@ class OrderedListGenerator():
             return generate_ordered_layer_list_from_onnx_model(self.model, use_hash=self.use_hash)
 
 
-    def print_ordered_list(self) -> None:
+    def print_ann(self) -> None:
         """
         Print an ordered list for the model
 

@@ -1,7 +1,7 @@
 
 from transformers import AutoModel, AutoTokenizer
 import json
-from ANN.AbstractNNGenerator import OrderedListGenerator
+from ANN.AbstractNNGenerator import ANNGenerator
 from ANN.AbstractNN import patch
 import os
 from transformers import AutoModel, AutoTokenizer
@@ -41,7 +41,7 @@ def auto_vectorize_nlp(model_name_list, output_dir_l, output_dir_p, output_dir_p
             print(e)
             continue
         inp = t("Test Input", return_tensors="pt")
-        gen = OrderedListGenerator(m, inp, use_hash=True)
+        gen = ANNGenerator(m, inp, use_hash=True)
         fvl, fvp, fvpl, fvd, fvdn = gen.vectorize()
         d_l[n] = fvl
         d_p[n] = fvp
