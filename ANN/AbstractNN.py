@@ -6,8 +6,9 @@ import time
 from transformers import AutoModel
 from ANN.AbstractNNGenerator import AbstractNNGenerator
 from ANN.AbstractNNLayer import AbstractNNLayer
+from tools.HFValidInputIterator import HFValidInputIterator
 
-from ANN.pipelines.ANNToJSONConverter import read_annlayer_list_from_json, annlayer_list_to_json
+from ANN.old_pipelines.ANNToJSONConverter import read_annlayer_list_from_json, annlayer_list_to_json
 
 # high-level wrapper
 class AbstractNN():
@@ -21,12 +22,20 @@ class AbstractNN():
         self.layer_connection_vector, self.layer_with_parameter_vector = \
             self.vectorize()
 
-    def from_huggingface(hf_repo_name, tracing_input, verbose=True):
+    def from_huggingface(hf_repo_name, tracing_input="auto", verbose=True):
         
         if verbose: logger.info(f"Looking for model in {hf_repo_name}...")
         model = AutoModel.from_pretrained(hf_repo_name)
         if verbose: 
             logger.success(f"Successfully load the model.")
+
+        if tracing_input == "auto":
+            if verbose: logger.info(f"Automatically generating an input...")
+            in_iter = HFValidInputIterator(model, hf_repo_name, cache_dir=None) # TODO: modify cache_dir
+            tracing_input = in_iter.get_valid_input()
+            if verbose: logger.success(f"Successfully generating an input.")
+
+        if verbose:
             logger.info(f"Generating ANN...")
 
         start_time = time.time()

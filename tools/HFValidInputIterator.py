@@ -1,5 +1,5 @@
 
-from HFAutoClassIterator import HFAutoClassIterator
+from tools.HFAutoClassIterator import HFAutoClassIterator
 from tqdm import tqdm
 from loguru import logger
 import torch
