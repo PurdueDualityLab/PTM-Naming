@@ -8,18 +8,141 @@ from torchview.computation_node.compute_node import ModuleNode, TensorNode, Func
 from torchview.computation_graph import ComputationGraph
 import onnx
 from onnx import NodeProto, GraphProto
+from loguru import logger
+from tqdm import tqdm
 
 from ANN.utils import overwrite_torchview_func
 
+# high-level wrapper
 class AbstractNN():
     def __init__(
         self,
-        abstract_node_list
+        abstract_node_list=None,
+        connection_info=None
     ):
         self.content = abstract_node_list
+        self.connection_info = connection_info
 
-    def get_content(self):
-        return self.content
+    def from_huggingface(model, tracing_input):
+        ann_gen = AbstractNNGenerator(
+            model=model,
+            inputs=tracing_input,
+            framework="pytorch",
+            use_hash=True,
+            verbose=True
+        )
+        layer_list, conn_info = ann_gen.generate_annlayer_list(include_connection=True)
+        return AbstractNN(layer_list, conn_info)
+    
+    # TODO: need some name changes
+    def vectorize(self):
+        """
+        Vectorize the model using an n-gram like approach
+
+        Unused Function
+        """
+        l_l, c_i = self.content, self.connection_info
+
+        def get_freq_vec_l(layer_list, connection_info):
+            freq_vec = dict()
+            id_to_node_map = dict()
+            for layer_node, layer_connection_info in zip(layer_list, connection_info): # assume no repetitive layer in ordered list
+                id_to_node_map[layer_connection_info[0]] = layer_node
+
+            def make_node_string(n: AbstractNNLayer):
+                if n.is_input_node:
+                    return '[INPUT]'
+                if n.is_output_node:
+                    return '[OUTPUT]'
+                return '{} {}->{}'.format(n.operation, n.input_shape, n.output_shape)
+
+            for layer_node, layer_connection_info in zip(layer_list, connection_info):
+                curr_node_str = make_node_string(layer_node)
+                for next_layer_id in layer_connection_info[1]:
+                    next_node_str = make_node_string(id_to_node_map[next_layer_id])
+                    combined_str = '({}, {})'.format(curr_node_str, next_node_str)
+                    if combined_str not in freq_vec:
+                        freq_vec[combined_str] = 0
+                    freq_vec[combined_str] += 1
+
+            return freq_vec
+
+        def get_freq_vec_p(layer_list: List[AbstractNNLayer]):
+            freq_vec = dict()
+            for l in layer_list:
+                p_str_list = []
+                if l.parameters != None:
+                    for p in l.parameters:
+                        p_str_list.append('<{}, {}>'.format(p.param_name, p.param_value))
+                if l.is_input_node:
+                    l_str = '[INPUT]'
+                elif l.is_output_node:
+                    l_str = '[OUTPUT]'
+                else:
+                    l_str = '{} {}'.format(l.operation, p_str_list if len(p_str_list) else '')
+                if l_str not in freq_vec:
+                    freq_vec[l_str] = 0
+                freq_vec[l_str] += 1
+            return freq_vec
+
+        def get_freq_vec_pl(layer_list, connection_info):
+            freq_vec = dict()
+            id_to_node_map = dict()
+            for layer_node, layer_connection_info in zip(layer_list, connection_info): # assume no repetitive layer in ordered list
+                id_to_node_map[layer_connection_info[0]] = layer_node
+
+            def make_node_string(n: AbstractNNLayer):
+                if n.is_input_node:
+                    return '[INPUT]'
+                if n.is_output_node:
+                    return '[OUTPUT]'
+                return n.operation
+
+            for layer_node, layer_connection_info in zip(layer_list, connection_info):
+                curr_node_str = make_node_string(layer_node)
+                for next_layer_id in layer_connection_info[1]:
+                    next_node_str = make_node_string(id_to_node_map[next_layer_id])
+                    combined_str = '({}, {})'.format(curr_node_str, next_node_str)
+                    if combined_str not in freq_vec:
+                        freq_vec[combined_str] = 0
+                    freq_vec[combined_str] += 1
+
+            return freq_vec
+
+        # def get_freq_vec_d(layer_list):
+        #     freq_vec_d, freq_vec_dn = dict(), dict()
+        #     for l in layer_list:
+        #         d_list = []
+        #         if l.input_shape != None:
+        #             for s_in in l.input_shape:
+        #                 d_list.append(s_in)
+        #         if l.output_shape != None:
+        #             for s_out in l.output_shape:
+        #                 d_list.append(s_out)
+        #         for t in d_list:
+        #             if str(t) not in freq_vec_d:
+        #                 freq_vec_d[str(t)] = 0
+        #             freq_vec_d[str(t)] += 1
+        #             for n in t:
+        #                 if n not in freq_vec_dn:
+        #                     freq_vec_dn[n] = 0
+        #                 freq_vec_dn[n] += 1
+
+            return freq_vec_d, freq_vec_dn
+
+        fv_l = get_freq_vec_l(l_l, c_i)
+        fv_p = get_freq_vec_p(l_l)
+        fv_pl = get_freq_vec_pl(l_l, c_i)
+        # fv_d, fv_dn = get_freq_vec_d(l_l)
+
+        return fv_pl, fv_p
+
+    def __repr__(self):
+        str_ret = ""
+        for layer in self.content:
+            str_ret += str(layer)
+            str_ret += '\n'
+        return str_ret
 
 # A class that stores a parameter-value pair
 
@@ -107,7 +230,7 @@ class AbstractNNLayer():
         return hash(self.node_id)
 
     # fill in the class var for module node type
-    def fill_info_module_node(self, node: ModuleNode) -> None: 
+    def from_torchview_modulenode(self, node: ModuleNode) -> None: 
         self.node_id = node.node_id
         self.input_shape = node.input_shape
         self.output_shape = node.output_shape
@@ -121,7 +244,7 @@ class AbstractNNLayer():
         if 'All' in self.UNUSED_PARAM_SET: self.parameters = None
 
     # fill in the class var for tensor node type
-    def fill_info_tensor_node(self, node: TensorNode) -> None:
+    def from_torchview_tensornode(self, node: TensorNode) -> None:
         self.node_id = node.node_id
         if node.name == 'auxiliary-tensor':
             self.is_input_node = True
@@ -131,13 +254,13 @@ class AbstractNNLayer():
             self.input_shape = node.tensor_shape
 
     # fill in the class var for function node type
-    def fill_info_function_node(self, node: FunctionNode) -> None:
+    def from_torchview_functionnode(self, node: FunctionNode) -> None:
         self.node_id = node.node_id
         self.input_shape = node.input_shape
         self.output_shape = node.output_shape
         self.operation = node.name
 
-    def fill_info_from_onnx(
+    def from_onnx(
             self, 
             node: NodeProto = None, 
             input: List[Tuple[int, ...]] = None, 
@@ -225,13 +348,13 @@ class AbstractNNLayer():
         )
     
     # A helper function for filling class var by identifying the type of the inputted node
-    def fill_info(self, node: Node) -> None:
+    def from_torchview(self, node: Node) -> None:
         if type(node) == ModuleNode:
-            self.fill_info_module_node(node)
+            self.from_torchview_modulenode(node)
         elif type(node) == TensorNode:
-            self.fill_info_tensor_node(node)
+            self.from_torchview_tensornode(node)
         elif type(node) == FunctionNode:
-            self.fill_info_function_node(node)
+            self.from_torchview_functionnode(node)
 
     # Generate the 'head' of the sorting identifier(sequence) for this node
     def generate_sorting_identifier_head(self) -> str:
@@ -290,7 +413,7 @@ class AbstractNNConversionHandler():
             
             if edge_tuple[0].node_id not in self.ann_layer_id_to_ann_layer_obj_mapping:
                 n_info_0 = AbstractNNLayer()
-                n_info_0.fill_info(edge_tuple[0])
+                n_info_0.from_torchview(edge_tuple[0])
                 self.ann_layer_set.add(n_info_0)
                 self.ann_layer_id_to_ann_layer_obj_mapping[n_info_0.node_id] = n_info_0
             else:
@@ -299,7 +422,7 @@ class AbstractNNConversionHandler():
 
             if edge_tuple[1].node_id not in self.ann_layer_id_to_ann_layer_obj_mapping:
                 n_info_1 = AbstractNNLayer()
-                n_info_1.fill_info(edge_tuple[1])
+                n_info_1.from_torchview(edge_tuple[1])
                 self.ann_layer_set.add(n_info_1)
                 self.ann_layer_id_to_ann_layer_obj_mapping[n_info_1.node_id] = n_info_1
             else:
@@ -350,14 +473,14 @@ class AbstractNNConversionHandler():
         # output node id = -500 + len(input_nodes) + node index in output_nodes
         for input in input_nodes:
             input_node_info = AbstractNNLayer()
-            input_node_info.fill_info_from_onnx(custom_id=io_id_cnt, is_input=True)
+            input_node_info.from_onnx(custom_id=io_id_cnt, is_input=True)
             self.ann_layer_set.add(input_node_info)
             self.ann_layer_id_to_ann_layer_obj_mapping[io_id_cnt] = input_node_info
             io_id_cnt += 1
             input_node_info_list.append(input_node_info)
         for output in output_nodes:
             output_node_info = AbstractNNLayer()
-            output_node_info.fill_info_from_onnx(custom_id=io_id_cnt, is_output=True)
+            output_node_info.from_onnx(custom_id=io_id_cnt, is_output=True)
             self.ann_layer_set.add(output_node_info)
             self.ann_layer_id_to_ann_layer_obj_mapping[io_id_cnt] = output_node_info
             io_id_cnt += 1
@@ -404,7 +527,7 @@ class AbstractNNConversionHandler():
                                 end_node_info = self.ann_layer_id_to_ann_layer_obj_mapping[in_idx]
                             else:
                                 end_node_info = AbstractNNLayer()
-                                end_node_info.fill_info_from_onnx(
+                                end_node_info.from_onnx(
                                     node = node_list[in_idx],
                                     input = idx2shape_map[in_idx],
                                     custom_id = in_idx
@@ -420,7 +543,7 @@ class AbstractNNConversionHandler():
                             start_node_info = self.ann_layer_id_to_ann_layer_obj_mapping[in_idx]
                         else:
                             start_node_info = AbstractNNLayer()
-                            start_node_info.fill_info_from_onnx(
+                            start_node_info.from_onnx(
                                 node = node_list[in_idx], 
                                 input = idx2shape_map[in_idx],
                                 custom_id = in_idx
@@ -434,7 +557,7 @@ class AbstractNNConversionHandler():
                                 end_node_info = self.ann_layer_id_to_ann_layer_obj_mapping[out_idx]
                             else:
                                 end_node_info = AbstractNNLayer()
-                                end_node_info.fill_info_from_onnx(
+                                end_node_info.from_onnx(
                                     node = node_list[out_idx],
                                     input = idx2shape_map[out_idx],
                                     custom_id = out_idx
@@ -589,7 +712,7 @@ class AbstractNNSorter():
 
     # A function that generates a list of graph nodes based on the order of the sorting identifier
     # similar to the above func
-    def generate_ordered_layer_list(self) -> List[AbstractNNLayer]:
+    def generate_annlayer_list(self) -> List[AbstractNNLayer]:
 
         self.assign_sorting_identifier()
         self.reset_visited_field()
@@ -624,14 +747,15 @@ class AbstractNNSorter():
         
         return ordered_layer_list
 
-class ANNGenerator():
+class AbstractNNGenerator():
 
     def __init__(
         self,
         model: Any,
         inputs: Tuple[Tensor, ...] = None,
-        mode: str = 'pytorch',
-        use_hash: bool = False
+        framework: str = None,
+        use_hash: bool = False,
+        verbose: bool = True
     ) -> None:
         """
         ANNGenerator constructor function
@@ -650,11 +774,18 @@ class ANNGenerator():
         """
         self.model = model
         self.inputs = inputs
-        self.mode = mode
+        self.framework = framework
         self.use_hash = use_hash
+        self.verbose = verbose
+
+        if framework == None:
+            framework = "pytorch"
+            logger.warning("Framework unspecified, using 'pytorch'.")
+
+
         overwrite_torchview_func()
 
-    def get_ann(self) -> List[AbstractNNLayer]:
+    def get_annlayer_list(self) -> List[AbstractNNLayer]:
         """
         Returns an ordered list for the model
 
@@ -665,28 +796,10 @@ class ANNGenerator():
         list: A list of NodeInfo objects which contains all the information
         of a layer in the model
         """
-        if self.mode == 'pytorch':
+        if self.framework == 'pytorch':
             return self.generate_ann_from_pytorch_model(self.model, self.inputs, use_hash=self.use_hash)
-        if self.mode == 'onnx':
+        if self.framework == 'onnx':
             return self.generate_ann_from_onnx_model(self.model, use_hash=self.use_hash)
-
-
-    def print_ann(self) -> None:
-        """
-        Print an ordered list for the model
-
-        Parameters:
-        None
-
-        Returns:
-        None
-        """
-        if self.mode == 'pytorch':
-            ordered_list = self.generate_ann_from_pytorch_model(self.model, self.inputs, use_hash=self.use_hash)
-        if self.mode == 'onnx':
-            ordered_list = self.generate_ann_from_onnx_model(self.model, use_hash=self.use_hash)
-        for layer_node in ordered_list:
-            print(layer_node)
 
     def get_connection(self) -> List[Tuple[int, List[int]]]:
         """
@@ -699,28 +812,12 @@ class ANNGenerator():
         Returns:
         list: An ordered list with connection information
         """
-        if self.mode == 'pytorch':
+        if self.framework == 'pytorch':
             l = self.generate_ann_from_pytorch_model_with_id_and_connection(self.model, self.inputs, use_hash=self.use_hash)
-        if self.mode == 'onnx':
+        if self.framework == 'onnx':
             l = self.generate_ann_from_onnx_model_with_id_and_connection(self.model, use_hash=self.use_hash)
         return l[0], l[1]
 
-    def print_connection(self) -> None:
-        """
-        Print an ordered list for the model as well as the connection information,
-        essentially making the ordered list an adjacency list
-
-        Parameters:
-        None
-
-        Returns:
-        None
-        """
-        l = self.generate_ann_from_pytorch_model_with_id_and_connection(self.model, self.inputs)
-        for layer_node, connection_info in zip(l[0], l[1]):
-            print('[{}] {} -> {}'.format(connection_info[0], layer_node, connection_info[1]))
-
-    # A helper function that combines all the process into one
     def generate_ann_from_pytorch_model(
             model: Any, 
             inputs: Tuple[torch.Tensor], 
@@ -729,6 +826,8 @@ class ANNGenerator():
             use_hash: bool = False
         ) -> List[AbstractNNLayer]:
         
+
+
         model_graph: ComputationGraph = torchview.draw_graph(
             model, inputs,
             graph_name=graph_name,
@@ -742,7 +841,7 @@ class ANNGenerator():
         print('Mapper Populated')
 
         traverser = AbstractNNSorter(mapper, use_hash)
-        l = traverser.generate_ordered_layer_list()
+        l = traverser.generate_annlayer_list()
         print('Ordered List Generated')
         return l
 
@@ -754,7 +853,7 @@ class ANNGenerator():
         mapper.populate_class_var_from_onnx(model)
 
         traverser = AbstractNNSorter(mapper, use_hash)
-        l = traverser.generate_ordered_layer_list()
+        l = traverser.generate_annlayer_list()
         return l
 
     def generate_ann_from_onnx_model_with_id_and_connection(
@@ -768,7 +867,7 @@ class ANNGenerator():
         #print('Mapper Populated')
 
         traverser = AbstractNNSorter(mapper, use_hash)
-        l = traverser.generate_ordered_layer_list()
+        l = traverser.generate_annlayer_list()
 
         #print('Ordered List Generated')
         
@@ -807,7 +906,7 @@ class ANNGenerator():
         print('Mapper Populated')
 
         traverser = AbstractNNSorter(mapper, use_hash)
-        l = traverser.generate_ordered_layer_list()
+        l = traverser.generate_annlayer_list()
 
         print('Ordered List Generated')
         
@@ -821,146 +920,68 @@ class ANNGenerator():
             layer_id_connection_list.append((layer.node_id, connection_id_list))
         return l, layer_id_connection_list
 
-    def generate_ann(
+    # wrapper for generating ann
+    def generate_annlayer_list(
         self,
-        framework: str,
-        tracing_inputs: Tuple[torch.Tensor] = None, 
-        graph_name: str = 'Untitled',
+        graph_name: str = "NotSpecified",
         depth: int = 16,
-        use_hash: bool = False,
         include_connection: bool = False
     ):
         # check integrity
-        if framework == "pytorch" and tracing_inputs == None:
+        if self.framework == "pytorch" and self.inputs == None:
             raise ValueError("PyTorch framework need an input to trace the computation graph.")
-        elif framework not in ["pytorch", "onnx"]:
-            raise ValueError(f"Unsupported framework {framework}.")
+        elif self.framework not in ["pytorch", "onnx"]:
+            raise ValueError(f"Unsupported framework {self.framework}.")
         
-        result = None
+        iter_bar = tqdm(range(2 + int(self.framework=='pytorch')))
+
+        conversion_handler = AbstractNNConversionHandler()
+
+        if self.framework == 'pytorch':
+
+            if self.verbose:
+                iter_bar.set_description(f"Tracing PyTorch Model") 
+                iter_bar.update(1)
+
+            model_graph: ComputationGraph = torchview.draw_graph(
+                self.model, self.inputs,
+                graph_name=graph_name,
+                depth=depth, 
+                expand_nested=True
+            )
+
+            if self.verbose:
+                iter_bar.set_description(f"Converting torch Graph to ANN") 
+                iter_bar.update(1)
+    
+            conversion_handler.populate_class_var_from_torchview(model_graph.edge_list)
+
+        elif self.framework == 'onnx':
+            
+            if self.verbose:
+                iter_bar.set_description(f"Converting onnx Graph to ANN") 
+                iter_bar.update(1)
+
+            conversion_handler.populate_class_var_from_onnx(self.model)
+
+        if self.verbose:
+            iter_bar.set_description(f"Converting onnx Graph to ANN") 
+            iter_bar.update(1)
+
+        traverser = AbstractNNSorter(conversion_handler, self.use_hash)
+        annlayer_list = traverser.generate_annlayer_list()
+
         if include_connection:
-            if framework == "pytorch":
-                result = self.generate_ann_from_pytorch_model_with_id_and_connection(
-                    tracing_inputs,
-                    graph_name,
-                    depth,
-                    use_hash
-                )
-            elif framework == "onnx":
-                result = self.generate_ann_from_onnx_model_with_id_and_connection(
-                    use_hash
-                )
+            layer_id_connection_list: List[Tuple[int, List[int]]] = []
+            for layer in annlayer_list:
+                connection_list = traverser.adj_dict[layer.node_id] if layer.node_id in traverser.adj_dict else []
+                connection_id_list = []
+                for node in connection_list:
+                    connection_id_list.append(node.node_id)
+                layer_id_connection_list.append((layer.node_id, connection_id_list))
+            return annlayer_list, layer_id_connection_list
         else:
-            if framework == "pytorch":
-                result = self.generate_ann_from_pytorch_model(
-                    tracing_inputs,
-                    graph_name,
-                    depth,
-                    use_hash
-                )
-            elif framework == "onnx":
-                result = self.generate_ann_from_onnx_model(
-                    use_hash
-                )
-        return result
-
-    def vectorize(self):
-        """
-        Vectorize the model using an n-gram like approach
-
-        Unused Function
-        """
-        l_l, c_i = self.get_connection()
-
-        def get_freq_vec_l(layer_list, connection_info):
-            freq_vec = dict()
-            id_to_node_map = dict()
-            for layer_node, layer_connection_info in zip(layer_list, connection_info): # assume no repetitive layer in ordered list
-                id_to_node_map[layer_connection_info[0]] = layer_node
-
-            def make_node_string(n: AbstractNNLayer):
-                if n.is_input_node:
-                    return '[INPUT]'
-                if n.is_output_node:
-                    return '[OUTPUT]'
-                return '{} {}->{}'.format(n.operation, n.input_shape, n.output_shape)
-
-            for layer_node, layer_connection_info in zip(layer_list, connection_info):
-                curr_node_str = make_node_string(layer_node)
-                for next_layer_id in layer_connection_info[1]:
-                    next_node_str = make_node_string(id_to_node_map[next_layer_id])
-                    combined_str = '({}, {})'.format(curr_node_str, next_node_str)
-                    if combined_str not in freq_vec:
-                        freq_vec[combined_str] = 0
-                    freq_vec[combined_str] += 1
-
-            return freq_vec
-
-        def get_freq_vec_p(layer_list: List[AbstractNNLayer]):
-            freq_vec = dict()
-            for l in layer_list:
-                p_str_list = []
-                if l.parameters != None:
-                    for p in l.parameters:
-                        p_str_list.append('<{}, {}>'.format(p.param_name, p.param_value))
-                if l.is_input_node:
-                    l_str = '[INPUT]'
-                elif l.is_output_node:
-                    l_str = '[OUTPUT]'
-                else:
-                    l_str = '{} {}'.format(l.operation, p_str_list if len(p_str_list) else '')
-                if l_str not in freq_vec:
-                    freq_vec[l_str] = 0
-                freq_vec[l_str] += 1
-            return freq_vec
-
-        def get_freq_vec_pl(layer_list, connection_info):
-            freq_vec = dict()
-            id_to_node_map = dict()
-            for layer_node, layer_connection_info in zip(layer_list, connection_info): # assume no repetitive layer in ordered list
-                id_to_node_map[layer_connection_info[0]] = layer_node
-
-            def make_node_string(n: AbstractNNLayer):
-                if n.is_input_node:
-                    return '[INPUT]'
-                if n.is_output_node:
-                    return '[OUTPUT]'
-                return n.operation
-
-            for layer_node, layer_connection_info in zip(layer_list, connection_info):
-                curr_node_str = make_node_string(layer_node)
-                for next_layer_id in layer_connection_info[1]:
-                    next_node_str = make_node_string(id_to_node_map[next_layer_id])
-                    combined_str = '({}, {})'.format(curr_node_str, next_node_str)
-                    if combined_str not in freq_vec:
-                        freq_vec[combined_str] = 0
-                    freq_vec[combined_str] += 1
-
-            return freq_vec
-
-        def get_freq_vec_d(layer_list):
-            freq_vec_d, freq_vec_dn = dict(), dict()
-            for l in layer_list:
-                d_list = []
-                if l.input_shape != None:
-                    for s_in in l.input_shape:
-                        d_list.append(s_in)
-                if l.output_shape != None:
-                    for s_out in l.output_shape:
-                        d_list.append(s_out)
-                for t in d_list:
-                    if str(t) not in freq_vec_d:
-                        freq_vec_d[str(t)] = 0
-                    freq_vec_d[str(t)] += 1
-                    for n in t:
-                        if n not in freq_vec_dn:
-                            freq_vec_dn[n] = 0
-                        freq_vec_dn[n] += 1
-
-            return freq_vec_d, freq_vec_dn
-
-        fv_l = get_freq_vec_l(l_l, c_i)
-        fv_p = get_freq_vec_p(l_l)
-        fv_pl = get_freq_vec_pl(l_l, c_i)
-        fv_d, fv_dn = get_freq_vec_d(l_l)
-
-        return fv_l, fv_p, fv_pl, fv_d, fv_dn
+            return annlayer_list
+    
+if __name__ == "__main__":
+    pass
