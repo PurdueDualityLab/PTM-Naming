@@ -19,6 +19,7 @@ A tool to analyze defects in PTM repositories.
 | loguru         | 0.7.2   |
 | tqdm           | 4.66.1  |
 | python-dotenv  | 1.0.1   |
+| matplotlib     | 3.7.4   |
 
 ## Installation
 
