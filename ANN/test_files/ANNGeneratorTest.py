@@ -18,6 +18,7 @@ class ANNGeneratorTest():
         ann = AbstractNN.from_huggingface(hf_repo_name)
         print(ann.layer_connection_vector)
         print(ann.layer_with_parameter_vector)
+        print(ann.dim_vector)
         ann.export_json("temp.json")
 
     def test_HF_resnet18(self):

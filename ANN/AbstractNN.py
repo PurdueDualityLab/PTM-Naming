@@ -19,7 +19,7 @@ class AbstractNN():
     ):
         self.content = annlayer_list
         self.connection_info = connection_info
-        self.layer_connection_vector, self.layer_with_parameter_vector = \
+        self.layer_connection_vector, self.layer_with_parameter_vector, self.dim_vector = \
             self.vectorize()
 
     def from_huggingface(hf_repo_name, tracing_input="auto", verbose=True):
@@ -110,6 +110,23 @@ class AbstractNN():
                 freq_vec[annlayer_repr] = 0
             freq_vec[annlayer_repr] += 1
         return freq_vec
+    
+    def get_dim_vector(self):
+        freq_vec = dict()
+        for annlayer in self.content:
+            dim_list = []
+            if annlayer.input_shape != None:
+                for dim_in in annlayer.input_shape:
+                    dim_list.append(dim_in)
+            if annlayer.output_shape != None:
+                for dim_out in annlayer.output_shape:
+                    dim_list.append(dim_out)
+            for dim in dim_list:
+                if str(dim) not in freq_vec:
+                    freq_vec[str(dim)] = 0
+                freq_vec[str(dim)] += 1
+
+        return freq_vec
 
     def vectorize(self):
         """
@@ -120,8 +137,9 @@ class AbstractNN():
 
         fv_l = self.get_layer_vector()
         fv_p = self.get_layer_param_vector()
+        fv_d = self.get_dim_vector()
 
-        return fv_l, fv_p
+        return fv_l, fv_p, fv_d
 
     def __repr__(self):
         str_ret = ""
