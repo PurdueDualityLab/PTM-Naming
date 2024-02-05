@@ -69,108 +69,59 @@ class AbstractNN():
     def export_json(self, output_loc):
         annlayer_list_to_json(self.content, self.connection_info, output_loc)
     
-    # TODO: need some name changes
+    def get_annlayer_iodim_repr(self, n: AbstractNNLayer):
+        if n.is_input_node:
+            return '[INPUT]'
+        if n.is_output_node:
+            return '[OUTPUT]'
+        return '{} {}->{}'.format(n.operation, n.input_shape, n.output_shape)
+
+    def get_layer_vector(self):
+        freq_vec = dict()
+        id_to_node_map = dict()
+        for layer_node, layer_connection_info in zip(self.content, self.connection_info): # assume no repetitive layer in ordered list
+            id_to_node_map[layer_connection_info[0]] = layer_node
+
+        for layer_node, layer_connection_info in zip(self.content, self.connection_info):
+            curr_node_str = self.get_annlayer_iodim_repr(layer_node)
+            for next_layer_id in layer_connection_info[1]:
+                next_node_str = self.get_annlayer_iodim_repr(id_to_node_map[next_layer_id])
+                combined_str = '({}, {})'.format(curr_node_str, next_node_str)
+                if combined_str not in freq_vec:
+                    freq_vec[combined_str] = 0
+                freq_vec[combined_str] += 1
+
+        return freq_vec
+    
+    def get_layer_param_vector(self):
+        freq_vec = dict()
+        for annlayer in self.content:
+            layer_param_repr_list = []
+            if annlayer.parameters != None:
+                for param in annlayer.parameters:
+                    layer_param_repr_list.append('<{}, {}>'.format(param.param_name, param.param_value))
+            if annlayer.is_input_node:
+                annlayer_repr = '[INPUT]'
+            elif annlayer.is_output_node:
+                annlayer_repr = '[OUTPUT]'
+            else:
+                annlayer_repr = '{} {}'.format(annlayer.operation, layer_param_repr_list if len(layer_param_repr_list) else '')
+            if annlayer_repr not in freq_vec:
+                freq_vec[annlayer_repr] = 0
+            freq_vec[annlayer_repr] += 1
+        return freq_vec
+
     def vectorize(self):
         """
         Vectorize the model using an n-gram like approach
 
         Unused Function
         """
-        l_l, c_i = self.content, self.connection_info
 
-        def get_freq_vec_l(layer_list, connection_info):
-            freq_vec = dict()
-            id_to_node_map = dict()
-            for layer_node, layer_connection_info in zip(layer_list, connection_info): # assume no repetitive layer in ordered list
-                id_to_node_map[layer_connection_info[0]] = layer_node
+        fv_l = self.get_layer_vector()
+        fv_p = self.get_layer_param_vector()
 
-            def make_node_string(n: AbstractNNLayer):
-                if n.is_input_node:
-                    return '[INPUT]'
-                if n.is_output_node:
-                    return '[OUTPUT]'
-                return '{} {}->{}'.format(n.operation, n.input_shape, n.output_shape)
-
-            for layer_node, layer_connection_info in zip(layer_list, connection_info):
-                curr_node_str = make_node_string(layer_node)
-                for next_layer_id in layer_connection_info[1]:
-                    next_node_str = make_node_string(id_to_node_map[next_layer_id])
-                    combined_str = '({}, {})'.format(curr_node_str, next_node_str)
-                    if combined_str not in freq_vec:
-                        freq_vec[combined_str] = 0
-                    freq_vec[combined_str] += 1
-
-            return freq_vec
-
-        def get_freq_vec_p(layer_list: List[AbstractNNLayer]):
-            freq_vec = dict()
-            for l in layer_list:
-                p_str_list = []
-                if l.parameters != None:
-                    for p in l.parameters:
-                        p_str_list.append('<{}, {}>'.format(p.param_name, p.param_value))
-                if l.is_input_node:
-                    l_str = '[INPUT]'
-                elif l.is_output_node:
-                    l_str = '[OUTPUT]'
-                else:
-                    l_str = '{} {}'.format(l.operation, p_str_list if len(p_str_list) else '')
-                if l_str not in freq_vec:
-                    freq_vec[l_str] = 0
-                freq_vec[l_str] += 1
-            return freq_vec
-
-        def get_freq_vec_pl(layer_list, connection_info):
-            freq_vec = dict()
-            id_to_node_map = dict()
-            for layer_node, layer_connection_info in zip(layer_list, connection_info): # assume no repetitive layer in ordered list
-                id_to_node_map[layer_connection_info[0]] = layer_node
-
-            def make_node_string(n: AbstractNNLayer):
-                if n.is_input_node:
-                    return '[INPUT]'
-                if n.is_output_node:
-                    return '[OUTPUT]'
-                return n.operation
-
-            for layer_node, layer_connection_info in zip(layer_list, connection_info):
-                curr_node_str = make_node_string(layer_node)
-                for next_layer_id in layer_connection_info[1]:
-                    next_node_str = make_node_string(id_to_node_map[next_layer_id])
-                    combined_str = '({}, {})'.format(curr_node_str, next_node_str)
-                    if combined_str not in freq_vec:
-                        freq_vec[combined_str] = 0
-                    freq_vec[combined_str] += 1
-
-            return freq_vec
-
-        # def get_freq_vec_d(layer_list):
-        #     freq_vec_d, freq_vec_dn = dict(), dict()
-        #     for l in layer_list:
-        #         d_list = []
-        #         if l.input_shape != None:
-        #             for s_in in l.input_shape:
-        #                 d_list.append(s_in)
-        #         if l.output_shape != None:
-        #             for s_out in l.output_shape:
-        #                 d_list.append(s_out)
-        #         for t in d_list:
-        #             if str(t) not in freq_vec_d:
-        #                 freq_vec_d[str(t)] = 0
-        #             freq_vec_d[str(t)] += 1
-        #             for n in t:
-        #                 if n not in freq_vec_dn:
-        #                     freq_vec_dn[n] = 0
-        #                 freq_vec_dn[n] += 1
-
-            return freq_vec_d, freq_vec_dn
-
-        fv_l = get_freq_vec_l(l_l, c_i)
-        fv_p = get_freq_vec_p(l_l)
-        fv_pl = get_freq_vec_pl(l_l, c_i)
-        # fv_d, fv_dn = get_freq_vec_d(l_l)
-
-        return fv_pl, fv_p
+        return fv_l, fv_p
 
     def __repr__(self):
         str_ret = ""
