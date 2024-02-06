@@ -11,12 +11,14 @@ from sklearn.preprocessing import StandardScaler
 from tqdm import tqdm
 from sklearn.metrics import pairwise_distances
 import re
+from ANNVector import ANNVectorTriplet, ANNVectorTripletArchGroup
 
 class ClusterGenerator():
 
     def __init__(self, cluster_data_handler: ClusterDataset):
         self.cluster_data_handler = cluster_data_handler
 
+    @staticmethod
     def concatenate_vec(dim_vec, layer_vec, param_vec, weights=[0, 1, 0.1], mode='internal'):
         logger.info(f"Concatenating vectors with weights [d, l, p]: {weights}...")
         # concatenate three vectors
@@ -42,6 +44,7 @@ class ClusterGenerator():
                     dim_arr = np.array(models_dim_vec[model_name])
                     layer_arr = np.array(models_layer_vec[model_name])
                     param_arr = np.array(models_param_vec[model_name])
+                    #print(dim_arr, layer_arr, param_arr)
                     model_vec[model_family][model_name] = np.concatenate(
                         (weight_d * dim_arr, weight_l * layer_arr, weight_p * param_arr))
                     
@@ -149,6 +152,13 @@ class ClusterGenerator():
         return results, outliers
     
 if __name__ == "__main__":
-    cdh = ClusterDataset()
-    cg = ClusterGenerator(cdh)
-    print(cg.cluster_hf())
+    ds = ClusterDataset()
+    vtg0 = ANNVectorTripletArchGroup.from_dataset(ds, "Wav2Vec2Model")
+    # WavLMForCTC
+    extra = vtg0.get(0)
+    vtg1 = ANNVectorTripletArchGroup.from_dataset(ds, "WavLMForCTC")
+    print(vtg1.size())
+    print(vtg1)
+    vtg1.add(extra)
+    print(vtg1)
+    print(vtg1.size())
