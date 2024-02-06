@@ -28,12 +28,12 @@ Run the following commands:
 ```
 git clone -b Evaluation https://github.com/PurdueDualityLab/PTM-Naming.git
 pip install -r requirements.txt
-pip install -e .
+export PYTHONPATH="${PYTHONPATH}:absolute/path/to/PTM-Naming"
 ```
 
 ## High level class description
 
-### `AbstractNN` Class
+### `ANN.AbstractNN` Class
 
 #### Class Methods
 
@@ -142,7 +142,7 @@ with open("path/to/json2", "w") as f:
     json.dump(ann.layer_with_parameter_vector, f)
 ```
 
-### `HFValidInputIterator` Class
+### `tools.HFValidInputIterator` Class
 
 #### Class Methods
 
@@ -174,4 +174,41 @@ print(in_iter.get_valid_input())
 ```
  43%|█████████████████████████████████████████████▊                                                             | 3/7 [00:23<00:31,  7.96s/it]
 {'input_values': tensor([[-0.4477, -0.9134,  0.6262,  ..., -0.8534,  1.3059,  0.4376]]), 'attention_mask': tensor([[1, 1, 1,  ..., 1, 1, 1]], dtype=torch.int32)}
+```
+
+### `vector.ClusterPipeline` Class
+
+#### Class Methods
+
+#### `ClusterPipeline` constructor (No parameter)
+- **Description**: The constructor of `ClusterPipeline`, automatically creates `self.cluster_data` which points toward the internal clustering directory specified by the `.env` file `CLUSTER_DIR` variable. The `CLUSTER_DIR` is a directory that contains 6 files: `k_l.pkl`, `k_p.pkl`, `k_d.pkl`, `vec_l.pkl`, `vec_p.pkl`, `vec_d.pkl`.
+
+#### `cluster_with_extra_model`
+- **Description**: A pipeline to automatically cluster a single model with a group of models in the internal cluster.
+- **Parameters**: 
+  - `arch_name: str` - The name of the specified architecture, must be one of the architectures in the internal cluster.
+  - `additional_model_vector: ANNVectorTriplet` - An `ANNVectorTriplet` class object to be an extra model to cluster with the ones that already exist in the internal cluster.
+  - `eps: int` - Controls the strictness of the clustering.
+- **Returns**: A tuple with `results` and `outliers`.
+
+### `vector.ANNVector.ANNVectorTriplet` Class
+
+#### Class Methods
+
+#### `from_ANN` (static method)
+- **Description**: A function that converts an `AbstractNN` object to an `ANNVectorTriplet` object.
+- **Parameters**: 
+  - `model_name: str` - The name of the model.
+  - `ann: AbstractNN` - The `AbstractNN` object to be converted.
+- **Returns**: An `ANNVectorTriplet` object.
+
+#### Example Usage
+
+```python
+from vector.ANNVector import ANNVectorTriplet
+from vector.ClusterPipeline import Cluster Pipeline
+# An AbstractNN object 'my_ann' is already defined
+
+my_ann_vector_triplet = ANNVectorTriplet.from_ANN(my_ann)
+res, out = ClusterPipeline().cluster_with_extra_model("DesiredArchitecture", my_ann_vector_triplet)
 ```
