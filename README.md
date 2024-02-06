@@ -206,7 +206,7 @@ print(in_iter.get_valid_input())
 
 ```python
 from vector.ANNVector import ANNVectorTriplet
-from vector.ClusterPipeline import Cluster Pipeline
+from vector.ClusterPipeline import ClusterPipeline
 # An AbstractNN object 'my_ann' is already defined
 
 my_ann_vector_triplet = ANNVectorTriplet.from_ANN(my_ann)
