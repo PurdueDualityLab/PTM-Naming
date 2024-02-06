@@ -2,6 +2,8 @@
 from ANNVector import *
 from ClusterGenerator import *
 from ClusterDataset import *
+from transformers import PretrainedConfig
+from loguru import logger
 
 class ClusterPipeline():
 
@@ -16,18 +18,27 @@ class ClusterPipeline():
     ):
         model_vector_group = ANNVectorTripletArchGroup.from_dataset(self.cluster_data, arch_name)
         model_vector_group.add(additional_model_vector)
-        #print(model_vector_group)
         vec_l, vec_p, vec_d = model_vector_group.to_array()
-        #print(vec_l)
         model_vec = ClusterGenerator.concatenate_vec(vec_d, vec_l, vec_p)
-        #print(model_vec)
         results, outliers = ClusterGenerator(self.cluster_data).model_clustering(model_vec, eps=eps)
         return results, outliers
     
+    def cluster_with_extra_model_from_huggingface(
+        self,
+        hf_repo_name: str,
+        arch_name: str = "auto",
+        model_name: str = "auto",
+        eps: int = 0.3
+    ):
+        if model_name == "auto": 
+            model_name = hf_repo_name
+        if arch_name == "auto": 
+            arch_name = PretrainedConfig.from_pretrained(hf_repo_name).architectures[0]
+            logger.info(f"Automatically identified architecture of hf model as {arch_name}.")
+        ann = AbstractNN.from_huggingface(hf_repo_name)
+        ann_vector_triplet = ANNVectorTriplet.from_ANN(model_name, ann)
+        return self.cluster_with_extra_model(arch_name, ann_vector_triplet, eps)
+        
 if __name__ == "__main__":
-    ds = ClusterDataset()
-    vtg0 = ANNVectorTripletArchGroup.from_dataset(ds, "Wav2Vec2Model")
-    extra = vtg0.get(0)
-    res, out = ClusterPipeline().cluster_with_extra_model("WavLMForCTC", extra)
-    print(res, out)
+    print(ClusterPipeline().cluster_with_extra_model_from_huggingface("microsoft/resnet-18"))
 
