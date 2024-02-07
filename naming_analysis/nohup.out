@@ -1,0 +1,8 @@
+2024-02-07 16:44:11.729 | INFO     | __main__:main:191 - Number of models: 8744
+2024-02-07 16:44:11.788 | INFO     | __main__:clean:22 - Number of uninformative names: 521
+2024-02-07 16:44:11.789 | INFO     | __main__:clean:23 - Number of implementation names: 5990
+2024-02-07 16:44:11.789 | INFO     | __main__:clean:27 - Number of combined names: 2233
+2024-02-07 16:45:58.245 | INFO     | __main__:main:191 - Number of models: 8744
+2024-02-07 16:45:58.302 | INFO     | __main__:clean:22 - Number of uninformative names: 523
+2024-02-07 16:45:58.302 | INFO     | __main__:clean:23 - Number of implementation names: 5990
+2024-02-07 16:45:58.302 | INFO     | __main__:clean:27 - Number of combined names: 2231

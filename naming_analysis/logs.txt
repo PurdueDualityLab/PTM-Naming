@@ -1,0 +1,1 @@
+Example prediction: ['combined pattern']

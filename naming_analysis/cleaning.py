@@ -52,7 +52,7 @@ class Cleaner:
         Returns True if the value is uninformative
         '''
         import re
-        uninform_pattern = r'^(autotrain|autonlp|modeleval|test|demo).*'
+        uninform_pattern = r'^(autotrain|autonlp|modeleval|test|demo|my|dummy).*'
 
         if re.search(uninform_pattern, name.split('/')[-1], re.IGNORECASE):
             return True
