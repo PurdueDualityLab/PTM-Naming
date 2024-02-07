@@ -1,0 +1,33 @@
+{
+    "-1": [
+        "marathi-albert",
+        "albert-large-urdu",
+        "albert-base-arabic",
+        "clr-finetuned-albert-base",
+        "albert-large-arabic",
+        "albert-xlarge-arabic",
+        "clr-finetuned-albert-large",
+        "albert-large-chinese-cluecorpussmall",
+        "albert-german-ner",
+        "albert-base-chinese-cluecorpussmall",
+        "fralbert-base",
+        "marathi-albert-v2",
+        "clr-pretrained-albert-base"
+    ],
+    "0": [
+        "albert-large-v1",
+        "albert-large-v2"
+    ],
+    "1": [
+        "albert-base-v1",
+        "albert-base-v2"
+    ],
+    "2": [
+        "albert-xxlarge-v1",
+        "albert-xxlarge-v2"
+    ],
+    "3": [
+        "albert-xlarge-v2",
+        "albert-xlarge-v1"
+    ]
+}
