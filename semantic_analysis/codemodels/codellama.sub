@@ -1,0 +1,13 @@
+#!/bin/sh
+#SBATCH --job-name=codellama
+#SBATCH --gres=gpu:2
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem=80G
+#SBATCH -A davisjam-k
+#SBATCH --output=./output/%x_%j.out
+#SBATCH --error=./output/%x_%j.err
+
+module load anaconda/2020.11-py38
+conda activate PTM
+
+python codellama-34b-instruct-hf.py
