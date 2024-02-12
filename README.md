@@ -191,6 +191,15 @@ print(in_iter.get_valid_input())
   - `eps: int` - Controls the strictness of the clustering.
 - **Returns**: A tuple with `results` and `outliers`.
 
+#### `cluster_with_extra_model_from_huggingface`
+- **Description**: A pipeline to automatically cluster a single hugging face model with a group of models in the internal cluster.
+- **Parameters**: 
+  - `hf_repo_name: str` - The name of the hugging face repository.
+  - `arch_name: str` - The name of the architecture, defaults to `auto` so it automatically gets the architecture from hugging face `config.json`.
+  - `model_name: str` - The custom name of the model, defaults to `auto` so it automatically gets the model name from hugging face repository.
+  - `eps: int` - Controls the strictness of the clustering.
+- **Returns**: A tuple with `results` and `outliers`.
+
 ### `vector.ANNVector.ANNVectorTriplet` Class
 
 #### Class Methods
@@ -211,4 +220,16 @@ from vector.ClusterPipeline import ClusterPipeline
 
 my_ann_vector_triplet = ANNVectorTriplet.from_ANN(my_ann)
 res, out = ClusterPipeline().cluster_with_extra_model("DesiredArchitecture", my_ann_vector_triplet)
+```
+
+#### Or Simply 
+
+```python
+print(ClusterPipeline().cluster_with_extra_model_from_huggingface("microsoft/resnet-18"))
+```
+
+#### Example Results
+
+```
+({'ResNet': {'0': ['microsoft/resnet-50', 'keithanpai/resnet-50-finetuned-eurosat', 'jayanta/microsoft-resnet-50-cartoon-face-recognition', 'arize-ai/resnet-50-fashion-mnist-quality-drift', 'BirdL/CatsandDogsPOC-Resnet', 'AlexKolosov/my_first_model', 'jayanta/microsoft-resnet-50-cartoon-emotion-detection', 'arize-ai/resnet-50-cifar10-quality-drift', 'morganchen1007/resnet-50-finetuned-resnet50_0831', 'eugenecamus/resnet-50-base-beans-demo', 'sallyanndelucia/resnet_weather_model'], '1': ['douwekiela/resnet-18-finetuned-dogfood', 'SiddharthaM/resnet-18-feature-extraction']}}, {'ResNet': ['microsoft/resnet-34', 'microsoft/resnet-152', 'microsoft/resnet-101', 'microsoft/resnet-18']})
 ```
