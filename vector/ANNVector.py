@@ -1,6 +1,6 @@
 
 from typing import List
-from ClusterDataset import ClusterDataset
+from vector.ClusterDataset import ClusterDataset
 from ANN.AbstractNN import AbstractNN
 
 class ANNVector():
@@ -42,6 +42,15 @@ class ANNVectorTriplet():
         )
         return triplet
     
+    @staticmethod
+    def from_dict(model_name, vec_l, vec_p, vec_d):
+        return ANNVectorTriplet(
+            model_name, 
+            ANNVector.from_dict(model_name, "l", vec_l),
+            ANNVector.from_dict(model_name, "p", vec_p),
+            ANNVector.from_dict(model_name, "d", vec_d)
+        )
+    
     def to_dict(self):
         return self.vector_l, self.vector_p, self.vector_p
     
@@ -60,9 +69,14 @@ class ANNVectorTripletArchGroup():
 
     @staticmethod
     def from_dataset(dataset: ClusterDataset, arch_name: str):
+
+        if arch_name not in dataset.vec_l:
+            return None
+
         raw_dict_l = dataset.get("l", arch_name, "arch")[arch_name]
         raw_dict_p = dataset.get("p", arch_name, "arch")[arch_name]
         raw_dict_d = dataset.get("d", arch_name, "arch")[arch_name]
+
         triplet_list = []
         for model_name in raw_dict_l.keys():
             curr_triplet = ANNVectorTriplet(
@@ -91,6 +105,20 @@ class ANNVectorTripletArchGroup():
             vec_p[self.arch_name][model_name] = vector_triplet.vector_p.content
             vec_d[self.arch_name][model_name] = vector_triplet.vector_d.content
         return vec_l, vec_p, vec_d
+    
+    @staticmethod
+    def from_dict(vec_l, vec_p, vec_d):
+        arch_name = list(vec_l.keys())[0]
+        triplet_list = []
+        for model_name in vec_l[arch_name].keys():
+            curr_triplet = ANNVectorTriplet(
+                model_name,
+                ANNVector.from_dict(model_name, "l", vec_l[arch_name][model_name]),
+                ANNVector.from_dict(model_name, "p", vec_p[arch_name][model_name]),
+                ANNVector.from_dict(model_name, "d", vec_d[arch_name][model_name]),
+            )
+            triplet_list.append(curr_triplet)
+        return ANNVectorTripletArchGroup(arch_name, triplet_list)
     
     def to_array(self):
         keys_l, keys_p, keys_d = [], [], []
@@ -126,10 +154,16 @@ class ANNVectorTripletArchGroup():
             
         return vec_l, vec_p, vec_d
     
+    def remove(self, item_name) -> None:
+        self.vector_triplet_list = [triplet for triplet in self.vector_triplet_list if triplet.model_name != item_name]
+    
     def __repr__(self) -> str:
         return str(self.vector_triplet_list)
 
 if __name__ == "__main__":
     ds = ClusterDataset()
     arch_group = ANNVectorTripletArchGroup.from_dataset(ds, "WavLMForCTC")
+    d_arch_group = arch_group.to_dict()
     print(arch_group)
+    arch_group_recnstr = ANNVectorTripletArchGroup.from_dict(*d_arch_group)
+    print(arch_group_recnstr)

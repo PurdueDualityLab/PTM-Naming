@@ -31,6 +31,8 @@ class ClusterDataset():
             raise ValueError("Invalid name of vector. Choose from l, p, or d.")
 
         if mode == "arch":
+            if item_name not in vec:
+                raise ValueError(f"Model {item_name} not found.")
             model_vec_list = vec[item_name]
             recnstr_dict = {item_name: dict()}
             for model_name, model_vec in model_vec_list.items():
