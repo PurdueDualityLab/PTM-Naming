@@ -1,7 +1,7 @@
 
-from ANNVector import *
-from ClusterGenerator import *
-from ClusterDataset import *
+from .ANNVector import *
+from .ClusterGenerator import *
+from .ClusterDataset import *
 from transformers import PretrainedConfig
 from loguru import logger
 
@@ -9,6 +9,16 @@ class ClusterPipeline():
 
     def __init__(self):
         self.cluster_data = ClusterDataset()
+
+    def cluster_arch(
+        self,
+        arch_name: str,
+        eps: int = 0.3
+    ):
+        vec_l, vec_p, vec_d = self.cluster_data.get(arch_name)
+        model_vec = ClusterGenerator.concatenate_vec(vec_d, vec_l, vec_p)
+        results, outliers = ClusterGenerator(self.cluster_data).model_clustering(model_vec, eps=eps)
+        return results, outliers
 
     def cluster_with_extra_model(
         self,
@@ -38,6 +48,17 @@ class ClusterPipeline():
         ann = AbstractNN.from_huggingface(hf_repo_name)
         ann_vector_triplet = ANNVectorTriplet.from_ANN(model_name, ann)
         return self.cluster_with_extra_model(arch_name, ann_vector_triplet, eps)
+    
+    def cluster_single_arch_from_dict(
+        self,
+        vec_dict_triplet: tuple,
+        eps: int = 0.3
+    ):
+        vec_l, vec_p, vec_d = vec_dict_triplet[0], vec_dict_triplet[1], vec_dict_triplet[2]
+        model_vec = ClusterGenerator.concatenate_vec(vec_d, vec_l, vec_p)
+        results, outliers = ClusterGenerator(self.cluster_data).model_clustering(model_vec, eps=eps)
+        return results, outliers
+    
         
 if __name__ == "__main__":
     print(ClusterPipeline().cluster_with_extra_model_from_huggingface("microsoft/resnet-18"))

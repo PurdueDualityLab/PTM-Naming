@@ -29,6 +29,6 @@ if __name__ == "__main__":
                 remove_count += 1
         triplet_arch_group_list.append(list(curr_triplet_group.to_dict()))
         logger.info(f"Removed {remove_count} models from {arch_name}. Total models: {len(curr_triplet_group.vector_triplet_list)}")
-    with open("data_files/json_files/grountruth_cls_dataset.json", "w") as f:
+    with open("data_files/json_files/ground_truth_cls_dataset.json", "w") as f:
         json.dump(triplet_arch_group_list, f)
 

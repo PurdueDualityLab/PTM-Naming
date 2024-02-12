@@ -1,5 +1,5 @@
 
-from vector.ClusterDataset import ClusterDataset
+from .ClusterDataset import ClusterDataset
 import numpy as np
 import json
 from loguru import logger
@@ -11,7 +11,7 @@ from sklearn.preprocessing import StandardScaler
 from tqdm import tqdm
 from sklearn.metrics import pairwise_distances
 import re
-from ANNVector import ANNVectorTriplet, ANNVectorTripletArchGroup
+from .ANNVector import ANNVectorTripletArchGroup
 
 class ClusterGenerator():
 
