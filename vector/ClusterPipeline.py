@@ -54,7 +54,7 @@ class ClusterPipeline():
         vec_dict_triplet: tuple,
         eps: int = 0.3
     ):
-        vec_l, vec_p, vec_d = vec_dict_triplet[0], vec_dict_triplet[1], vec_dict_triplet[2]
+        vec_l, vec_p, vec_d = ANNVectorTripletArchGroup.from_dict(vec_dict_triplet[0], vec_dict_triplet[1], vec_dict_triplet[2]).to_array()
         model_vec = ClusterGenerator.concatenate_vec(vec_d, vec_l, vec_p)
         results, outliers = ClusterGenerator(self.cluster_data).model_clustering(model_vec, eps=eps)
         return results, outliers
