@@ -38,7 +38,8 @@ class AbstractNN():
     def from_huggingface(
         hf_repo_name: str,
         tracing_input: str = "auto",
-        verbose: bool = True
+        verbose: bool = True,
+        cache_dir: str = None
     ) -> 'AbstractNN':
         """
         This method generates an AbstractNN object from a Hugging Face model.
@@ -55,8 +56,7 @@ class AbstractNN():
         if tracing_input == "auto":
             if verbose:
                 logger.info("Automatically generating an input...")
-            # TODO: modify cache_dir
-            in_iter = HFValidInputIterator(model, hf_repo_name, cache_dir=None)
+            in_iter = HFValidInputIterator(model, hf_repo_name, cache_dir=cache_dir)
             tracing_input = in_iter.get_valid_input()
             if verbose:
                 logger.success("Successfully generating an input.")

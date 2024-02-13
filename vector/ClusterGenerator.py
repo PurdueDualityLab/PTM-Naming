@@ -19,8 +19,9 @@ class ClusterGenerator():
         self.cluster_data_handler = cluster_data_handler
 
     @staticmethod
-    def concatenate_vec(dim_vec, layer_vec, param_vec, weights=[0, 1, 0.1], mode='internal'):
-        logger.info(f"Concatenating vectors with weights [d, l, p]: {weights}...")
+    def concatenate_vec(dim_vec, layer_vec, param_vec, weights=[0, 1, 0.1], mode='internal', verbose=False):
+        if verbose:
+            logger.info(f"Concatenating vectors with weights [d, l, p]: {weights}...")
         # concatenate three vectors
         model_vec = {}
 
@@ -54,7 +55,7 @@ class ClusterGenerator():
         logger.info(f"Clustering model with eps={eps}!")
         return self.model_clustering(self.cluster_data_handler.load_pkl(), eps=eps, weights=weights)
 
-    def model_clustering(self, model_vec, eps=0.8):
+    def model_clustering(self, model_vec, eps=0.8, verbose=False):
         results = {}
         outliers = {}
         # Initialize PCA
@@ -62,7 +63,10 @@ class ClusterGenerator():
 
         EPS = eps
 
-        for model_family in tqdm(model_vec):
+        if verbose:
+            model_vec = tqdm(model_vec)
+
+        for model_family in model_vec:
 
             results[model_family] = {}
             outliers[model_family] = []
