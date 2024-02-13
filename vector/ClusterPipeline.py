@@ -52,11 +52,23 @@ class ClusterPipeline():
     def cluster_single_arch_from_dict(
         self,
         vec_dict_triplet: tuple,
-        eps: int = 0.3
+        eps: int = 0.3,
+        merge_outlier: bool = False
     ):
         vec_l, vec_p, vec_d = ANNVectorTripletArchGroup.from_dict(vec_dict_triplet[0], vec_dict_triplet[1], vec_dict_triplet[2]).to_array()
         model_vec = ClusterGenerator.concatenate_vec(vec_d, vec_l, vec_p)
         results, outliers = ClusterGenerator(self.cluster_data).model_clustering(model_vec, eps=eps)
+
+        if merge_outlier:
+            arch_str = str(list(outliers.keys())[0])
+            start_idx = len(list(results[arch_str].keys()))
+
+            for model in outliers[arch_str]:
+                results[arch_str][str(start_idx)] = [model]
+                start_idx += 1
+
+            return results
+        
         return results, outliers
     
         

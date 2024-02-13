@@ -20,6 +20,7 @@ A tool to analyze defects in PTM repositories.
 | tqdm           | 4.66.1  |
 | python-dotenv  | 1.0.1   |
 | matplotlib     | 3.7.4   |
+| openai         | 1.12.0  |
 
 ## Installation
 
