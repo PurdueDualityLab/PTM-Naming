@@ -1,14 +1,14 @@
 from ANN import (
-    AbstractNN,
     AbstractNNLayer,
     AbstractNNLayerParam,
     AbstractNNGenerator,
     AbstractNNConversionHandler,
-    AbstractNNSorter
+    AbstractNNSorter,
+    abstract_neural_network
 )
 
 __all__ = [
-    AbstractNN,
+    abstract_neural_network,
     AbstractNNLayer,
     AbstractNNLayerParam,
     AbstractNNGenerator,

@@ -1,5 +1,5 @@
 
-from ANN.AbstractNN import *
+from ANN.abstract_neural_network import *
 from transformers import AutoModel
 import torch
 
