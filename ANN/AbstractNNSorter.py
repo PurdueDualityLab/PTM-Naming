@@ -1,4 +1,4 @@
-from ANN.AbstractNNConversionHandler import AbstractNNConversionHandler
+from ANN.ann_conversion_handler import AbstractNNConversionHandler
 from ANN.AbstractNNLayer import AbstractNNLayer
 
 
@@ -9,7 +9,16 @@ from typing import Dict, List, Tuple
 
 
 class AbstractNNSorter():
+    """
+    This class is used to sort the nodes in the graph based on their sorting identifier
 
+    Attributes:
+        mapper: The mapper object that contains the graph information
+        use_hash: A boolean that indicates whether to use hash or not
+        input_node_info_obj_list: A list of input nodes
+        output_node_info_obj_list: A list of output nodes
+        adj_dict: A dictionary that contains the adjacency list of the graph
+    """
     def __init__(
         self,
         mapper: AbstractNNConversionHandler,

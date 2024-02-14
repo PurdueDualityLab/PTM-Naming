@@ -1,36 +1,48 @@
 """
-T
+This file contains the AbstractNNConversionHandler class, which is used to convert between the
+AbstractNNLayer and the torchview NodeInfo objects.
 """
 
+from typing import Any, Dict, List, Set, Tuple, Optional
+from torchview.computation_node.base_node import Node
 from ANN.AbstractNNLayer import AbstractNNLayer
 
 
-from torchview.computation_node.base_node import Node
-
-
-from typing import Any, Dict, List, Set, Tuple
-
-
 class AbstractNNConversionHandler():
+    """
+    This class is used to convert between the AbstractNNLayer and the torchview NodeInfo objects.
 
+    Attributes:
+        ann_layer_set: A set of all AbstractNNLayer objects
+        ann_layer_id_to_ann_layer_obj_mapping: A map of [AbstractNNLayer.node_id -> AbstractNNLayer]
+        ann_layer_edge_list: A list of all the edges represented as 
+        Tuple[AbstractNNLayer, AbstractNNLayer], where the first AbstractNNLayer 
+        points to the second
+    """
     def __init__(
         self,
-        node_info_obj_set: Set[AbstractNNLayer] = None,
-        node_id_to_node_obj_mapping: Dict[int, AbstractNNLayer] = None,
-        ann_layer_edge_list: List[Tuple[AbstractNNLayer, AbstractNNLayer]] = None
+        node_info_obj_set: Optional[Set[AbstractNNLayer]] = None,
+        node_id_to_node_obj_mapping: Optional[Dict[int, AbstractNNLayer]] = None,
+        ann_layer_edge_list: Optional[List[Tuple[AbstractNNLayer, AbstractNNLayer]]] = None
     ) -> None:
         self.ann_layer_set = node_info_obj_set
         self.ann_layer_id_to_ann_layer_obj_mapping = node_id_to_node_obj_mapping
         self.ann_layer_edge_list = ann_layer_edge_list
 
-    # populate the class var
-    # node_info_obj_set: A set of all NodeInfo objects
-    # node_id_to_node_obj_mapping: A map of [NodeInfo.node_id -> NodeInfo]
-    # edge_node_info_list: A list of all the edges represented as Tuple[NodeInfo, NodeInfo], where the first NodeInfo points to the second
     def populate_class_var_from_torchview(
         self,
         edge_list: List[Tuple[Node, Node]]
     ) -> None:
+        """
+        This function populates the class variables from the torchview edge_list.
+
+        Args:
+            edge_list: A list of edges represented as Tuple[Node, Node], where the first Node
+            points to the second
+
+        Returns:
+            None
+        """
         self.ann_layer_set = set()
         self.ann_layer_id_to_ann_layer_obj_mapping = {}
         self.ann_layer_edge_list = []
@@ -59,6 +71,15 @@ class AbstractNNConversionHandler():
         self,
         onnx_model: Any
     ):
+        """
+        This function populates the class variables from the onnx model.
+
+        Args:
+            onnx_model: The onnx model
+
+        Returns:
+            None
+        """
         self.ann_layer_set = set()
         self.ann_layer_id_to_ann_layer_obj_mapping = {}
         self.ann_layer_edge_list = []
@@ -68,19 +89,13 @@ class AbstractNNConversionHandler():
         # create input name -> index map
         in2idx_map = {}
 
-        for i in range(len(node_list)):
-            for input in node_list[i].input:
-                if input not in in2idx_map:
-                    in2idx_map[input] = []
-                in2idx_map[input].append(i)
+        for i, node in enumerate(node_list):
+            for inp in node.input:
+                if inp not in in2idx_map:
+                    in2idx_map[inp] = []
+                in2idx_map[inp].append(i)
 
-        # create input name -> tensor shape map, this could be buggy
-        '''
-        inname2shape_map: dict = {
-            input_tensor.name: [dim.dim_value for dim in input_tensor.type.tensor_type.shape.dim]
-            for input_tensor in onnx_model.graph.input
-        }'''
-
+        # create input name -> tensor shape map
         inname2shape_map: dict = {init.name: init.dims for init in onnx_model.graph.initializer}
 
         # Add input and output nodes
@@ -96,7 +111,7 @@ class AbstractNNConversionHandler():
         io_id_cnt = -500 # use to calculate an id for an input/output NodeInfo obj
         # input node id = -500 + node index in input_nodes
         # output node id = -500 + len(input_nodes) + node index in output_nodes
-        for input in input_nodes:
+        for inp in input_nodes:
             input_node_info = AbstractNNLayer()
             input_node_info.from_onnx(custom_id=io_id_cnt, is_input=True)
             self.ann_layer_set.add(input_node_info)
@@ -119,33 +134,32 @@ class AbstractNNConversionHandler():
         # create index -> input tensor shape map
         idx2shape_map = {}
 
-        for i in range(len(node_list)):
+        for i, node in enumerate(node_list):
             shape_list = []
-            for input in node_list[i].input:
-                if input in inname2shape_map and input not in input_nodes_name:
-                    shape_list.append(tuple(inname2shape_map[input]))
+            for inp in node.input:
+                if inp in inname2shape_map and inp not in input_nodes_name:
+                    shape_list.append(tuple(inname2shape_map[inp]))
 
             idx2shape_map[i] = shape_list
-
-        #for k, v in inname2shape_map.items():
-        #    print(k, v)
 
         for input_name, indexes in in2idx_map.items():
             # omit unused inputs
             if input_name not in output_name_set and input_name not in input_nodes_name:
                 continue
             for in_idx in indexes:
-                # 
                 for output_name in node_list[in_idx].output:
                     # successfully find a connection
                     if output_name in output_nodes_name or output_name in in2idx_map:
                         if output_name in in2idx_map:
                             out_indexes = in2idx_map[output_name]
                         else:
-                            out_indexes = [-500 + len(input_nodes) + output_nodes_name.index(output_name)]
+                            out_indexes = [-500 + len(input_nodes) +
+                                output_nodes_name.index(output_name)]
 
                         if input_name in input_nodes_name:
-                            start_node_info = input_node_info_list[input_nodes_name.index(input_name)]
+                            start_node_info = input_node_info_list[
+                                input_nodes_name.index(input_name)
+                            ]
 
                             # Fix issue that this program omits the first layer
                             if in_idx in self.ann_layer_id_to_ann_layer_obj_mapping:
@@ -161,8 +175,7 @@ class AbstractNNConversionHandler():
                                 self.ann_layer_set.add(end_node_info)
 
                             self.ann_layer_edge_list.append((start_node_info, end_node_info))
-                            start_node_info = end_node_info #???
-                            #
+                            start_node_info = end_node_info
 
                         elif in_idx in self.ann_layer_id_to_ann_layer_obj_mapping:
                             start_node_info = self.ann_layer_id_to_ann_layer_obj_mapping[in_idx]
@@ -192,16 +205,27 @@ class AbstractNNConversionHandler():
 
                             self.ann_layer_edge_list.append((start_node_info, end_node_info))
 
+    def get_adj_dict(
+        self, options: Optional[Set] = None
+    ) -> Dict[int, List[AbstractNNLayer]]:
+        """
+        This function returns an adjacency 'dictionary' that maps NodeInfo.node_id 
+        to a list of all the 'next node's it points to.
 
-    # returns an adjacency 'dictionary' that maps NodeInfo.node_id to a list of all the 'next node's it points to
-    def get_adj_dict(self, options: Set = None) -> Dict[int, List[AbstractNNLayer]]:
-        adj_dict: Dict[int, List[AbstractNNLayer]] = dict()
+        Args:
+            options: A set of options to modify the behavior of the function
+
+        Returns:
+            A dictionary that maps NodeInfo.node_id to a list of all the 'next node's it points to
+        """
+        assert self.ann_layer_edge_list is not None
+        adj_dict: Dict[int, List[AbstractNNLayer]] = {}
         for node_info_tuple in self.ann_layer_edge_list:
             if node_info_tuple[0].node_id not in adj_dict:
                 adj_dict[node_info_tuple[0].node_id] = []
             adj_dict[node_info_tuple[0].node_id].append(node_info_tuple[1])
 
-        if options != None and 'remove_identity' in options:
+        if options is not None and 'remove_identity' in options:
             for n_id, next_nodes in adj_dict.items():
                 cleared = False
                 while not cleared:
@@ -214,5 +238,5 @@ class AbstractNNConversionHandler():
                                 adj_dict[n_id].append(next_next_node)
                             adj_dict[next_node.node_id] = []
 
-
         return adj_dict
+    

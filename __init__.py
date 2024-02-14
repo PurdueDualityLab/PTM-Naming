@@ -2,9 +2,9 @@ from ANN import (
     AbstractNNLayer,
     AbstractNNLayerParam,
     AbstractNNGenerator,
-    AbstractNNConversionHandler,
     AbstractNNSorter,
-    abstract_neural_network
+    abstract_neural_network,
+    ann_conversion_handler
 )
 
 __all__ = [
@@ -12,6 +12,6 @@ __all__ = [
     AbstractNNLayer,
     AbstractNNLayerParam,
     AbstractNNGenerator,
-    AbstractNNConversionHandler,
+    ann_conversion_handler,
     AbstractNNSorter
 ]
