@@ -7,7 +7,7 @@ It also contains methods to vectorize the architecture and to convert it to and 
 """
 
 import time
-from typing import List, Tuple
+from typing import List, Tuple, Union, Optional, Any
 from loguru import logger
 from transformers import AutoModel
 from ANN.AbstractNNGenerator import AbstractNNGenerator
@@ -26,8 +26,8 @@ class AbstractNN():
     """
     def __init__(
         self,
-        annlayer_list: List[AbstractNNLayer] = None,
-        connection_info: List[Tuple[int, List[int]]] = None
+        annlayer_list: Optional[List[AbstractNNLayer]] = None,
+        connection_info: Optional[List[Tuple[int, List[int]]]] = None
     ) -> None:
         self.content = annlayer_list
         self.connection_info = connection_info
@@ -37,9 +37,9 @@ class AbstractNN():
     @staticmethod
     def from_huggingface(
         hf_repo_name: str,
-        tracing_input: str = "auto",
+        tracing_input: Union[str, Any] = "auto",
         verbose: bool = True,
-        cache_dir: str = None
+        cache_dir: Optional[str] = None
     ) -> 'AbstractNN':
         """
         This method generates an AbstractNN object from a Hugging Face model.
@@ -67,14 +67,17 @@ class AbstractNN():
         start_time = time.time()
 
         ann_gen = AbstractNNGenerator(
-            model=model,
-            inputs=tracing_input,
-            framework="pytorch",
-            use_hash=True,
-            verbose=True
+            model = model,
+            inputs = tracing_input,
+            framework = "pytorch",
+            use_hash = True,
+            verbose = True
         )
 
         layer_list, conn_info = ann_gen.generate_annlayer_list(include_connection=True)
+
+        assert isinstance(layer_list, list)
+        assert isinstance(conn_info, list)
 
         end_time = time.time()
 
@@ -109,9 +112,11 @@ class AbstractNN():
 
         output_loc: The location of the JSON file
         """
+        if self.content is None or self.connection_info is None:
+            raise ValueError("The content or connection_info is None.")
         annlayer_list_to_json(self.content, self.connection_info, output_loc)
 
-    def get_annlayer_iodim_repr(
+    def get_annlayer_layer_op_repr(
         self,
         n: AbstractNNLayer
     ) -> str:
@@ -124,7 +129,7 @@ class AbstractNN():
             return '[INPUT]'
         if n.is_output_node:
             return '[OUTPUT]'
-        return f"{n.operation} {n.input_shape}->{n.output_shape}"
+        return f"{n.operation}"
 
     def get_layer_vector(self):
         """
@@ -133,14 +138,17 @@ class AbstractNN():
         freq_vec = {}
         id_to_node_map = {}
 
+        if self.content is None or self.connection_info is None:
+            raise ValueError("The content or connection_info is None.")
+
         # assume no repetitive layer in ordered list
         for layer_node, layer_connection_info in zip(self.content, self.connection_info):
             id_to_node_map[layer_connection_info[0]] = layer_node
 
         for layer_node, layer_connection_info in zip(self.content, self.connection_info):
-            curr_node_str = self.get_annlayer_iodim_repr(layer_node)
+            curr_node_str = self.get_annlayer_layer_op_repr(layer_node)
             for next_layer_id in layer_connection_info[1]:
-                next_node_str = self.get_annlayer_iodim_repr(id_to_node_map[next_layer_id])
+                next_node_str = self.get_annlayer_layer_op_repr(id_to_node_map[next_layer_id])
                 combined_str = f"({curr_node_str}, {next_node_str})"
                 if combined_str not in freq_vec:
                     freq_vec[combined_str] = 0
@@ -153,6 +161,10 @@ class AbstractNN():
         This method returns a vector representation of the parameters in the model.
         """
         freq_vec = {}
+
+        if self.content is None:
+            raise ValueError("The content is None.")
+
         for annlayer in self.content:
             layer_param_repr_list = []
             if annlayer.parameters is not None:
@@ -163,10 +175,11 @@ class AbstractNN():
             elif annlayer.is_output_node:
                 annlayer_repr = '[OUTPUT]'
             else:
-                if len(layer_param_repr_list) == 0:
+                if len(layer_param_repr_list) != 0:
                     annlayer_repr = f'{annlayer.operation} {layer_param_repr_list}'
                 else:
-                    annlayer_repr = ''
+                    # the extra space is to be compatible with the version in the database
+                    annlayer_repr = f'{annlayer.operation} '
             if annlayer_repr not in freq_vec:
                 freq_vec[annlayer_repr] = 0
             freq_vec[annlayer_repr] += 1
@@ -177,6 +190,10 @@ class AbstractNN():
         This method returns a vector representation of the dimensions in the model.
         """
         freq_vec = {}
+
+        if self.content is None:
+            raise ValueError("The content is None.")
+
         for annlayer in self.content:
             dim_list = []
             if annlayer.input_shape is not None:
@@ -197,6 +214,7 @@ class AbstractNN():
         Vectorize the model using an n-gram like approach
         """
 
+        # dictionary key orders are not deterministic
         fv_l = self.get_layer_vector()
         fv_p = self.get_layer_param_vector()
         fv_d = self.get_dim_vector()
@@ -205,6 +223,8 @@ class AbstractNN():
 
     def __repr__(self):
         str_ret = ""
+        if self.content is None:
+            return 'None'
         for layer in self.content:
             str_ret += str(layer)
             str_ret += '\n'

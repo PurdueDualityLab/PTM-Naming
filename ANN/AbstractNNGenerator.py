@@ -1,18 +1,16 @@
-from ANN.AbstractNNSorter import AbstractNNSorter
-from ANN.ann_conversion_handler import AbstractNNConversionHandler
-from ANN.ann_layer import AbstractNNLayer
-from ANN.utils import overwrite_torchview_func
 
 
+from typing import Any, List, Tuple
 import torch
 import torchview
 from loguru import logger
 from torch import Tensor
 from torchview.computation_graph import ComputationGraph
 from tqdm import tqdm
-
-
-from typing import Any, List, Tuple
+from ANN.AbstractNNSorter import AbstractNNSorter
+from ANN.ann_conversion_handler import AbstractNNConversionHandler
+from ANN.ann_layer import AbstractNNLayer
+from ANN.utils import overwrite_torchview_func
 
 
 class AbstractNNGenerator():

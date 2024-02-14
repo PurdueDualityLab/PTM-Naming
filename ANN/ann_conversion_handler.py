@@ -3,7 +3,7 @@ This file contains the AbstractNNConversionHandler class, which is used to conve
 AbstractNNLayer and the torchview NodeInfo objects.
 """
 
-from typing import Any, Dict, List, Set, Tuple, Optional
+from typing import Any, Dict, List, Set, Tuple, Optional, Union
 from torchview.computation_node.base_node import Node
 from ANN.ann_layer import AbstractNNLayer
 
@@ -207,7 +207,7 @@ class AbstractNNConversionHandler():
 
     def get_adj_dict(
         self, options: Optional[Set] = None
-    ) -> Dict[int, List[AbstractNNLayer]]:
+    ) -> Dict[Union[int, str], List[AbstractNNLayer]]:
         """
         This function returns an adjacency 'dictionary' that maps NodeInfo.node_id 
         to a list of all the 'next node's it points to.
@@ -219,12 +219,11 @@ class AbstractNNConversionHandler():
             A dictionary that maps NodeInfo.node_id to a list of all the 'next node's it points to
         """
         assert self.ann_layer_edge_list is not None
-        adj_dict: Dict[int, List[AbstractNNLayer]] = {}
+        adj_dict = {}
         for node_info_tuple in self.ann_layer_edge_list:
-            info_tuple_node_id = int(node_info_tuple[0].node_id)
             if node_info_tuple[0].node_id not in adj_dict:
-                adj_dict[info_tuple_node_id] = []
-            adj_dict[info_tuple_node_id].append(node_info_tuple[1])
+                adj_dict[node_info_tuple[0].node_id] = []
+            adj_dict[node_info_tuple[0].node_id].append(node_info_tuple[1])
 
         if options is not None and 'remove_identity' in options:
             for n_id, next_nodes in adj_dict.items():
@@ -235,10 +234,9 @@ class AbstractNNConversionHandler():
                         if next_node.operation == 'Identity':
                             cleared = False
                             adj_dict[n_id].remove(next_node)
-                            next_node_node_id = int(next_node.node_id)
-                            for next_next_node in adj_dict[next_node_node_id]:
+                            for next_next_node in adj_dict[next_node.node_id]:
                                 adj_dict[n_id].append(next_next_node)
-                            adj_dict[next_node_node_id] = []
+                            adj_dict[next_node.node_id] = []
 
         return adj_dict
     
