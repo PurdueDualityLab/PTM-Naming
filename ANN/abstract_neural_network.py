@@ -11,7 +11,7 @@ from typing import List, Tuple
 from loguru import logger
 from transformers import AutoModel
 from ANN.AbstractNNGenerator import AbstractNNGenerator
-from ANN.AbstractNNLayer import AbstractNNLayer
+from ANN.ann_layer import AbstractNNLayer
 from ANN.old_pipelines.ANNToJSONConverter import read_annlayer_list_from_json, annlayer_list_to_json
 from tools.HFValidInputIterator import HFValidInputIterator
 

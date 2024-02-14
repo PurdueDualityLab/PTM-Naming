@@ -1,16 +1,33 @@
+"""
+This file contains the class definition for the AbstractNNLayer class.
+"""
+from typing import List, Tuple, Optional
+import onnx
+from onnx import NodeProto # type: ignore
+from torchview.computation_node.base_node import Node
+from torchview.computation_node.compute_node import FunctionNode, ModuleNode, TensorNode
 from ANN.AbstractNNLayerParam import AbstractNNLayerParam
 
 
-import onnx
-from onnx import NodeProto
-from torchview.computation_node.base_node import Node
-from torchview.computation_node.compute_node import FunctionNode, ModuleNode, TensorNode
-
-
-from typing import List, Tuple
-
-
 class AbstractNNLayer():
+    """
+    This class is used to represent a layer in a neural network model
+
+    Attributes:
+        node_id: The unique identifier of the node
+        input_shape: The shape of the input tensor
+        output_shape: The shape of the output tensor
+        operation: The operation performed by the layer
+        parameters: A list of parameters of the layer
+        is_input_node: A boolean that indicates whether the node is an input node
+        is_output_node: A boolean that indicates whether the node is an output node
+        sorting_identifier: The sorting identifier of the node
+        sorting_hash: The sorting hash of the node
+        preorder_visited: A boolean that indicates whether the node has been visited in 
+        preorder traversal
+        postorder_visited: A boolean that indicates whether the node has been visited in 
+        postorder traversal
+    """
 
     UNUSED_PARAM_SET = {
         'training',
@@ -22,7 +39,6 @@ class AbstractNNLayer():
             'epsilon': [9.999999747378752e-06],
             'momentum': [0.8999999761581421],
             'spatial': [1]
-            #'consumed_inputs': []
         },
         'MaxPool': {
             'auto_pad': ["NOTSET"],
@@ -44,14 +60,14 @@ class AbstractNNLayer():
     def __init__(
         self,
         node_id: int = -1,
-        input_shape: List[Tuple[int, ...]] = None,
-        output_shape: List[Tuple[int, ...]] = None,
+        input_shape: Optional[List[Tuple[int, ...]]] = None,
+        output_shape: Optional[List[Tuple[int, ...]]] = None,
         operation: str = 'Undefined',
-        parameters: List[AbstractNNLayerParam] = None,
+        parameters: Optional[List[AbstractNNLayerParam]] = None,
         is_input_node: bool = False,
         is_output_node: bool = False,
-        sorting_identifier: str = None,
-        sorting_hash: int = None,
+        sorting_identifier: Optional[str] = None,
+        sorting_hash: Optional[int] = None,
         preorder_visited: bool = False,
         postorder_visited: bool = False # handles cyclic graphs
     ) -> None:
@@ -72,20 +88,43 @@ class AbstractNNLayer():
 
     # fill in the class var for module node type
     def from_torchview_modulenode(self, node: ModuleNode) -> None:
+        """
+        This function fills in the class variables of the AbstractNNLayer object with the
+        information from a ModuleNode object
+
+        Args:
+            node: The ModuleNode object to get the information from
+        
+        Returns:
+            None
+        """
         self.node_id = node.node_id
         self.input_shape = node.input_shape
         self.output_shape = node.output_shape
         self.operation = node.name
         self.parameters = []
 
-        for attr_name, attr_val in node.module_unit.__dict__.items():
-            if attr_name[0] != '_' and attr_name not in self.UNUSED_PARAM_SET and 'All' not in self.UNUSED_PARAM_SET: # include non-private attributes
+        for attr_name, attr_val in node.module_unit.__dict__.items(): # type: ignore
+            if attr_name[0] != '_' \
+            and attr_name not in self.UNUSED_PARAM_SET \
+            and 'All' not in self.UNUSED_PARAM_SET: # include non-private attributes
                 self.parameters.append(AbstractNNLayerParam(attr_name, attr_val))
 
-        if 'All' in self.UNUSED_PARAM_SET: self.parameters = None
+        if 'All' in self.UNUSED_PARAM_SET:
+            self.parameters = None
 
     # fill in the class var for tensor node type
     def from_torchview_tensornode(self, node: TensorNode) -> None:
+        """
+        This function fills in the class variables of the AbstractNNLayer object with the
+        information from a TensorNode object
+
+        Args:
+            node: The TensorNode object to get the information from
+        
+        Returns:
+            None
+        """
         self.node_id = node.node_id
         if node.name == 'auxiliary-tensor':
             self.is_input_node = True
@@ -96,6 +135,16 @@ class AbstractNNLayer():
 
     # fill in the class var for function node type
     def from_torchview_functionnode(self, node: FunctionNode) -> None:
+        """
+        This function fills in the class variables of the AbstractNNLayer object with the
+        information from a FunctionNode object
+
+        Args:
+            node: The FunctionNode object to get the information from
+        
+        Returns:
+            None
+        """
         self.node_id = node.node_id
         self.input_shape = node.input_shape
         self.output_shape = node.output_shape
@@ -104,14 +153,29 @@ class AbstractNNLayer():
     def from_onnx(
             self,
             node: NodeProto = None,
-            input: List[Tuple[int, ...]] = None,
-            output: List[Tuple[int, ...]] = None,
+            input_: Optional[List[Tuple[int, ...]]] = None,
+            output: Optional[List[Tuple[int, ...]]] = None,
             is_input: bool = False,
             is_output: bool = False,
             custom_id: int = -501
         ) -> None:
+        """
+        This function fills in the class variables of the AbstractNNLayer object with the
+        information from a NodeProto object
+
+        Args:
+            node: The NodeProto object to get the information from
+            input_: The shape of the input tensor
+            output: The shape of the output tensor
+            is_input: A boolean that indicates whether the node is an input node
+            is_output: A boolean that indicates whether the node is an output node
+            custom_id: The unique identifier of the node
+        
+        Returns:
+            None
+        """
         self.node_id = custom_id
-        self.input_shape = input
+        self.input_shape = input_
         self.output_shape = output
         self.is_input_node = is_input
         self.is_output_node = is_output
@@ -146,14 +210,26 @@ class AbstractNNLayer():
 
                 if self.operation in self.PARAMETERS_DEFAULT_ONNX:
                     if attr.name in self.PARAMETERS_DEFAULT_ONNX[self.operation]:
-                        if self.parameters[-1].param_value == self.PARAMETERS_DEFAULT_ONNX[self.operation][attr.name][0]:
+                        if self.parameters[-1].param_value == \
+                            self.PARAMETERS_DEFAULT_ONNX[self.operation][attr.name][0]:
                             self.parameters.pop()
                 if attr.name in self.UNUSED_PARAM_SET:
                     self.parameters.pop()
 
     def param_compare(self, other) -> bool:
-        if self.parameters == None:
-            return other.parameters == None
+        """
+        This function compares the parameters of the current node with the parameters of another
+        node
+
+        Args:
+            other: The other node to compare with
+        
+        Returns:
+            A boolean that indicates whether the parameters of the current node are equivalent to
+            the parameters of the other node
+        """
+        if self.parameters is None:
+            return other.parameters is None
         for p in self.parameters:
             if p not in other.parameters and p not in self.UNUSED_PARAM_SET:
                 return False
@@ -169,11 +245,32 @@ class AbstractNNLayer():
         )
 
     def op_eq(self, other) -> bool:
+        """
+        This function compares the operation of the current node with the operation of another node
+
+        Args:
+            other: The other node to compare with
+        
+        Returns:
+            A boolean that indicates whether the operation of the current node is equivalent to the
+            operation of the other node
+        """
         return (
             self.operation == other.operation
         )
 
     def dim_eq(self, other) -> bool:
+        """
+        This function compares the input and output shapes of the current node with the input and
+        output shapes of another node
+
+        Args:
+            other: The other node to compare with
+        
+        Returns:
+            A boolean that indicates whether the input and output shapes of the current node are
+            equivalent to the input and output shapes of the other node
+        """
         return (
             self.input_shape == other.input_shape and \
             self.output_shape == other.output_shape and \
@@ -181,45 +278,82 @@ class AbstractNNLayer():
         )
 
     def param_eq(self, other) -> bool:
+        """
+        This function compares the parameters of the current node with the parameters of another
+        node
+
+        Args:
+            other: The other node to compare with
+        
+        Returns:
+            A boolean that indicates whether the parameters of the current node are equivalent to
+            the parameters of the other node
+        """
         return (
             self.input_shape == other.input_shape and \
             self.output_shape == other.output_shape and \
             self.operation == other.operation and \
-            self.param_compare(self, other)
+            self.param_compare(other)
         )
 
     # A helper function for filling class var by identifying the type of the inputted node
     def from_torchview(self, node: Node) -> None:
-        if type(node) == ModuleNode:
+        """
+        This function fills in the class variables of the AbstractNNLayer object with the
+        information from a Node object
+
+        Args:
+            node: The Node object to get the information from
+        
+        Returns:
+            None
+        """
+        if isinstance(node, ModuleNode):
             self.from_torchview_modulenode(node)
-        elif type(node) == TensorNode:
+        elif isinstance(node, TensorNode):
             self.from_torchview_tensornode(node)
-        elif type(node) == FunctionNode:
+        elif isinstance(node, FunctionNode):
             self.from_torchview_functionnode(node)
 
     # Generate the 'head' of the sorting identifier(sequence) for this node
     def generate_sorting_identifier_head(self) -> str:
-        if self.is_input_node: return '[INPUT/{}]'.format(self.output_shape)
-        if self.is_output_node: return '[OUTPUT/{}]'.format(self.input_shape)
-        if self.parameters != None:
+        """
+        This function generates the head of the sorting identifier for the node
+
+        Returns:
+            The head of the sorting identifier for the node
+        """
+        if self.is_input_node:
+            return f'[INPUT/{self.output_shape}]'
+        if self.is_output_node:
+            return f'[OUTPUT/{self.input_shape}]'
+        if self.parameters is not None:
             pm_list = []
             for pm in self.parameters:
                 pm_list.append(str(pm))
-            return '[{}/{}/{}/{}]'.format(str(self.input_shape), str(self.output_shape), self.operation, str(pm_list))
-        else:
-            return '[{}/{}/{}]'.format(str(self.input_shape), str(self.output_shape), self.operation)
+            return f'[{str(self.input_shape)}/{str(self.output_shape)}' \
+                f'/{self.operation}/{str(pm_list)}]'
+        return f'[{str(self.input_shape)}/{str(self.output_shape)}/{self.operation}]'
 
     def generate_sorting_hash(self) -> int:
+        """
+        This function generates the sorting hash for the node
+
+        Returns:
+            The sorting hash for the node
+        """
         return hash(self.generate_sorting_identifier_head())
 
     # to string function
     def __str__(self) -> str:
-        if self.is_input_node: return '[INPUT] out: {}'.format(self.output_shape)
-        if self.is_output_node: return '[OUTPUT] in: {}'.format(self.input_shape)
-        if self.parameters != None:
+        if self.is_input_node:
+            return f'[INPUT] out: {self.output_shape}'
+        if self.is_output_node:
+            return f'[OUTPUT] in: {self.input_shape}'
+        if self.parameters is not None:
             pm_list = []
             for pm in self.parameters:
                 pm_list.append(str(pm))
-            return '[{}] in: {} out: {} {}'.format(self.operation, str(self.input_shape), str(self.output_shape), str(pm_list))
-        else:
-            return '[{}] in: {} out: {}'.format(self.operation, str(self.input_shape), str(self.output_shape))
+            return f'[{self.operation}] in: {str(self.input_shape)}' \
+                f'out: {str(self.output_shape)} {str(pm_list)}'
+        return f'[{self.operation}] in: {str(self.input_shape)} out: {str(self.output_shape)}'

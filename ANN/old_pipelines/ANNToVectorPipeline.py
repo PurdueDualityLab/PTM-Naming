@@ -5,7 +5,7 @@ from ANN.AbstractNNGenerator import AbstractNNGenerator
 from ANN.utils import overwrite_torchview_func
 import os
 from transformers import AutoModel, AutoTokenizer
-from ANN.AbstractNNLayer import AbstractNNLayer
+from ANN.ann_layer import AbstractNNLayer
 from typing import List, Tuple
 from ANN.pipelines.ANNToJSONConverter import read_annlayer_list_from_json
 import pickle

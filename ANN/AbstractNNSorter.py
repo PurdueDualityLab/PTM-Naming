@@ -1,5 +1,5 @@
 from ANN.ann_conversion_handler import AbstractNNConversionHandler
-from ANN.AbstractNNLayer import AbstractNNLayer
+from ANN.ann_layer import AbstractNNLayer
 
 
 from torchview.computation_node.compute_node import TensorNode

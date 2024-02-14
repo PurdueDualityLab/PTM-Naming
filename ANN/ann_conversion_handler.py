@@ -5,7 +5,7 @@ AbstractNNLayer and the torchview NodeInfo objects.
 
 from typing import Any, Dict, List, Set, Tuple, Optional
 from torchview.computation_node.base_node import Node
-from ANN.AbstractNNLayer import AbstractNNLayer
+from ANN.ann_layer import AbstractNNLayer
 
 
 class AbstractNNConversionHandler():
@@ -168,7 +168,7 @@ class AbstractNNConversionHandler():
                                 end_node_info = AbstractNNLayer()
                                 end_node_info.from_onnx(
                                     node = node_list[in_idx],
-                                    input = idx2shape_map[in_idx],
+                                    input_ = idx2shape_map[in_idx],
                                     custom_id = in_idx
                                 )
                                 self.ann_layer_id_to_ann_layer_obj_mapping[in_idx] = end_node_info
@@ -183,7 +183,7 @@ class AbstractNNConversionHandler():
                             start_node_info = AbstractNNLayer()
                             start_node_info.from_onnx(
                                 node = node_list[in_idx],
-                                input = idx2shape_map[in_idx],
+                                input_ = idx2shape_map[in_idx],
                                 custom_id = in_idx
                             )
                             self.ann_layer_id_to_ann_layer_obj_mapping[in_idx] = start_node_info
@@ -197,7 +197,7 @@ class AbstractNNConversionHandler():
                                 end_node_info = AbstractNNLayer()
                                 end_node_info.from_onnx(
                                     node = node_list[out_idx],
-                                    input = idx2shape_map[out_idx],
+                                    input_ = idx2shape_map[out_idx],
                                     custom_id = out_idx
                                 )
                                 self.ann_layer_id_to_ann_layer_obj_mapping[out_idx] = end_node_info

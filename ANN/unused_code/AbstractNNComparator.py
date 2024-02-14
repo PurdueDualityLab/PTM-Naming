@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
 import numpy as np
-from ANN.AbstractNNLayer import AbstractNNLayer
+from ANN.ann_layer import AbstractNNLayer
 
 from ANN.utils import overwrite_torchview_func
 

@@ -1,5 +1,5 @@
 import json
-from ANN.AbstractNNLayer import AbstractNNLayer
+from ANN.ann_layer import AbstractNNLayer
 from typing import List, Tuple
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import AutoModel, AutoTokenizer

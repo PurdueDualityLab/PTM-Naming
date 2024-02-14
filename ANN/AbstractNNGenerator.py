@@ -1,6 +1,6 @@
 from ANN.AbstractNNSorter import AbstractNNSorter
 from ANN.ann_conversion_handler import AbstractNNConversionHandler
-from ANN.AbstractNNLayer import AbstractNNLayer
+from ANN.ann_layer import AbstractNNLayer
 from ANN.utils import overwrite_torchview_func
 
 
