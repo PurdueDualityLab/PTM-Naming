@@ -10,7 +10,7 @@ import time
 from typing import List, Tuple, Union, Optional, Any
 from loguru import logger
 from transformers import AutoModel
-from ANN.AbstractNNGenerator import AbstractNNGenerator
+from ANN.ann_generator import AbstractNNGenerator
 from ANN.ann_layer import AbstractNNLayer
 from ANN.old_pipelines.ANNToJSONConverter import read_annlayer_list_from_json, annlayer_list_to_json
 from tools.HFValidInputIterator import HFValidInputIterator
@@ -27,7 +27,7 @@ class AbstractNN():
     def __init__(
         self,
         annlayer_list: Optional[List[AbstractNNLayer]] = None,
-        connection_info: Optional[List[Tuple[int, List[int]]]] = None
+        connection_info: Optional[List[Tuple[Union[int, str], List[Union[int, str]]]]] = None
     ) -> None:
         self.content = annlayer_list
         self.connection_info = connection_info

@@ -1,5 +1,5 @@
 from ANN.pipelines.ANNToJSONConverter import annlayer_list_to_json
-from ANN.AbstractNNGenerator import AbstractNNGenerator
+from ANN.ann_generator import AbstractNNGenerator
 from transformers import AutoModel, AutoTokenizer, AutoFeatureExtractor, AutoImageProcessor, AutoProcessor
 import json
 import os

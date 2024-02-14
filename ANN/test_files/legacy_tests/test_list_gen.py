@@ -1,7 +1,7 @@
 
 import torch
 import torch.nn as nn
-from ANN.AbstractNNGenerator import AbstractNNGenerator
+from ANN.ann_generator import AbstractNNGenerator
 import onnx
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import (

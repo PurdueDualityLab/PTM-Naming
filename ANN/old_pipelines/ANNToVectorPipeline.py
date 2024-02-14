@@ -1,7 +1,7 @@
 
 from transformers import AutoModel, AutoTokenizer
 import json
-from ANN.AbstractNNGenerator import AbstractNNGenerator
+from ANN.ann_generator import AbstractNNGenerator
 from ANN.utils import overwrite_torchview_func
 import os
 from transformers import AutoModel, AutoTokenizer

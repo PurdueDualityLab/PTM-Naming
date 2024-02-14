@@ -3,7 +3,7 @@ This file contains the AbstractNNConversionHandler class, which is used to conve
 AbstractNNLayer and the torchview NodeInfo objects.
 """
 
-from typing import Any, Dict, List, Set, Tuple, Optional, Union
+from typing import Any, Dict, List, Set, Tuple, Optional, Union, Sequence
 from torchview.computation_node.base_node import Node
 from ANN.ann_layer import AbstractNNLayer
 
@@ -31,7 +31,7 @@ class AbstractNNConversionHandler():
 
     def populate_class_var_from_torchview(
         self,
-        edge_list: List[Tuple[Node, Node]]
+        edge_list: Sequence[Tuple[Node, Node]]
     ) -> None:
         """
         This function populates the class variables from the torchview edge_list.

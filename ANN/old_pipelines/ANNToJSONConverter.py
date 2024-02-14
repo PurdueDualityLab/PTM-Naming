@@ -1,12 +1,12 @@
 import json
 from ANN.ann_layer import AbstractNNLayer
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import AutoModel, AutoTokenizer
-from ANN.AbstractNNGenerator import AbstractNNGenerator
+from ANN.ann_generator import AbstractNNGenerator
 from ANN.ann_layer_param import AbstractNNLayerParam
 
-def annlayer_list_to_json(layer_list: List[AbstractNNLayer], connection_info: List[Tuple[int, List[int]]], output_loc):
+def annlayer_list_to_json(layer_list: List[AbstractNNLayer], connection_info: List[Tuple[Union[int, str], List[Union[int, str]]]], output_loc):
     if len(layer_list) != len(connection_info): 
         print('Unrecognized connection info')
         return None
