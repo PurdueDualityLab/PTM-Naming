@@ -1,7 +1,15 @@
+"""
+This class is used to represent a parameter of a neural network layer.
+"""
 from typing import Any
 
-
 class AbstractNNLayerParam():
+    """
+    This class is used to represent a parameter of a neural network layer.
+
+    Attributes:
+        param_name: The name of the parameter
+    """
     def __init__(
         self,
         param_name: str,

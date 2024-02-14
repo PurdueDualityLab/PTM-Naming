@@ -4,7 +4,7 @@ from typing import List, Tuple
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import AutoModel, AutoTokenizer
 from ANN.AbstractNNGenerator import AbstractNNGenerator
-from ANN.AbstractNNLayerParam import AbstractNNLayerParam
+from ANN.ann_layer_param import AbstractNNLayerParam
 
 def annlayer_list_to_json(layer_list: List[AbstractNNLayer], connection_info: List[Tuple[int, List[int]]], output_loc):
     if len(layer_list) != len(connection_info): 

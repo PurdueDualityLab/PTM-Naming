@@ -1,11 +1,11 @@
+"""
+This file contains the AbstractNNSorter class, which is used to sort the nodes in the graph based on 
+their sorting identifier and to generate a list of graph nodes based on the order of the sorting identifier.
+"""
+from typing import Dict, List, Tuple, Union
+from torchview.computation_node.compute_node import TensorNode
 from ANN.ann_conversion_handler import AbstractNNConversionHandler
 from ANN.ann_layer import AbstractNNLayer
-
-
-from torchview.computation_node.compute_node import TensorNode
-
-
-from typing import Dict, List, Tuple
 
 
 class AbstractNNSorter():
@@ -25,15 +25,19 @@ class AbstractNNSorter():
         use_hash: bool = False
     ):
         self.mapper = mapper
-        self.input_node_info_obj_list: List[TensorNode] = []
-        self.output_node_info_obj_list: List[TensorNode] = []
+        self.input_annlayer_list: List[AbstractNNLayer] = []
+        self.output_annlayer_list: List[AbstractNNLayer] = []
         self.use_hash = use_hash
+
+        if mapper.ann_layer_edge_list is None:
+            raise ValueError("The mapper object does not contain the edge list information")
+
         for edge_node_info_tuple in mapper.ann_layer_edge_list: # identify input/output node and put them into the class var
-            if edge_node_info_tuple[0].is_input_node and edge_node_info_tuple[0] not in self.input_node_info_obj_list:
-                self.input_node_info_obj_list.append(edge_node_info_tuple[0])
-            if edge_node_info_tuple[1].is_output_node and edge_node_info_tuple[1] not in self.output_node_info_obj_list:
-                self.output_node_info_obj_list.append(edge_node_info_tuple[1])
-        self.adj_dict: Dict[int, List[AbstractNNLayer]] = mapper.get_adj_dict({'remove_identity'})
+            if edge_node_info_tuple[0].is_input_node and edge_node_info_tuple[0] not in self.input_annlayer_list:
+                self.input_annlayer_list.append(edge_node_info_tuple[0])
+            if edge_node_info_tuple[1].is_output_node and edge_node_info_tuple[1] not in self.output_annlayer_list:
+                self.output_annlayer_list.append(edge_node_info_tuple[1])
+        self.adj_dict = mapper.get_adj_dict({'remove_identity'})
 
     # A helper function that helps to sort a list of node based on their sorting identifiers
     def sorted_node_info_list(self, node_info_list: List[AbstractNNLayer]):
@@ -127,7 +131,7 @@ class AbstractNNSorter():
 
             return
 
-        for input_node_info_obj in self.input_node_info_obj_list: # Do the same traversal for all the inputs
+        for input_node_info_obj in self.input_annlayer_list: # Do the same traversal for all the inputs
             traverse(input_node_info_obj)
 
 
@@ -139,7 +143,7 @@ class AbstractNNSorter():
         self.assign_sorting_identifier()
         self.reset_visited_field()
 
-        sorted_inputs: List[AbstractNNLayer] = self.sorted_node_info_list(self.input_node_info_obj_list)
+        sorted_inputs: List[AbstractNNLayer] = self.sorted_node_info_list(self.input_annlayer_list)
 
         ordered_layer_list: List[AbstractNNLayer] = []
 
