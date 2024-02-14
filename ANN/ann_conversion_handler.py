@@ -221,9 +221,10 @@ class AbstractNNConversionHandler():
         assert self.ann_layer_edge_list is not None
         adj_dict: Dict[int, List[AbstractNNLayer]] = {}
         for node_info_tuple in self.ann_layer_edge_list:
+            info_tuple_node_id = int(node_info_tuple[0].node_id)
             if node_info_tuple[0].node_id not in adj_dict:
-                adj_dict[node_info_tuple[0].node_id] = []
-            adj_dict[node_info_tuple[0].node_id].append(node_info_tuple[1])
+                adj_dict[info_tuple_node_id] = []
+            adj_dict[info_tuple_node_id].append(node_info_tuple[1])
 
         if options is not None and 'remove_identity' in options:
             for n_id, next_nodes in adj_dict.items():
@@ -234,9 +235,10 @@ class AbstractNNConversionHandler():
                         if next_node.operation == 'Identity':
                             cleared = False
                             adj_dict[n_id].remove(next_node)
-                            for next_next_node in adj_dict[next_node.node_id]:
+                            next_node_node_id = int(next_node.node_id)
+                            for next_next_node in adj_dict[next_node_node_id]:
                                 adj_dict[n_id].append(next_next_node)
-                            adj_dict[next_node.node_id] = []
+                            adj_dict[next_node_node_id] = []
 
         return adj_dict
     
