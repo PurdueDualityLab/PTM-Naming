@@ -1,7 +1,7 @@
 import os
 import json
 from loguru import logger
-from vector.ClusterDataset import ClusterDataset
+from vector.cluster_dataset import ClusterDataset
 from vector.ANNVector import ANNVectorTripletArchGroup
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 
 from typing import List
-from vector.ClusterDataset import ClusterDataset
+from vector.cluster_dataset import ClusterDataset
 from ANN.abstract_neural_network import AbstractNN
 
 class ANNVector():

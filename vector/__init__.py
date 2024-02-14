@@ -1,6 +1,6 @@
 from .ANNVector import *
 from .ClusterGenerator import *
-from .ClusterDataset import *
+from .cluster_dataset import *
 from .ClusterPipeline import *
 
 if __name__ == "__main__":

@@ -1,4 +1,6 @@
-
+"""
+This module is used to load the cluster dataset and return the vector
+"""
 import os
 import pickle
 import dotenv
@@ -43,7 +45,7 @@ class ClusterDataset():
         """
         with open(file_loc, 'rb') as f:
             return pickle.load(f)
-    
+
     def get(self, vec_category, item_name, mode="arch"):
         """
         This function returns the vector representation of the model.
@@ -72,14 +74,15 @@ class ClusterDataset():
             recnstr_dict = {item_name: dict()}
             for model_name, model_vec in model_vec_list.items():
                 recnstr_dict[item_name][model_name] = dict()
-                for i in range(len(key)):
-                    dict_key, dict_val = key[i], model_vec[i]
-                    if dict_val == 0: continue
+                for i, dict_key in enumerate(key):
+                    dict_val = model_vec[i]
+                    if dict_val == 0:
+                        continue
                     recnstr_dict[item_name][model_name][dict_key] = dict_val
             return recnstr_dict
         else:
             raise ValueError(f"Mode {mode} not supported.")
-                
+
 if __name__ == "__main__":
     ds = ClusterDataset()
     v = ds.get("l", "WavLMForCTC")

@@ -1,7 +1,7 @@
 
 from .ANNVector import *
 from .ClusterGenerator import *
-from .ClusterDataset import *
+from .cluster_dataset import *
 from transformers import PretrainedConfig
 from loguru import logger
 

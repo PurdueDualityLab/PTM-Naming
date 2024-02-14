@@ -1,5 +1,5 @@
 
-from .ClusterDataset import ClusterDataset
+from .cluster_dataset import ClusterDataset
 import numpy as np
 import json
 from loguru import logger
