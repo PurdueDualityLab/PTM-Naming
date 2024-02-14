@@ -71,7 +71,7 @@ class ClusterGenerator():
             results[model_family] = {}
             outliers[model_family] = []
             # Create a larger plot
-            plt.figure(figsize=(10, 10))
+            # plt.figure(figsize=(10, 10))
             # if model_arch != "AlbertForMaskedLM":
             #     continue
             # logger.info(f"Clustering {len(model_vec[model_arch])} models in {model_arch}...")
