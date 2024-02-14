@@ -3,7 +3,7 @@
 import json
 import os
 import numpy as np
-from vector.ClusterPipeline import ClusterPipeline
+from vector.cluster_pipeline import ClusterPipeline
 from vector.cluster_tools import GridSearchPipeline
 
 if __name__ == "__main__":

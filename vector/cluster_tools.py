@@ -11,7 +11,7 @@ from tqdm import tqdm
 from sklearn.metrics import silhouette_score
 import numpy as np
 from loguru import logger
-from vector.ClusterPipeline import ClusterPipeline
+from vector.cluster_pipeline import ClusterPipeline
 
 
 class GridSearchPipeline():
@@ -154,7 +154,7 @@ class GridSearchPipeline():
         """
         span = 5.0
         mid = 0.0
-        curr_trial_list = np.logspace(mid-span, mid+span, 5)
+        curr_trial_list = np.logspace(mid-span, mid+span, 10)
         for _ in range(5):
             result = self.grid_search(
                 vec_tuple,
@@ -163,10 +163,16 @@ class GridSearchPipeline():
                 rounding,
                 parallel_processing
             )
-            largest_value_key = max(result, key=lambda k: float(result[k]))
+            largest_value_key = max(result, key=lambda k: float(result[k])) # pylint: disable=cell-var-from-loop
             log_largest_value_key = np.log10(largest_value_key)
             span = span / 2
-            curr_trial_list = np.logspace(log_largest_value_key-span, log_largest_value_key+span, 50)
-            logger.info(f"Current largest value: {largest_value_key} with value {result[largest_value_key]}")
+            curr_trial_list = np.logspace(
+                log_largest_value_key-span, 
+                log_largest_value_key+span, 
+                10
+            )
+            logger.info(
+                f"Current largest value: {largest_value_key} with value {result[largest_value_key]}"
+            )
             logger.info(f"Current range: {curr_trial_list[0]} to {curr_trial_list[-1]}")
         return largest_value_key
