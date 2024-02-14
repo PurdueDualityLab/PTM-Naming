@@ -7,7 +7,7 @@ from loguru import logger
 from torch import Tensor
 from torchview.computation_graph import ComputationGraph
 from tqdm import tqdm
-from ANN.AbstractNNSorter import AbstractNNSorter
+from ANN.ann_sorter import AbstractNNSorter
 from ANN.ann_conversion_handler import AbstractNNConversionHandler
 from ANN.ann_layer import AbstractNNLayer
 from ANN.utils import overwrite_torchview_func
