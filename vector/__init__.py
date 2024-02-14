@@ -1,4 +1,4 @@
-from .ANNVector import *
+from .ann_vector import *
 from .cluster_generator import *
 from .cluster_dataset import *
 from .cluster_pipeline import *

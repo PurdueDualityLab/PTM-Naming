@@ -2,7 +2,7 @@ import os
 import json
 from loguru import logger
 from vector.cluster_dataset import ClusterDataset
-from vector.ANNVector import ANNVectorTripletArchGroup
+from vector.ann_vector import ANNVectorTripletArchGroup
 
 if __name__ == "__main__":
     assert os.path.exists("model_collection/modelArch_list.json")
