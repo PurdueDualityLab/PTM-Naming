@@ -8,7 +8,6 @@ from typing import Any, List, Optional, Tuple, Union
 import torch
 import torchview
 from loguru import logger
-from torch import Tensor
 from torchview.computation_graph import ComputationGraph
 from tqdm import tqdm
 from ANN.ann_sorter import AbstractNNSorter

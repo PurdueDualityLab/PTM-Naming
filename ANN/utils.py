@@ -1,6 +1,14 @@
+"""
+This file contains utility functions for the ANN module.
+"""
+
 import torchview
 
 def overwrite_torchview_func():
+    """
+    This function overwrites the __init__ method of the TensorNode 
+    and ModuleNode classes in the torchview package.
+    """
     def new_tn_init(
             self,
             tensor,
