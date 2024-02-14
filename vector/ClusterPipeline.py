@@ -52,7 +52,7 @@ class ClusterPipeline():
     def cluster_single_arch_from_dict(
         self,
         vec_dict_triplet: tuple,
-        eps: int = 0.3,
+        eps: float = 0.3,
         merge_outlier: bool = False
     ):
         vec_l, vec_p, vec_d = ANNVectorTripletArchGroup.from_dict(vec_dict_triplet[0], vec_dict_triplet[1], vec_dict_triplet[2]).to_array()

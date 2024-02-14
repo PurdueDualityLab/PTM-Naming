@@ -13,20 +13,34 @@ if __name__ == "__main__":
     selected_arch = data[13]
     print(data[13][0].keys())
 
-    for model_list_ in selected_arch[0].values():
-        model_list = list(model_list_)
+    for model_list_full in selected_arch[0].values():
+        model_list = [model_name.split('/')[0] for model_name in model_list_full.keys()]
 
     vec_tuple = (selected_arch[0], selected_arch[1], selected_arch[2])
 
     gsp = GridSearchPipeline(
         model_list = model_list
     )
-    eps_list = np.linspace(0.001, 0.2, 200)
-    result = gsp.grid_search(
+    # eps_list = np.logspace(-4, 4, 50)
+    # result = gsp.grid_search(
+    #     vec_tuple,
+    #     gsp.get_silhouette_score,
+    #     eps_list,
+    #     10
+    # )
+    # print(result)
+
+    result = gsp.search_optimal_eps(
         vec_tuple,
-        gsp.get_silhouette_score,
-        eps_list,
-        4
+        gsp.get_silhouette_score
     )
+
     print(result)
+
+    # result = ClusterPipeline().cluster_single_arch_from_dict(
+    #     vec_tuple,
+    #     eps=0.001,
+    #     merge_outlier=True
+    # )
+    # print(result)
 

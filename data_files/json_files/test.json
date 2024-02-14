@@ -1,0 +1,318 @@
+{
+    "Bert": {
+        "0": [
+            "aubmindlab/bert-large-arabertv02",
+            "neuralmind/bert-large-portuguese-cased",
+            "stjiris/bert-large-portuguese-cased-legal-mlm",
+            "asafaya/bert-large-arabic",
+            "bert-large-cased-whole-word-masking",
+            "uer/roberta-large-wwm-chinese-cluecorpussmall",
+            "aubmindlab/bert-large-arabertv02-twitter",
+            "rufimelo/Legal-BERTimbau-large-v2",
+            "pablocosta/bertabaporu-large-uncased",
+            "KennethEnevoldsen/dfm-bert-large-v1-2048bsz-1Msteps",
+            "pierreguillou/bert-large-cased-pt-lenerbr",
+            "bert-large-uncased",
+            "wangfan/jdt-fin-roberta-wwm-large",
+            "Aunsiels/ChildBERT",
+            "aubmindlab/bert-large-arabertv2",
+            "rufimelo/Legal-BERTimbau-large",
+            "mmaguero/gn-bert-large-cased",
+            "SauravMaheshkar/clr-finetuned-bert-large-uncased",
+            "bert-large-cased",
+            "bert-large-uncased-whole-word-masking"
+        ],
+        "1": [
+            "Geotrend/bert-base-en-ja-cased",
+            "uer/chinese_roberta_L-12_H-768",
+            "Geotrend/bert-base-en-el-ru-cased",
+            "batterydata/batterybert-uncased",
+            "model-attribution-challenge/bert-base-uncased",
+            "rufimelo/Legal-BERTimbau-base",
+            "AndyChiang/cdgp-csg-bert-dgen",
+            "Geotrend/bert-base-en-es-zh-cased",
+            "AndyChiang/cdgp-csg-scibert-cloth",
+            "sagorsarker/bangla-bert-base",
+            "batterydata/batterybert-cased",
+            "bert-base-uncased",
+            "Geotrend/bert-base-es-cased",
+            "aubmindlab/bert-base-arabertv02",
+            "Geotrend/bert-base-en-nl-cased",
+            "l3cube-pune/marathi-bert-scratch",
+            "Geotrend/bert-base-en-zh-cased",
+            "Geotrend/bert-base-el-cased",
+            "xxr/bert-base-chinese-complaint-128",
+            "l3cube-pune/hing-mbert",
+            "markverschuren/bert-base-dutch-cased-finetuned-mark",
+            "Geotrend/bert-base-en-fr-ar-cased",
+            "SauravMaheshkar/clr-pretrained-bert-base-uncased",
+            "Tsubasaz/clinical-pubmed-bert-base-128",
+            "aubmindlab/bert-base-arabert",
+            "ariesutiono/scibert-lm-const-finetuned-20",
+            "Geotrend/bert-base-en-es-it-cased",
+            "l3cube-pune/hing-mbert-mixed",
+            "qarib/bert-base-qarib60_860k",
+            "l3cube-pune/marathi-tweets-bert-scratch",
+            "MutazYoune/Ara_DialectBERT",
+            "Geotrend/bert-base-pl-cased",
+            "amine/bert-base-5lang-cased",
+            "Geotrend/bert-base-en-th-cased",
+            "bashar-talafha/multi-dialect-bert-base-arabic",
+            "Geotrend/bert-base-en-fr-da-ja-vi-cased",
+            "Tsubasaz/clinical-pubmed-bert-base-512",
+            "batterydata/batteryonlybert-uncased",
+            "Geotrend/bert-base-en-fr-uk-el-ro-cased",
+            "Geotrend/bert-base-da-cased",
+            "Geotrend/bert-base-uk-cased",
+            "ariesutiono/scibert-lm-v2-finetuned-20",
+            "indolem/indobert-base-uncased",
+            "egumasa/bert-base-uncased-finetuned-academic",
+            "Luciano/bertimbau-base-finetuned-lener-br",
+            "GabrielDGC/bert-base-spanish-wwm-uncased-finetuned-imdb-spanish",
+            "rmihaylov/bert-base-bg",
+            "pritamdeka/PubMedBert-fulltext-cord19",
+            "batterydata/batteryonlybert-cased",
+            "Geotrend/bert-base-fr-cased",
+            "dbmdz/bert-base-italian-xxl-cased",
+            "Geotrend/bert-base-en-cased",
+            "Geotrend/bert-base-en-da-cased",
+            "Geotrend/bert-base-ro-cased",
+            "Geotrend/bert-base-en-es-cased",
+            "Geotrend/bert-base-en-zh-hi-cased",
+            "mmaguero/multilingual-bert-gn-base-cased",
+            "StevenLimcorn/MelayuBERT",
+            "Narshion/bert-base-multilingual-cased-urgency",
+            "l3cube-pune/marathi-tweets-bert",
+            "Geotrend/bert-base-15lang-cased",
+            "xxr/bert-base-uncased-multi-128",
+            "Geotrend/bert-base-nl-cased",
+            "Geotrend/bert-base-en-de-cased",
+            "neuralmind/bert-base-portuguese-cased",
+            "StanfordAIMI/RadBERT",
+            "Geotrend/bert-base-25lang-cased",
+            "Geotrend/bert-base-en-lt-cased",
+            "Geotrend/bert-base-ja-cased",
+            "l3cube-pune/marathi-bert",
+            "coppercitylabs/uzbert-base-uncased",
+            "Geotrend/bert-base-en-fr-de-cased",
+            "cahya/bert-base-indonesian-1.5G",
+            "dbmdz/bert-base-italian-cased",
+            "MLRS/BERTu",
+            "Geotrend/bert-base-en-fr-es-cased",
+            "Geotrend/bert-base-ur-cased",
+            "dbmdz/bert-base-italian-uncased",
+            "mayankb96/bert-base-uncased-finetuned-lexglue",
+            "Geotrend/bert-base-en-fr-nl-ru-ar-cased",
+            "Geotrend/bert-base-en-fr-es-de-zh-cased",
+            "Geotrend/bert-base-sw-cased",
+            "Geotrend/bert-base-bg-cased",
+            "Geotrend/bert-base-zh-cased",
+            "Geotrend/bert-base-de-cased",
+            "uer/roberta-base-wwm-chinese-cluecorpussmall",
+            "dbmdz/bert-base-italian-xxl-uncased",
+            "Geotrend/bert-base-no-cased",
+            "Geotrend/bert-base-en-es-pt-cased",
+            "l3cube-pune/marathi-bert-v2",
+            "mmaguero/gn-bert-base-cased",
+            "ariesutiono/scibert-lm-v1-finetuned-20",
+            "byeongal/bert-base-uncased",
+            "bert-base-multilingual-cased",
+            "aubmindlab/bert-base-arabertv01",
+            "hiroshi-matsuda-rit/bert-base-japanese-basic-char-v2",
+            "Geotrend/bert-base-tr-cased",
+            "Geotrend/bert-base-en-ar-cased",
+            "w11wo/javanese-bert-small-imdb",
+            "xxr/bert-base-uncased-issues-128",
+            "biu-nlp/alephbert-base",
+            "flax-community/bert-base-uncased-swahili",
+            "MLRS/mBERTu",
+            "Geotrend/bert-base-en-bg-cased",
+            "Geotrend/bert-base-en-sw-cased",
+            "ysnow9876/alephbert-base-finetuned-for-shut",
+            "Geotrend/bert-base-ru-cased",
+            "Geotrend/bert-base-en-fr-cased",
+            "l3cube-pune/hing-bert",
+            "Geotrend/bert-base-en-pl-cased",
+            "baikal-nlp/dbert",
+            "onlplab/alephbert-base",
+            "Geotrend/bert-base-hi-cased",
+            "Geotrend/bert-base-en-tr-cased",
+            "pritamdeka/PubMedBert-abstract-cord19-v2",
+            "Geotrend/bert-base-ar-cased",
+            "Geotrend/bert-base-10lang-cased",
+            "Geotrend/bert-base-en-fr-de-no-da-cased",
+            "mlcorelib/deberta-base-uncased",
+            "Geotrend/bert-base-en-it-cased",
+            "cahya/bert-base-indonesian-522M",
+            "Geotrend/bert-base-en-hi-cased",
+            "vppvgit/BiblItBERT-1",
+            "pierreguillou/bert-base-cased-pt-lenerbr",
+            "tuhailong/chinese-roberta-wwm-ext",
+            "AndyChiang/cdgp-csg-bert-cloth",
+            "uer/roberta-base-word-chinese-cluecorpussmall",
+            "wangfan/jdt-fin-roberta-wwm",
+            "qarib/bert-base-qarib60_1790k",
+            "Geotrend/bert-base-en-ur-cased",
+            "batterydata/batteryscibert-cased",
+            "indolem/indobertweet-base-uncased",
+            "asafaya/bert-base-arabic",
+            "Geotrend/bert-base-it-cased",
+            "Geotrend/bert-base-en-fr-es-pt-it-cased",
+            "Geotrend/bert-base-pt-cased",
+            "aubmindlab/bert-base-arabertv2",
+            "w11wo/javanese-bert-small",
+            "Geotrend/bert-base-en-ro-cased",
+            "qarib/bert-base-qarib",
+            "qarib/bert-base-qarib60_1970k",
+            "Geotrend/bert-base-en-el-cased",
+            "Geotrend/bert-base-vi-cased",
+            "model-attribution-challenge/bert-base-cased",
+            "Geotrend/bert-base-en-ru-cased",
+            "Geotrend/bert-base-lt-cased",
+            "bert-base-multilingual-uncased",
+            "aubmindlab/bert-base-arabertv02-twitter",
+            "Chrispfield/bert-base-uncased-issues-128",
+            "vasugoel/K-12BERT",
+            "Luciano/bert-base-multilingual-cased-finetuned-lener_br",
+            "Kowsher/bangla-bert",
+            "SauravMaheshkar/clr-finetuned-bert-base-uncased",
+            "Geotrend/bert-base-en-pt-cased",
+            "Geotrend/bert-base-en-no-cased",
+            "Geotrend/bert-base-en-fr-lt-no-pl-cased",
+            "Geotrend/bert-base-en-fr-it-cased",
+            "batterydata/batteryscibert-uncased",
+            "Geotrend/bert-base-th-cased",
+            "Geotrend/bert-base-en-fr-zh-ja-vi-cased",
+            "Geotrend/bert-base-en-vi-cased",
+            "smeylan/childes-bert",
+            "pritamdeka/PubMedBert-abstract-cord19",
+            "bert-base-cased",
+            "pablocosta/bertabaporu-base-uncased",
+            "Narsil/bert-base-uncased",
+            "AndyChiang/cdgp-csg-scibert-dgen",
+            "Geotrend/bert-base-en-fr-zh-cased",
+            "l3cube-pune/marathi-tweets-bert-hateful",
+            "Geotrend/bert-base-en-uk-cased"
+        ],
+        "2": [
+            "muhtasham/bert-small-finetuned-legal-contracts-larger20-5-1",
+            "uer/roberta-small-word-chinese-cluecorpussmall",
+            "muhtasham/bert-small-finetuned-legal-definitions",
+            "anas-awadalla/bert-small-pretrained-on-squad",
+            "muhtasham/bert-small-finetuned-legal-definitions-longer",
+            "muhtasham/bert-small-finetuned-legal-contracts10train10val",
+            "muhtasham/bert-small-finetuned-legal-contracts-larger4010",
+            "uer/roberta-small-wwm-chinese-cluecorpussmall",
+            "uer/chinese_roberta_L-4_H-512"
+        ],
+        "3": [
+            "uer/roberta-medium-wwm-chinese-cluecorpussmall",
+            "anas-awadalla/bert-medium-pretrained-on-squad",
+            "asafaya/bert-medium-arabic",
+            "uer/roberta-medium-word-chinese-cluecorpussmall",
+            "uer/chinese_roberta_L-8_H-512"
+        ],
+        "4": [
+            "Ebtihal/AraBertMo_base_V2",
+            "Ebtihal/AraBertMo_base_V3",
+            "Ebtihal/AraBertMo_base_V9",
+            "Ebtihal/AraBertMo_base_V6",
+            "Ebtihal/AraBertMo_base_V10",
+            "Ebtihal/AraBertMo_base_V4",
+            "Ebtihal/AraBertMo_base_V8",
+            "Ebtihal/AraBertMo_base_V5",
+            "Ebtihal/AraBertMo_base_V1",
+            "Ebtihal/AraBertMo_base_V7"
+        ],
+        "5": [
+            "uer/roberta-tiny-wwm-chinese-cluecorpussmall",
+            "uer/roberta-tiny-word-chinese-cluecorpussmall",
+            "uer/chinese_roberta_L-2_H-128"
+        ],
+        "6": [
+            "uer/chinese_roberta_L-4_H-256",
+            "uer/roberta-mini-word-chinese-cluecorpussmall",
+            "uer/roberta-mini-wwm-chinese-cluecorpussmall",
+            "asafaya/bert-mini-arabic"
+        ],
+        "7": [
+            "mmaguero/gn-bert-small-cased",
+            "jackaduma/SecBERT",
+            "alexanderfalk/danbert-small-cased",
+            "rmihaylov/bert-base-theseus-bg",
+            "uer/chinese_roberta_L-6_H-768"
+        ],
+        "8": [
+            "yarongef/DistilProtBert"
+        ],
+        "9": [
+            "uer/chinese_roberta_L-8_H-256"
+        ],
+        "10": [
+            "saghar/TinyBERT_L-4_H-312_v2-finetuned-wikitext103"
+        ],
+        "11": [
+            "uer/chinese_roberta_L-2_H-256"
+        ],
+        "12": [
+            "uer/chinese_roberta_L-8_H-768"
+        ],
+        "13": [
+            "uer/chinese_roberta_L-6_H-128"
+        ],
+        "14": [
+            "uer/chinese_roberta_L-10_H-256"
+        ],
+        "15": [
+            "uer/chinese_roberta_L-2_H-512"
+        ],
+        "16": [
+            "uer/chinese_roberta_L-4_H-128"
+        ],
+        "17": [
+            "uer/chinese_roberta_L-10_H-128"
+        ],
+        "18": [
+            "uer/chinese_roberta_L-6_H-256"
+        ],
+        "19": [
+            "uer/chinese_roberta_L-10_H-768"
+        ],
+        "20": [
+            "uer/chinese_roberta_L-10_H-512"
+        ],
+        "21": [
+            "uer/chinese_roberta_L-12_H-256"
+        ],
+        "22": [
+            "uer/chinese_roberta_L-12_H-128"
+        ],
+        "23": [
+            "uer/chinese_roberta_L-4_H-768"
+        ],
+        "24": [
+            "uer/chinese_roberta_L-8_H-128"
+        ],
+        "25": [
+            "uer/chinese_roberta_L-2_H-768"
+        ],
+        "26": [
+            "mmaguero/gn-bert-tiny-cased"
+        ],
+        "27": [
+            "conan1024hao/cjkbert-small"
+        ],
+        "28": [
+            "uer/chinese_roberta_L-12_H-512"
+        ],
+        "29": [
+            "uer/chinese_roberta_L-6_H-512"
+        ],
+        "30": [
+            "damlab/HIV_BERT"
+        ],
+        "31": [
+            "saghar/TinyBERT_General_6L_768D-finetuned-wikitext103"
+        ]
+    }
+}

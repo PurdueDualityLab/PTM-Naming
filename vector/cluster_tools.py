@@ -10,6 +10,7 @@ import dotenv
 from tqdm import tqdm
 from sklearn.metrics import silhouette_score
 import numpy as np
+from loguru import logger
 from vector.ClusterPipeline import ClusterPipeline
 
 
@@ -48,7 +49,8 @@ class GridSearchPipeline():
         client = OpenAI(api_key=api_key)
         response = client.embeddings.create(
             input=texts,
-            model="text-embedding-3-small"
+            model="text-embedding-3-small",
+            #dimensions=64
         )
         return {texts[i]: response.data[i].embedding for i in range(len(texts))}
 
@@ -74,10 +76,13 @@ class GridSearchPipeline():
                     model_names.append(model)
                     labels.append(label)
 
-        embeddings = [self.model_embeddings[model] for model in model_names]
+        embeddings = [self.model_embeddings[model.split("/")[0]] for model in model_names]
 
         x = np.array(embeddings)
         y = np.array(labels, dtype=int)
+
+        if len(set(labels)) < 2:
+            return -1.0
 
         silhouette_avg = silhouette_score(x, y)
         return float(silhouette_avg)
@@ -126,4 +131,42 @@ class GridSearchPipeline():
             for eps in tqdm(trial_list):
                 eps, eval_result = task(eps)
                 results.append((eps, eval_result))
-        return {round(trial_list[i], rounding): round(results[i], rounding) for i in range(len(trial_list))}
+        return {round(eps, rounding): round(eval_result, rounding) for eps, eval_result in results}
+
+    def search_optimal_eps(
+        self,
+        vec_tuple: tuple,
+        eval_func: Callable[..., Any],
+        rounding: int = 14,
+        parallel_processing: bool = True
+    ):
+        """
+        This function returns the optimal value of the input result.
+
+        Args:
+            vec_tuple (tuple): The input vector tuple.
+            eval_func (callable): The evaluation function.
+            rounding (int): The rounding value.
+            parallel_processing (bool): The parallel processing flag.
+        
+        Returns:
+            None
+        """
+        span = 5.0
+        mid = 0.0
+        curr_trial_list = np.logspace(mid-span, mid+span, 5)
+        for _ in range(5):
+            result = self.grid_search(
+                vec_tuple,
+                eval_func,
+                curr_trial_list,
+                rounding,
+                parallel_processing
+            )
+            largest_value_key = max(result, key=lambda k: float(result[k]))
+            log_largest_value_key = np.log10(largest_value_key)
+            span = span / 2
+            curr_trial_list = np.logspace(log_largest_value_key-span, log_largest_value_key+span, 50)
+            logger.info(f"Current largest value: {largest_value_key} with value {result[largest_value_key]}")
+            logger.info(f"Current range: {curr_trial_list[0]} to {curr_trial_list[-1]}")
+        return largest_value_key
