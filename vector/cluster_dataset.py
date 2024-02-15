@@ -1,6 +1,7 @@
 """
 This module is used to load the cluster dataset and return the vector
 """
+from typing import Dict
 import os
 import pickle
 import dotenv
@@ -46,7 +47,12 @@ class ClusterDataset():
         with open(file_loc, 'rb') as f:
             return pickle.load(f)
 
-    def get(self, vec_category, item_name, mode="arch"):
+    def get(
+        self,
+        vec_category: str,
+        item_name: str,
+        mode: str = "arch"
+    ) -> Dict[str, Dict[str, Dict[str, int]]]:
         """
         This function returns the vector representation of the model.
 
@@ -69,7 +75,7 @@ class ClusterDataset():
 
         if mode == "arch":
             if item_name not in vec:
-                raise ValueError(f"Model {item_name} not found.")
+                raise ValueError(f"Model architecture {item_name} not found.")
             model_vec_list = vec[item_name]
             recnstr_dict = {item_name: dict()}
             for model_name, model_vec in model_vec_list.items():
@@ -82,6 +88,7 @@ class ClusterDataset():
             return recnstr_dict
         else:
             raise ValueError(f"Mode {mode} not supported.")
+
 
 if __name__ == "__main__":
     ds = ClusterDataset()

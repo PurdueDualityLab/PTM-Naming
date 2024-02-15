@@ -3,6 +3,7 @@
 import json
 import os
 import numpy as np
+from matplotlib import pyplot as plt
 from vector.cluster_pipeline import ClusterPipeline
 from vector.cluster_tools import GridSearchPipeline
 
@@ -18,28 +19,33 @@ if __name__ == "__main__":
 
     vec_tuple = (selected_arch[0], selected_arch[1], selected_arch[2])
 
+    model_vec = ClusterPipeline().get_model_vec_from_dict(vec_tuple)
+    
     gsp = GridSearchPipeline(
-        model_list = model_list
+        model_embeddings = model_vec
     )
-    # eps_list = np.logspace(-4, 4, 50)
-    # result = gsp.grid_search(
-    #     vec_tuple,
-    #     gsp.get_silhouette_score,
-    #     eps_list,
-    #     10
-    # )
-    # print(result)
-
-    result = gsp.search_optimal_eps(
+    eps_list = np.linspace(0.05, 10, 200)
+    result = gsp.grid_search(
         vec_tuple,
-        gsp.get_silhouette_score
+        gsp.get_silhouette_score,
+        eps_list,
+        10
     )
+    result = sorted(result.items(), key=lambda x: x[0], reverse=True)
+    for eps, score in result:
+        print(f"eps: {round(eps, 4)}, score: {round(score, 3)}")
 
-    print(result)
+    # Extract eps and score values
+    eps_values, score_values = zip(*result)
 
-    # result = ClusterPipeline().cluster_single_arch_from_dict(
-    #     vec_tuple,
-    #     eps=0.001,
-    #     merge_outlier=True
-    # )
-    # print(result)
+    # Create the plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(eps_values, score_values, marker='o', linestyle='-', color='b')
+    plt.title('Silhouette Score vs EPS')
+    plt.xlabel('EPS')
+    plt.ylabel('Silhouette Score')
+    plt.grid(True)
+
+    # Save the plot as an image
+    plt.savefig('eps_vs_score.png')
+    plt.close()

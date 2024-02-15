@@ -3,7 +3,7 @@ This module contains the tools for clustering the vectors.
 """
 
 import os
-from typing import List, Dict, Callable, Any
+from typing import List, Dict, Callable, Any, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from openai import OpenAI
 import dotenv
@@ -21,13 +21,20 @@ class GridSearchPipeline():
     Attributes:
         model_embeddings (Dict[str, List[float]]): The embeddings of the input texts.
         cp (ClusterPipeline): The cluster pipeline.
+        
     """
 
     def __init__(
         self,
-        model_list: List[str],
+        model_list: Optional[List[str]] = None,
+        model_embeddings: Optional[Dict[str, List[float]]] = None,
     ):
-        self.model_embeddings = self.get_embeddings(model_list)
+        if model_embeddings is None:
+            if model_list is None:
+                raise ValueError("Either model_list or model_embeddings should be provided.")
+            self.model_embeddings = self.get_embeddings(model_list)
+        else:
+            self.model_embeddings = model_embeddings
         self.cp = ClusterPipeline()
 
     def get_embeddings(
@@ -76,7 +83,10 @@ class GridSearchPipeline():
                     model_names.append(model)
                     labels.append(label)
 
-        embeddings = [self.model_embeddings[model.split("/")[0]] for model in model_names]
+        embeddings = [
+            self.model_embeddings[list(result.keys())[0]][model_names[i]] \
+                for i in range(len(model_names))
+        ]
 
         x = np.array(embeddings)
         y = np.array(labels, dtype=int)
@@ -167,8 +177,8 @@ class GridSearchPipeline():
             log_largest_value_key = np.log10(largest_value_key)
             span = span / 2
             curr_trial_list = np.logspace(
-                log_largest_value_key-span, 
-                log_largest_value_key+span, 
+                log_largest_value_key-span,
+                log_largest_value_key+span,
                 10
             )
             logger.info(

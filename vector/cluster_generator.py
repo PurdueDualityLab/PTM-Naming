@@ -30,6 +30,7 @@ class ClusterGenerator():
         param_vec: dict,
         weights: Optional[List] = None,
         mode = 'internal',
+        remove_zero_weight: bool = True,
         verbose = False
     ) -> dict:
         """
@@ -41,6 +42,7 @@ class ClusterGenerator():
             param_vec: The vector representation of the parameters
             weights: The weights for the concatenation of the vectors
             mode: The mode of the vector representation. Choose from internal or external
+            remove_zero_weight: Whether to remove the zero weight vectors
             verbose: Whether to print the progress
 
         Returns:
@@ -69,9 +71,12 @@ class ClusterGenerator():
                 models_param_vec = param_vec[model_arch]
 
                 for model_name in models_dim_vec:
-                    dim_arr = np.array(models_dim_vec[model_name])
-                    layer_arr = np.array(models_layer_vec[model_name])
-                    param_arr = np.array(models_param_vec[model_name])
+                    dim_arr = np.array(models_dim_vec[model_name]) \
+                        if weight_d != 0 or not remove_zero_weight else np.array([])
+                    layer_arr = np.array(models_layer_vec[model_name]) \
+                        if weight_l != 0 or not remove_zero_weight else np.array([])
+                    param_arr = np.array(models_param_vec[model_name]) \
+                        if weight_p != 0 or not remove_zero_weight else np.array([])
                     model_vec[model_family][model_name] = np.concatenate(
                         (weight_d * dim_arr, weight_l * layer_arr, weight_p * param_arr))
 

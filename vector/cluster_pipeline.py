@@ -119,12 +119,7 @@ class ClusterPipeline():
         Returns:
             Union[dict, Tuple[dict, dict]]: The clustered models and the outliers.
         """
-        vec_l, vec_p, vec_d = ANNVectorTripletArchGroup.from_dict(
-            vec_dict_triplet[0], 
-            vec_dict_triplet[1], 
-            vec_dict_triplet[2]
-        ).to_array()
-        model_vec = ClusterGenerator.concatenate_vec(vec_d, vec_l, vec_p)
+        model_vec = self.get_model_vec_from_dict(vec_dict_triplet)
         results, outliers = ClusterGenerator(self.cluster_data).model_clustering(model_vec, eps=eps)
 
         if merge_outlier:
@@ -138,6 +133,26 @@ class ClusterPipeline():
             return results
 
         return results, outliers
+    
+    def get_model_vec_from_dict(
+        self,
+        vec_dict_triplet: tuple
+    ) -> dict:
+        """
+        This function returns the model vector from the input dictionary.
+
+        Args:
+            vec_dict_triplet (tuple): The vector representation of the architecture.
+        
+        Returns:
+            dict: The model vector.
+        """
+        vec_l, vec_p, vec_d = ANNVectorTripletArchGroup.from_dict(
+            vec_dict_triplet[0],
+            vec_dict_triplet[1],
+            vec_dict_triplet[2]
+        ).to_array()
+        return ClusterGenerator.concatenate_vec(vec_d, vec_l, vec_p)
 
 
 if __name__ == "__main__":
