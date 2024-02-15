@@ -34,7 +34,7 @@ export PYTHONPATH="${PYTHONPATH}:absolute/path/to/PTM-Naming"
 
 ## High level class description
 
-### `ANN.AbstractNN` Class
+### `abstract_neural_network.AbstractNN` Class
 
 #### Class Methods
 
@@ -72,7 +72,7 @@ export PYTHONPATH="${PYTHONPATH}:absolute/path/to/PTM-Naming"
 
 ```python
 import torch
-from ANN.AbstractNN import *
+from abstract_neural_network.AbstractNN import *
 
 ann = AbstractNN.from_huggingface(hf_repo_name, torch.randn(1, 3, 224, 224))
 print(ann.layer_connection_vector)
@@ -82,16 +82,6 @@ print(ann.layer_with_parameter_vector)
 #### Example Result
 
 ```
-2024-01-31 01:11:50.609 | INFO     | ANN.AbstractNN:from_huggingface:32 - Looking for model in microsoft/resnet-18...
-Some weights of the model checkpoint at microsoft/resnet-18 were not used when initializing ResNetModel: ['classifier.1.bias', 'classifier.1.weight']
-- This IS expected if you are initializing ResNetModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
-- This IS NOT expected if you are initializing ResNetModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
-2024-01-31 01:12:32.229 | SUCCESS  | ANN.AbstractNN:from_huggingface:35 - Successfully load the model.
-2024-01-31 01:12:32.229 | INFO     | ANN.AbstractNN:from_huggingface:36 - Generating ANN...
-Converting onnx Graph to ANN: 100%|██████████████████████████████████████████████| 3/3 [00:03<00:00,  1.30s/it]
-2024-01-31 01:12:36.211 | SUCCESS  | ANN.AbstractNN:from_huggingface:53 - ANN generated. Time taken: 3.9816s
-2024-01-31 01:12:36.211 | INFO     | ANN.AbstractNN:from_huggingface:54 - Vectorizing...
-2024-01-31 01:12:36.213 | SUCCESS  | ANN.AbstractNN:from_huggingface:59 - Success.
 {'([INPUT], Conv2d)': 1, '(Conv2d, BatchNorm2d)': 20, '(BatchNorm2d, ReLU)': 9, '(ReLU, MaxPool2d)': 1, '(MaxPool2d, Conv2d)': 1, '(MaxPool2d, add_)': 1, '(add_, ReLU)': 8, '(ReLU, Conv2d)': 18, '(ReLU, add_)': 4, '(BatchNorm2d, add_)': 11, '(ReLU, AdaptiveAvgPool2d)': 1, '(ReLU, [OUTPUT])': 1, '(AdaptiveAvgPool2d, [OUTPUT])': 1}
 {'[INPUT]': 1, "Conv2d ['<in_channels, 3>', '<out_channels, 64>', '<kernel_size, (7, 7)>', '<stride, (2, 2)>', '<padding, (3, 3)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "BatchNorm2d ['<num_features, 64>', '<eps, 1e-05>', '<momentum, 0.1>', '<affine, True>', '<track_running_stats, True>']": 5, "ReLU ['<inplace, False>']": 17, "MaxPool2d ['<kernel_size, 3>', '<stride, 2>', '<padding, 1>', '<dilation, 1>', '<return_indices, False>', '<ceil_mode, False>']": 1, 'add_ ': 8, "Conv2d ['<in_channels, 64>', '<out_channels, 128>', '<kernel_size, (1, 1)>', '<stride, (2, 2)>', '<padding, (0, 0)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "BatchNorm2d ['<num_features, 128>', '<eps, 1e-05>', '<momentum, 0.1>', '<affine, True>', '<track_running_stats, True>']": 5, "Conv2d ['<in_channels, 128>', '<out_channels, 256>', '<kernel_size, (3, 3)>', '<stride, (2, 2)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "BatchNorm2d ['<num_features, 256>', '<eps, 1e-05>', '<momentum, 0.1>', '<affine, True>', '<track_running_stats, True>']": 5, "Conv2d ['<in_channels, 256>', '<out_channels, 256>', '<kernel_size, (3, 3)>', '<stride, (1, 1)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 3, "Conv2d ['<in_channels, 256>', '<out_channels, 512>', '<kernel_size, (3, 3)>', '<stride, (2, 2)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "BatchNorm2d ['<num_features, 512>', '<eps, 1e-05>', '<momentum, 0.1>', '<affine, True>', '<track_running_stats, True>']": 5, "Conv2d ['<in_channels, 512>', '<out_channels, 512>', '<kernel_size, (3, 3)>', '<stride, (1, 1)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 3, "AdaptiveAvgPool2d ['<output_size, (1, 1)>']": 1, '[OUTPUT]': 2, "Conv2d ['<in_channels, 256>', '<out_channels, 512>', '<kernel_size, (1, 1)>', '<stride, (2, 2)>', '<padding, (0, 0)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "Conv2d ['<in_channels, 128>', '<out_channels, 256>', '<kernel_size, (1, 1)>', '<stride, (2, 2)>', '<padding, (0, 0)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "Conv2d ['<in_channels, 128>', '<out_channels, 128>', '<kernel_size, (3, 3)>', '<stride, (1, 1)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 3, "Conv2d ['<in_channels, 64>', '<out_channels, 128>', '<kernel_size, (3, 3)>', '<stride, (2, 2)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "Conv2d ['<in_channels, 64>', '<out_channels, 64>', '<kernel_size, (3, 3)>', '<stride, (1, 1)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 4}
 ```
@@ -100,7 +90,7 @@ Converting onnx Graph to ANN: 100%|███████████████
 
 ```python
 import torch
-from ANN.AbstractNN import *
+from abstract_neural_network.AbstractNN import *
 
 ann = AbstractNN.from_huggingface(hf_repo_name)
 print(ann.layer_connection_vector)
@@ -110,24 +100,6 @@ print(ann.layer_with_parameter_vector)
 #### Example Result
 
 ```
-2024-01-31 04:11:38.408 | INFO     | ANN.AbstractNN:from_huggingface:27 - Looking for model in microsoft/resnet-18...
-Some weights of the model checkpoint at microsoft/resnet-18 were not used when initializing ResNetModel: ['classifier.1.bias', 'classifier.1.weight']
-- This IS expected if you are initializing ResNetModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
-- This IS NOT expected if you are initializing ResNetModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
-2024-01-31 04:11:45.006 | SUCCESS  | ANN.AbstractNN:from_huggingface:30 - Successfully load the model.
-2024-01-31 04:11:45.007 | INFO     | ANN.AbstractNN:from_huggingface:33 - Automatically generating an input...
-/home/cheung59/.local/lib/python3.8/site-packages/transformers/models/convnext/feature_extraction_convnext.py:28: FutureWarning: The class ConvNextFeatureExtractor is deprecated and will be removed in version 5 of Transformers. Please use ConvNextImageProcessor instead.
-  warnings.warn(
-Could not find image processor class in the image processor config or the model config. Loading based on pattern matching with the model's feature extractor configuration.
-Could not find image processor class in the image processor config or the model config. Loading based on pattern matching with the model's feature extractor configuration.
-  0%|                                                                                                                   | 0/9 [00:00<?, ?it/s]2024-01-31 04:12:17.105 | SUCCESS  | tools.HFValidInputIterator:get_valid_input:46 - Find an input for microsoft/resnet-18
- 11%|███████████▉                                                                                               | 1/9 [00:31<04:08, 31.04s/it]
-2024-01-31 04:12:17.204 | SUCCESS  | ANN.AbstractNN:from_huggingface:36 - Successfully generating an input.
-2024-01-31 04:12:17.205 | INFO     | ANN.AbstractNN:from_huggingface:39 - Generating ANN...
-Converting onnx Graph to ANN: 100%|█████████████████████████████████████████████████████████████████████████████| 3/3 [00:04<00:00,  1.42s/it]
-2024-01-31 04:12:21.464 | SUCCESS  | ANN.AbstractNN:from_huggingface:56 - ANN generated. Time taken: 4.2592s
-2024-01-31 04:12:21.464 | INFO     | ANN.AbstractNN:from_huggingface:57 - Vectorizing...
-2024-01-31 04:12:21.466 | SUCCESS  | ANN.AbstractNN:from_huggingface:62 - Success.
 {'([INPUT], Conv2d)': 1, '(Conv2d, BatchNorm2d)': 20, '(BatchNorm2d, ReLU)': 9, '(ReLU, MaxPool2d)': 1, '(MaxPool2d, Conv2d)': 1, '(MaxPool2d, add_)': 1, '(ReLU, Conv2d)': 18, '(BatchNorm2d, add_)': 11, '(add_, ReLU)': 8, '(ReLU, add_)': 4, '(ReLU, AdaptiveAvgPool2d)': 1, '(ReLU, [OUTPUT])': 1, '(AdaptiveAvgPool2d, [OUTPUT])': 1}
 {'[INPUT]': 1, "Conv2d ['<in_channels, 3>', '<out_channels, 64>', '<kernel_size, (7, 7)>', '<stride, (2, 2)>', '<padding, (3, 3)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "BatchNorm2d ['<num_features, 64>', '<eps, 1e-05>', '<momentum, 0.1>', '<affine, True>', '<track_running_stats, True>']": 5, "ReLU ['<inplace, False>']": 17, "MaxPool2d ['<kernel_size, 3>', '<stride, 2>', '<padding, 1>', '<dilation, 1>', '<return_indices, False>', '<ceil_mode, False>']": 1, "Conv2d ['<in_channels, 64>', '<out_channels, 64>', '<kernel_size, (3, 3)>', '<stride, (1, 1)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 4, 'add_ ': 8, "Conv2d ['<in_channels, 64>', '<out_channels, 128>', '<kernel_size, (3, 3)>', '<stride, (2, 2)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "BatchNorm2d ['<num_features, 128>', '<eps, 1e-05>', '<momentum, 0.1>', '<affine, True>', '<track_running_stats, True>']": 5, "Conv2d ['<in_channels, 128>', '<out_channels, 128>', '<kernel_size, (3, 3)>', '<stride, (1, 1)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 3, "Conv2d ['<in_channels, 128>', '<out_channels, 256>', '<kernel_size, (1, 1)>', '<stride, (2, 2)>', '<padding, (0, 0)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "BatchNorm2d ['<num_features, 256>', '<eps, 1e-05>', '<momentum, 0.1>', '<affine, True>', '<track_running_stats, True>']": 5, "Conv2d ['<in_channels, 256>', '<out_channels, 512>', '<kernel_size, (1, 1)>', '<stride, (2, 2)>', '<padding, (0, 0)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "BatchNorm2d ['<num_features, 512>', '<eps, 1e-05>', '<momentum, 0.1>', '<affine, True>', '<track_running_stats, True>']": 5, '[OUTPUT]': 2, "AdaptiveAvgPool2d ['<output_size, (1, 1)>']": 1, "Conv2d ['<in_channels, 512>', '<out_channels, 512>', '<kernel_size, (3, 3)>', '<stride, (1, 1)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 3, "Conv2d ['<in_channels, 256>', '<out_channels, 512>', '<kernel_size, (3, 3)>', '<stride, (2, 2)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "Conv2d ['<in_channels, 256>', '<out_channels, 256>', '<kernel_size, (3, 3)>', '<stride, (1, 1)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 3, "Conv2d ['<in_channels, 128>', '<out_channels, 256>', '<kernel_size, (3, 3)>', '<stride, (2, 2)>', '<padding, (1, 1)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1, "Conv2d ['<in_channels, 64>', '<out_channels, 128>', '<kernel_size, (1, 1)>', '<stride, (2, 2)>', '<padding, (0, 0)>', '<dilation, (1, 1)>', '<transposed, False>', '<output_padding, (0, 0)>', '<groups, 1>', '<padding_mode, zeros>']": 1}
 ```
@@ -201,7 +173,7 @@ print(in_iter.get_valid_input())
   - `eps: int` - Controls the strictness of the clustering.
 - **Returns**: A tuple with `results` and `outliers`.
 
-### `vector.ANNVector.ANNVectorTriplet` Class
+### `vector.ann_vector.ANNVectorTriplet` Class
 
 #### Class Methods
 
