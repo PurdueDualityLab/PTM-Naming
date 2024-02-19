@@ -20,14 +20,21 @@ if __name__ == "__main__":
     vec_tuple = (selected_arch[0], selected_arch[1], selected_arch[2])
 
     model_vec = ClusterPipeline().get_model_vec_from_dict(vec_tuple)
+
+    def normalize_vec(vec_):
+        return vec_ / np.linalg.norm(vec_)
+    
+    for model_family in model_vec:
+        for model_name in model_vec[model_family]:
+            model_vec[model_family][model_name] = normalize_vec(model_vec[model_family][model_name])
     
     gsp = GridSearchPipeline(
         model_embeddings = model_vec
     )
-    eps_list = np.linspace(0.05, 10, 200)
+    eps_list = np.linspace(0.01, 10, 1000)
     result = gsp.grid_search(
         vec_tuple,
-        gsp.get_silhouette_score,
+        gsp.combination_metric,
         eps_list,
         10
     )
@@ -41,9 +48,9 @@ if __name__ == "__main__":
     # Create the plot
     plt.figure(figsize=(10, 6))
     plt.plot(eps_values, score_values, marker='o', linestyle='-', color='b')
-    plt.title('Silhouette Score vs EPS')
+    plt.title('Silhouette Score - DBI vs EPS')
     plt.xlabel('EPS')
-    plt.ylabel('Silhouette Score')
+    plt.ylabel('Silhouette Score - DBI')
     plt.grid(True)
 
     # Save the plot as an image

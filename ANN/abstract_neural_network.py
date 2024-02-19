@@ -6,10 +6,13 @@ It is used to represent the entire neural network architecture in a more human-r
 It also contains methods to vectorize the architecture and to convert it to and from JSON.
 """
 
+import os
 import time
+import json
 from typing import List, Tuple, Union, Optional, Any
 from loguru import logger
 from transformers import AutoModel
+import torch
 from ANN.ann_generator import AbstractNNGenerator
 from ANN.ann_layer import AbstractNNLayer
 from ANN.old_pipelines.ANNToJSONConverter import read_annlayer_list_from_json, annlayer_list_to_json
@@ -39,7 +42,8 @@ class AbstractNN():
         hf_repo_name: str,
         tracing_input: Union[str, Any] = "auto",
         verbose: bool = True,
-        cache_dir: Optional[str] = None
+        cache_dir: Optional[str] = None,
+        device: Optional[str] = None
     ) -> 'AbstractNN':
         """
         This method generates an AbstractNN object from a Hugging Face model.
@@ -47,6 +51,7 @@ class AbstractNN():
         hf_repo_name: The name of the Hugging Face model
         tracing_input: The input to use when tracing the model
         """
+        device = device if device is not None else "cuda" if torch.cuda.is_available() else "cpu"
         if verbose:
             logger.info(f"Looking for model in {hf_repo_name}...")
         model = AutoModel.from_pretrained(hf_repo_name)
@@ -56,9 +61,11 @@ class AbstractNN():
         if tracing_input == "auto":
             if verbose:
                 logger.info("Automatically generating an input...")
-            in_iter = HFValidInputIterator(model, hf_repo_name, cache_dir=cache_dir)
+            in_iter = HFValidInputIterator(model, hf_repo_name, cache_dir=cache_dir, device=device)
             tracing_input = in_iter.get_valid_input()
             if verbose:
+                if tracing_input is None:
+                    raise ValueError("Failed to generate an input.")
                 logger.success("Successfully generating an input.")
 
         if verbose:
@@ -66,9 +73,11 @@ class AbstractNN():
 
         start_time = time.time()
 
+        assert isinstance(tracing_input, torch.Tensor)
+
         ann_gen = AbstractNNGenerator(
-            model = model,
-            inputs = tracing_input,
+            model = model.to(device),
+            inputs = tracing_input.to(device),
             framework = "pytorch",
             use_hash = True,
             verbose = True
@@ -103,7 +112,7 @@ class AbstractNN():
         layer_list, conn_info = read_annlayer_list_from_json(json_loc)
         return AbstractNN(layer_list, conn_info)
 
-    def export_json(
+    def export_ann(
         self,
         output_loc: str
     ) -> None:
@@ -115,6 +124,36 @@ class AbstractNN():
         if self.content is None or self.connection_info is None:
             raise ValueError("The content or connection_info is None.")
         annlayer_list_to_json(self.content, self.connection_info, output_loc)
+
+    def export_vector(
+        self,
+        output_loc: str,
+        create_json: bool = True
+    ) -> None:
+        """
+        This method exports the vector representation of the AbstractNN object to a JSON file.
+
+        output_loc: The location of the JSON file
+        create_json: Whether to create a JSON file when the path does not exist
+        """
+        if self.layer_connection_vector is None \
+            or self.layer_with_parameter_vector is None \
+            or self.dim_vector is None:
+            raise ValueError(
+                "The layer_connection_vector, layer_with_parameter_vector, or dim_vector is None."
+            )
+        combined_vec = {
+            "l": self.layer_connection_vector,
+            "p": self.layer_with_parameter_vector,
+            "d": self.dim_vector
+        }
+
+        if create_json:
+            if not os.path.exists(os.path.dirname(output_loc)):
+                os.makedirs(os.path.dirname(output_loc))
+
+        with open(output_loc, "w", encoding="utf-8") as f:
+            json.dump(combined_vec, f, indent=4)
 
     def get_annlayer_layer_op_repr(
         self,

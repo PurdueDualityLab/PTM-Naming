@@ -13,12 +13,14 @@ class HFValidInputIterator():
             self,
             model, 
             hf_repo_name, 
-            cache_dir
+            cache_dir,
+            device=None
         ):
         self.model = model
         self.hf_repo_name = hf_repo_name
         self.func_storage = TrialFunctionStorage()
         self.valid_autoclass_obj_list = HFAutoClassIterator(hf_repo_name, cache_dir=cache_dir).get_valid_auto_class_objects()
+        self.device = device if device is not None else torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # print(self.valid_autoclass_obj_list)
     
     def get_valid_input(self):
@@ -42,10 +44,12 @@ class HFValidInputIterator():
                     continue
                 try:
                     # print(trial_input)
+                    trial_input.to(self.device)
+                    self.model.to(self.device)
                     self.model(**trial_input) # could be yield trial_input, change it to a generator maybe??
                     logger.success(f"Find an input for {self.hf_repo_name}")
                     iter_bar.close()
-                    return trial_input
+                    return trial_input.to(self.device)
 
                 except Exception as emsg:
                     # print("Error2", emsg)

@@ -9,6 +9,7 @@ from openai import OpenAI
 import dotenv
 from tqdm import tqdm
 from sklearn.metrics import silhouette_score
+from sklearn.metrics import davies_bouldin_score
 import numpy as np
 from loguru import logger
 from vector.cluster_pipeline import ClusterPipeline
@@ -96,6 +97,59 @@ class GridSearchPipeline():
 
         silhouette_avg = silhouette_score(x, y)
         return float(silhouette_avg)
+    
+    def get_davies_bouldin_score(self, result: Dict[str, Dict[str, List[str]]]) -> float:
+        """
+        This function returns the Davies-Bouldin score of the input result.
+
+        Args:
+            result (Dict[str, Dict[str, List[str]]]): The input result.
+
+        Returns:
+            float: The Davies-Bouldin score of the input result. Lower DBI values indicate better clustering.
+        """
+        model_names = []
+        labels = []
+
+        for groups in result.values():
+            for label, models in groups.items():
+                for model in models:
+                    model_names.append(model)
+                    labels.append(label)
+
+        embeddings = [
+            self.model_embeddings[list(result.keys())[0]][model_names[i]]
+                for i in range(len(model_names))
+        ]
+
+        x = np.array(embeddings)
+        y = np.array(labels, dtype=int)
+
+        # The DBI requires at least two clusters to be non-trivial, hence the check
+        if len(set(labels)) < 2:
+            # It is not possible to calculate DBI with less than 2 clusters
+            # Returning some high value or an indication that it's not applicable
+            return float("inf") 
+
+        dbi = davies_bouldin_score(x, y)
+        return float(dbi)
+    
+    def combination_metric(
+        self,
+        result: Dict[str, Dict[str, List[str]]]
+    ) -> float:
+        """
+        This function returns the combination metric of the input result.
+
+        Args:
+            result (Dict[str, Dict[str, List[str]]]): The input result.
+
+        Returns:
+            float: The combination metric of the input result.
+        """
+        silhouette_score = self.get_silhouette_score(result)
+        davies_bouldin_score = self.get_davies_bouldin_score(result)
+        return silhouette_score - davies_bouldin_score
 
     def grid_search(
         self,
