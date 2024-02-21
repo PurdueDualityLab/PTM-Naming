@@ -2,6 +2,7 @@
 This script exports a single vector from a hf repository.
 """
 
+import time
 import json
 import os
 from pyexpat import model
@@ -32,6 +33,7 @@ if __name__ == "__main__":
     logger.info(f"Index: {idx}.")
     model_list = model_list[idx:]
     for i, repo_name in enumerate(model_list):
+        start_time = time.time()
         idx += 1
         with open("data_files/other_files/temp_index.txt", "w", encoding="utf-8") as f:
             f.seek(0)
@@ -41,9 +43,21 @@ if __name__ == "__main__":
             ann = AbstractNN.from_huggingface(repo_name)
             if os.path.exists(json_output_loc + f"/{repo_name}.json"):
                 logger.info(f"File {repo_name}.json already exists.")
+                logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
                 continue
             else:
                 os.makedirs(json_output_loc, exist_ok=True)
             ann.export_vector(json_output_loc + f"/{repo_name}.json")
+            logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
         except Exception as emsg: # pylint: disable=broad-except
+            if "trust_remote_code" in str(emsg):
+                if not os.path.exists("data_files/json_files/requires_remote_code.json"):
+                    requires_remote_code = []
+                else:
+                    with open("data_files/json_files/requires_remote_code.json", "r", encoding="utf-8") as f:
+                        requires_remote_code = json.load(f)
+                requires_remote_code.append(repo_name)
+                with open("data_files/json_files/requires_remote_code.json", "w", encoding="utf-8") as f:
+                    json.dump(requires_remote_code, f)
             logger.error(emsg)
+            logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")

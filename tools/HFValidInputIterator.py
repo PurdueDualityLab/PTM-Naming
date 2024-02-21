@@ -14,12 +14,22 @@ class HFValidInputIterator():
             model, 
             hf_repo_name, 
             cache_dir,
-            device=None
+            device=None,
+            trust_remote_code=False
         ):
         self.model = model
         self.hf_repo_name = hf_repo_name
         self.func_storage = TrialFunctionStorage()
-        self.valid_autoclass_obj_list = HFAutoClassIterator(hf_repo_name, cache_dir=cache_dir).get_valid_auto_class_objects()
+        self.valid_autoclass_obj_list = HFAutoClassIterator(hf_repo_name, cache_dir=cache_dir, trust_remote_code=trust_remote_code).get_valid_auto_class_objects()
+        self.require_remote_code = False
+        if isinstance(self.valid_autoclass_obj_list, dict):
+            logger.error(f"Cannot find a valid autoclass for {self.hf_repo_name}")
+            for autoclass_type, err in self.valid_autoclass_obj_list.items():
+                if "trust_remote_code" in str(err):
+                    self.require_remote_code = True
+                logger.error(f"-> {autoclass_type}({err})")
+            return None
+
         self.device = device if device is not None else torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # print(self.valid_autoclass_obj_list)
     

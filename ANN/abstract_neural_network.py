@@ -43,7 +43,8 @@ class AbstractNN():
         tracing_input: Union[str, Any] = "auto",
         verbose: bool = True,
         cache_dir: Optional[str] = None,
-        device: Optional[str] = None
+        device: Optional[str] = None,
+        trust_remote_code: bool = False
     ) -> 'AbstractNN':
         """
         This method generates an AbstractNN object from a Hugging Face model.
@@ -54,14 +55,18 @@ class AbstractNN():
         device = device if device is not None else "cuda" if torch.cuda.is_available() else "cpu"
         if verbose:
             logger.info(f"Looking for model in {hf_repo_name}...")
-        model = AutoModel.from_pretrained(hf_repo_name)
+        model = AutoModel.from_pretrained(hf_repo_name, trust_remote_code=trust_remote_code)
         if verbose:
             logger.success("Successfully load the model.")
 
         if tracing_input == "auto":
             if verbose:
                 logger.info("Automatically generating an input...")
-            in_iter = HFValidInputIterator(model, hf_repo_name, cache_dir=cache_dir, device=device)
+            in_iter = HFValidInputIterator(model, hf_repo_name, cache_dir=cache_dir, device=device, trust_remote_code=trust_remote_code)
+            if in_iter.require_remote_code:
+                raise ValueError("The model requires trust_remote_code to be True.")
+            if in_iter.valid_autoclass_obj_list == []:
+                raise ValueError("Cannot find a valid autoclass.")
             tracing_input = in_iter.get_valid_input()
             if verbose:
                 if tracing_input is None:
