@@ -49,5 +49,4 @@ if __name__ == "__main__":
         res = monitor_process(p)
         with open("data_files/other_files/temp_index.txt", "r", encoding="utf-8") as f:
             idx = int(f.readline())
-        logger.info(f"Index: {idx}.")
         

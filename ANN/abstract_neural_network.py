@@ -73,11 +73,11 @@ class AbstractNN():
 
         start_time = time.time()
 
-        assert isinstance(tracing_input, torch.Tensor)
+        # assert isinstance(tracing_input, torch.Tensor)
 
         ann_gen = AbstractNNGenerator(
             model = model.to(device),
-            inputs = tracing_input.to(device),
+            inputs = tracing_input.to(device), # type: ignore
             framework = "pytorch",
             use_hash = True,
             verbose = True

@@ -26,21 +26,27 @@ class HFValidInputIterator():
     def get_valid_input(self):
 
         # count iterations
-        iter_count = 0
-        for valid_autoclass in self.valid_autoclass_obj_list:
-            trial_func_list = self.func_storage.auto_get_func(valid_autoclass)
-            iter_count += len(trial_func_list)
-        iter_bar = tqdm(range(iter_count))
+        # iter_count = 0
+        # for valid_autoclass in self.valid_autoclass_obj_list:
+        #     trial_func_list = self.func_storage.auto_get_func(valid_autoclass)
+        #     iter_count += len(trial_func_list)
+        # iter_bar = tqdm(range(iter_count))
         
         # actual tries
+
+        err_report = {}
         for valid_autoclass_obj in self.valid_autoclass_obj_list:
-            trial_func_list = self.func_storage.auto_get_func(valid_autoclass)
+            trial_func_list = self.func_storage.auto_get_func(valid_autoclass_obj)
+            logger.info(f"Using {valid_autoclass_obj.__class__.__name__}")
             for trial_func in trial_func_list:
-                iter_bar.update(1)
+                # iter_bar.update(1)
+                logger.info(f"-> Trying Func {trial_func.__name__}")
                 try:
                     trial_input = trial_func(valid_autoclass_obj)
                 except Exception as emsg:
-                    # print("Error1", emsg)
+                    if valid_autoclass_obj.__class__.__name__ not in err_report:
+                        err_report[valid_autoclass_obj.__class__.__name__] = {}
+                    err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__] = ("CannotObtainInput", emsg)
                     continue
                 try:
                     # print(trial_input)
@@ -48,15 +54,21 @@ class HFValidInputIterator():
                     self.model.to(self.device)
                     self.model(**trial_input) # could be yield trial_input, change it to a generator maybe??
                     logger.success(f"Find an input for {self.hf_repo_name}")
-                    iter_bar.close()
+                    # iter_bar.close()
                     return trial_input.to(self.device)
 
                 except Exception as emsg:
-                    # print("Error2", emsg)
+                    if valid_autoclass_obj.__class__.__name__ not in err_report:
+                        err_report[valid_autoclass_obj.__class__.__name__] = {}
+                    err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__] = ("InferenceError", emsg)
                     pass
         
         logger.error(f"Cannot find a valid input for {self.hf_repo_name} or Request Time Out")
-        iter_bar.close()
+        for autoclass_type, trial_func_dict in err_report.items():
+            logger.error(f"Error report for {autoclass_type}:")
+            for trial_func, err in trial_func_dict.items():
+                logger.error(f"-> {trial_func}({err[0]}): {err[1]}")
+        # iter_bar.close()
         return None
 
 class TrialFunctionStorage():

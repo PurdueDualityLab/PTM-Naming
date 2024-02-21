@@ -47,4 +47,3 @@ if __name__ == "__main__":
             ann.export_vector(json_output_loc + f"/{repo_name}.json")
         except Exception as emsg: # pylint: disable=broad-except
             logger.error(emsg)
-            sys.exit(1)
