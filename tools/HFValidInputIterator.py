@@ -21,12 +21,14 @@ class HFValidInputIterator():
         self.hf_repo_name = hf_repo_name
         self.func_storage = TrialFunctionStorage()
         self.valid_autoclass_obj_list = HFAutoClassIterator(hf_repo_name, cache_dir=cache_dir, trust_remote_code=trust_remote_code).get_valid_auto_class_objects()
-        self.require_remote_code = False
+        self.err_type = ""
         if isinstance(self.valid_autoclass_obj_list, dict):
             logger.error(f"Cannot find a valid autoclass for {self.hf_repo_name}")
             for autoclass_type, err in self.valid_autoclass_obj_list.items():
                 if "trust_remote_code" in str(err):
-                    self.require_remote_code = True
+                    self.err_type = "requires_remote_code"
+                elif "does not sppear to have a file named preprocessor_config.json" in str(err):
+                    self.err_type = "no_preprocessor_config"
                 logger.error(f"-> {autoclass_type}({err})")
             return None
 

@@ -55,16 +55,46 @@ class AbstractNN():
         device = device if device is not None else "cuda" if torch.cuda.is_available() else "cpu"
         if verbose:
             logger.info(f"Looking for model in {hf_repo_name}...")
-        model = AutoModel.from_pretrained(hf_repo_name, trust_remote_code=trust_remote_code)
+
+        # try to load the model in both PyTorch and TensorFlow
+        model = None
+        err_msg = ""
+        try:
+            model = AutoModel.from_pretrained(
+                hf_repo_name,
+                trust_remote_code=trust_remote_code
+            )
+        except Exception as emsg: # pylint: disable=broad-except
+            err_msg = str(emsg)
+        if model is None:
+            try:
+                model = AutoModel.from_pretrained(
+                    hf_repo_name,
+                    from_tf=True,
+                    trust_remote_code=trust_remote_code
+                )
+            except Exception as emsg: # pylint: disable=broad-except
+                err_msg = str(emsg)
+        if model is None:
+            raise ValueError(f"Failed to load the model: {err_msg}")
+
         if verbose:
             logger.success("Successfully load the model.")
 
         if tracing_input == "auto":
             if verbose:
                 logger.info("Automatically generating an input...")
-            in_iter = HFValidInputIterator(model, hf_repo_name, cache_dir=cache_dir, device=device, trust_remote_code=trust_remote_code)
-            if in_iter.require_remote_code:
+            in_iter = HFValidInputIterator(
+                model,
+                hf_repo_name,
+                cache_dir=cache_dir,
+                device=device,
+                trust_remote_code=trust_remote_code
+            )
+            if in_iter.err_type == "requires_remote_code":
                 raise ValueError("The model requires trust_remote_code to be True.")
+            elif in_iter.err_type == "no_preprocessor_config":
+                raise ValueError("The model does not have a preprocessor_config.json file.")
             if in_iter.valid_autoclass_obj_list == []:
                 raise ValueError("Cannot find a valid autoclass.")
             tracing_input = in_iter.get_valid_input()
