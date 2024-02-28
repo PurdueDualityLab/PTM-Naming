@@ -192,6 +192,7 @@ def get_ORG_members(org_url):
     response = requests.get(org_url)
     soup = BeautifulSoup(response.text, 'html.parser')
 
+
     nav_element = soup.find('nav', class_='mb-6 mt-3 flex flex-wrap xl:pr-6 2xl:pr-12')  # Adjust class name as needed
     a_tags = nav_element.find_all('a') if nav_element else []
     org_members = [a_tag.get('href')[1:] for a_tag in a_tags]
@@ -203,7 +204,8 @@ def get_ORG_github_links():
     ORG_TYPE_LIST = ["community", "company", "non-profit"]
 
     org_urls = []
-    org_member_urls = []
+    
+    
 
     with open("org_list.csv", "r", newline='') as csv_file:
         reader = csv.reader(csv_file)
@@ -218,6 +220,8 @@ def get_ORG_github_links():
 
     
     for org_url in tqdm(org_urls, desc="Processing organizations"):
+        org_member_urls = []
+
         org_members = get_ORG_members(org_url)
         logger.info(f"Extracting {len(org_members)} members' emails from {org_url}")
         
@@ -230,6 +234,24 @@ def get_ORG_github_links():
             with open("org_hf_accounts.txt", "a") as file:  # Open in append mode
                 file.write(f"{org_member_url.split('/')[-1]}\n")
     
+
+        gh_link_list = get_gh_links_from_hf_profiles(org_member_urls)
+
+        for github_url in gh_link_list:
+            email_list = []
+            # logger.debug(f"Extracting email from {github_url}")
+            if type(github_url) == list:
+                github_url = github_url[0]
+            # logger.debug(f"Extracting email from {github_url}")
+            if github_url:
+                username = github_url.split('/')[-1]
+                user_email = get_email(username, GH_TOKEN)
+                if user_email:
+                    email_list.append(user_email)
+            with open(f"org_emails.txt", "a") as file:
+                for email in email_list:
+                    file.write(f"{email}\n")
+
     return org_member_urls
 
 
@@ -244,28 +266,9 @@ def get_ORG_emails():
     if not os.path.exists("org_list.csv"):
         org_list = get_ORG_list()
 
-    if not os.path.exists("org_hf_accounts.txt"):
-        org_member_urls = get_ORG_github_links()
-    else:
-        with open("org_hf_accounts.txt", "r") as file:
-            org_member_urls = file.readlines()
-            org_hf_accounts = [url.strip() for url in org_member_urls]
-            org_member_urls = [f"https://huggingface.co/{org_hf_account}" for org_hf_account in org_hf_accounts]
-
-    logger.debug(f"Extracting github links from {len(org_member_urls)} profiles")
-
-    gh_link_list = get_gh_links_from_hf_profiles(org_member_urls)
-
-    for github_url in gh_link_list:
-        # logger.debug(f"Extracting email from {github_url}")
-        if type(github_url) == list:
-            github_url = github_url[0]
-        # logger.debug(f"Extracting email from {github_url}")
-        if github_url:
-            username = github_url.split('/')[-1]
-            user_email = get_email(username, GH_TOKEN)
-            if user_email:
-                email_list.append(user_email)
+    
+    org_member_urls = get_ORG_github_links()
+    
 
 
     logger.success(f"Get {len(email_list)} emails from ORG accounts!")
