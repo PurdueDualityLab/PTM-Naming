@@ -13,3 +13,5 @@ tqdm==4.66.1
 python-dotenv==1.0.1
 matplotlib==3.7.4
 openai==1.12.0
+bitsandbytes==0.42.0
+accelerate==0.27.2

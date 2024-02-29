@@ -62,12 +62,10 @@ class HFValidInputIterator():
                     continue
                 try:
                     # print(trial_input)
-                    trial_input.to(self.device)
-                    self.model.to(self.device)
                     self.model(**trial_input) # could be yield trial_input, change it to a generator maybe??
                     logger.success(f"Find an input for {self.hf_repo_name}")
                     # iter_bar.close()
-                    return trial_input.to(self.device)
+                    return trial_input
 
                 except Exception as emsg:
                     if valid_autoclass_obj.__class__.__name__ not in err_report:
@@ -81,59 +79,79 @@ class HFValidInputIterator():
             for trial_func, err in trial_func_dict.items():
                 logger.error(f"-> {trial_func}({err[0]}): {err[1]}")
         # iter_bar.close()
-        return None
+        return (err_report, "ErrMark")
 
 class TrialFunctionStorage():
 
     def __init__(self):
         pass
 
-    def get_autotokenizer_func(self):
-        return [
-            self.t_txt_10,
-            self.t_enc_txt_10
-        ]
+    # def get_autotokenizer_func(self):
+    #     return [
+    #         self.t_txt_10,
+    #         self.t_enc_txt_10
+    #     ]
 
-    def get_autofeatureextractor_func(self):
-        return [
-            self.fe_img_1_3_224_224,
-            self.fe_voice_sr8k,
-            self.fe_voice_sr16k,
-            self.fe_voice_sr44k,
-            self.fe_voice_sr48k,
-            self.fe_voice_sr96k,
-            self.fe_voice_sr192k
-        ]
+    # def get_autofeatureextractor_func(self):
+    #     return [
+    #         self.fe_img_1_3_224_224,
+    #         self.fe_voice_sr8k,
+    #         self.fe_voice_sr16k,
+    #         self.fe_voice_sr44k,
+    #         self.fe_voice_sr48k,
+    #         self.fe_voice_sr96k,
+    #         self.fe_voice_sr192k
+    #     ]
 
-    def get_autoimage_processor_func(self):
-        return [
-            self.ip_img_1_3_224_224
-        ]
+    # def get_autoimage_processor_func(self):
+    #     return [
+    #         self.ip_img_1_3_224_224
+    #     ]
 
-    def get_autoprocessor_func(self):
-        return [
-            self.p_txt_10,
-            self.p_img_1_3_224_224,
-            self.p_pd_df,
-            self.p_voice_sr8k,
-            self.p_voice_sr16k,
-            self.p_voice_sr44k,
-            self.p_voice_sr48k,
-            self.p_voice_sr96k,
-            self.p_voice_sr192k
-        ]
+    # def get_autoprocessor_func(self):
+    #     return [
+    #         self.p_txt_10,
+    #         self.p_img_1_3_224_224,
+    #         self.p_pd_df,
+    #         self.p_voice_sr8k,
+    #         self.p_voice_sr16k,
+    #         self.p_voice_sr44k,
+    #         self.p_voice_sr48k,
+    #         self.p_voice_sr96k,
+    #         self.p_voice_sr192k
+    #     ]
 
-    def auto_get_func(self, auto_class_obj): # might not be right, need to check
-        if "Tokenizer" in auto_class_obj.__class__.__name__:
-            return self.get_autotokenizer_func()
-        elif "FeatureExtractor" in auto_class_obj.__class__.__name__:
-            return self.get_autofeatureextractor_func()
-        elif "ImageProcessor" in auto_class_obj.__class__.__name__:
-            return self.get_autoimage_processor_func()
-        elif "Processor" in auto_class_obj.__class__.__name__:
-            return self.get_autoprocessor_func()
-        else:
+    # def auto_get_func(self, auto_class_obj): # might not be right, need to check
+    #     if "Tokenizer" in auto_class_obj.__class__.__name__:
+    #         return self.get_autotokenizer_func()
+    #     elif "FeatureExtractor" in auto_class_obj.__class__.__name__:
+    #         return self.get_autofeatureextractor_func()
+    #     elif "ImageProcessor" in auto_class_obj.__class__.__name__:
+    #         return self.get_autoimage_processor_func()
+    #     elif "Processor" in auto_class_obj.__class__.__name__:
+    #         return self.get_autoprocessor_func()
+    #     else:
+    #         raise ValueError("Incorrect object type.")
+
+    def auto_get_func(self, auto_class_obj):
+        prefix_map = {
+            "Tokenizer": "t_",
+            "FeatureExtractor": "fe_",
+            "ImageProcessor": "ip_",
+            "Processor": "p_",
+        }
+        class_name = auto_class_obj.__class__.__name__
+        prefix = None
+        for key, value in prefix_map.items():
+            if key in class_name:
+                prefix = value
+                break
+        
+        if prefix is None:
             raise ValueError("Incorrect object type.")
+
+        # Dynamically retrieve methods with the matching prefix
+        return [getattr(self, method_name) for method_name in dir(self) if callable(getattr(self, method_name)) and method_name.startswith(prefix)]
         
     # AutoTokenizer
     
@@ -141,6 +159,11 @@ class TrialFunctionStorage():
         return auto_class_obj("Test Input", return_tensors="pt")
     def t_enc_txt_10(self, auto_class_obj):
         return auto_class_obj.encode("Test Input", return_tensors="pt")
+    def t_enc_dec_t5_10(self, auto_class_obj):
+        encoded_input = auto_class_obj("Test Input", return_tensors="pt")
+        decoder_input_ids = encoded_input['input_ids'].clone()
+        decoder_input_ids[:] = auto_class_obj.pad_token_id
+        return {"input_ids": encoded_input['input_ids'], "decoder_input_ids": decoder_input_ids}
     
     # AutoFeatureExtractor
 

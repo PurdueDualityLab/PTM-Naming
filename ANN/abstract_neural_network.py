@@ -44,7 +44,8 @@ class AbstractNN():
         verbose: bool = True,
         cache_dir: Optional[str] = None,
         device: Optional[str] = None,
-        trust_remote_code: bool = False
+        trust_remote_code: bool = False,
+        **kwargs,
     ) -> 'AbstractNN':
         """
         This method generates an AbstractNN object from a Hugging Face model.
@@ -62,7 +63,8 @@ class AbstractNN():
         try:
             model = AutoModel.from_pretrained(
                 hf_repo_name,
-                trust_remote_code=trust_remote_code
+                trust_remote_code=trust_remote_code,
+                **kwargs
             )
         except Exception as emsg: # pylint: disable=broad-except
             err_msg = str(emsg)
@@ -71,7 +73,8 @@ class AbstractNN():
                 model = AutoModel.from_pretrained(
                     hf_repo_name,
                     from_tf=True,
-                    trust_remote_code=trust_remote_code
+                    trust_remote_code=trust_remote_code,
+                    **kwargs
                 )
             except Exception as emsg: # pylint: disable=broad-except
                 err_msg = str(emsg)
@@ -99,8 +102,9 @@ class AbstractNN():
                 raise ValueError("Cannot find a valid autoclass.")
             tracing_input = in_iter.get_valid_input()
             if verbose:
-                if tracing_input is None:
-                    raise ValueError("Failed to generate an input.")
+                if isinstance(tracing_input, tuple):
+                    if tracing_input[1] == "ErrMark":
+                        raise ValueError(f"Failed to generate an input.\nError Report:\n{tracing_input[0]}")
                 logger.success("Successfully generating an input.")
 
         if verbose:
@@ -111,8 +115,8 @@ class AbstractNN():
         # assert isinstance(tracing_input, torch.Tensor)
 
         ann_gen = AbstractNNGenerator(
-            model = model.to(device),
-            inputs = tracing_input.to(device), # type: ignore
+            model = model,
+            inputs = tracing_input, # type: ignore
             framework = "pytorch",
             use_hash = True,
             verbose = True
