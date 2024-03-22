@@ -9,14 +9,14 @@ import huggingface_hub
 from huggingface_hub import HfApi, list_models, ModelCard
 from openai import OpenAI
 from loguru import logger
-import new_prompt
+import name_analysis.prompt as prompt
 
 CATEGORIES = ['A', 'S', 'D', 'C', 'V', 'F', 'L', 'T', 'R', 'N', 'H', 'P', 'O']
 
 def chat(question_content):
     load_dotenv(".env")
     chatlog = []
-    chatlog.append({"role" : "system", "content" : new_prompt.BACKGROUND})
+    chatlog.append({"role" : "system", "content" : prompt.BACKGROUND})
     chatlog.append({"role" : "user", "content" : question_content})
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     response = client.chat.completions.create(
@@ -131,9 +131,5 @@ def model_random_shuffle():
 
 if __name__ == '__main__':
     # model_random_shuffle()
-    # copy_models_to_model_to_run_json(0, 14180)
-    run(9314, 9315, 1)
-    # with open('name_analysis/results.json') as f:
-    #     results = json.load(f)
-    # print(len(results))
-    pass
+    copy_models_to_model_to_run_json(0, 14180)
+    run(0, 14180, 30)
