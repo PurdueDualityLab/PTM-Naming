@@ -53,7 +53,7 @@ export PYTHONPATH="${PYTHONPATH}:absolute/path/to/PTM-Naming"
 - **Returns**: An `AbstractNN` object with the structure of specified PTM.
 
 #### `from_json`
-- **Description**: Export the whole ANN structure to a JSON file.
+- **Description**: Load the whole ANN structure from a JSON file.
 - **Parameters**: 
   - `json_loc: str` - Input JSON location.
 - **Returns**: An `AbstractNN` object with the structure of specified PTM in the JSON file.
