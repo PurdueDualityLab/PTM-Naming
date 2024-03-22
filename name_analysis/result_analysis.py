@@ -1,15 +1,20 @@
+"""
+This script is used to generate a bar chart comparing the 
+distribution of categories in the survey data and the practical 
+data.
+"""
 
+import json
 import matplotlib
 import matplotlib.pyplot as plt
-import json
 
 if __name__ == "__main__":
-    with open("name_analysis/results.json", "r") as f:
+
+    with open("name_analysis/results.json", "r", encoding="utf-8") as f:
         results = json.load(f)
 
     matplotlib.rcParams.update({'font.size': 12})
 
-    # Your survey data is already in the correct format
     survey_data = {
         "A": 69/108 * 100, 
         "S": 62/108 * 100,
@@ -29,7 +34,7 @@ if __name__ == "__main__":
     categories_cnt = {}
     for model_name, category_set in results.items():
         for category in category_set:
-            if category == 'N': 
+            if category == 'N':
                 category = 'Y'
             categories_cnt[category] = categories_cnt.get(category, 0) + 1
     total_practical = len(results)
@@ -46,11 +51,12 @@ if __name__ == "__main__":
 
     fig, ax = plt.subplots()
     bars1 = ax.bar(x, survey_percentages, width, label='Survey Data')
-    bars2 = ax.bar([p + width for p in x], practical_data_percentages, width, label='Practical Data')
+    bars2 = ax.bar(
+        [p + width for p in x], practical_data_percentages, width, label='Practical Data'
+    )
 
     # Adding text for labels, title, and axes ticks
     ax.set_ylabel('Frequency (%)')
-    #ax.set_title('Survey vs. Practical Data by Category')
     ax.set_xticks([p + width / 2 for p in x])
     ax.set_xticklabels(categories)
     ax.legend()
@@ -72,7 +78,5 @@ if __name__ == "__main__":
     ax.spines['bottom'].set_visible(False)
     ax.spines['left'].set_visible(False)
 
-
-    #plt.xticks()  # Rotate category names for better readability
     plt.tight_layout()  # Adjust layout
     plt.savefig("name_analysis/survey_vs_practical.png")

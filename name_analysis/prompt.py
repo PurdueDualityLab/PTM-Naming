@@ -1,3 +1,7 @@
+"""
+This file contains the prompt for GPT.
+"""
+
 BACKGROUND = \
     "Parse the given neural network model name into the following categories:\n \
     - Architecture [A]: e.g, bert, albert, resnet\n \
