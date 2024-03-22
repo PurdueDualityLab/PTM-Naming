@@ -44,7 +44,7 @@ def monitor_process(p: subprocess.Popen) -> int:
 
 if __name__ == "__main__":
     idx = -1
-    while idx < 1000:
+    while idx < 9000:
         p = run_process()
         res = monitor_process(p)
         with open("data_files/other_files/temp_index.txt", "r", encoding="utf-8") as f:

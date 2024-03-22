@@ -80,6 +80,7 @@ def forward_prop(
         new_module_forward = module_forward_wrapper(model_graph)
         with Recorder(_orig_module_forward, new_module_forward, model_graph):
             with torch.no_grad():
+                model = model.to(device)
                 if isinstance(x, (list, tuple)):
                     _ = model(*x, **kwargs)
                 elif isinstance(x, Mapping):
@@ -96,6 +97,6 @@ def forward_prop(
         model.train(saved_model_mode)
 
 if __name__ == "__main__":
-    run_count = 1
+    run_count = 9999999999999
     p = run_process(run_count)
     monitor_process(p)
