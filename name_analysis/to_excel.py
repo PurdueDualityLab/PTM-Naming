@@ -1,10 +1,13 @@
-
+"""
+This script reads the results.json file and converts it to an excel
+file with the categories as columns and the models as rows.
+"""
 import json
 import pandas as pd
 from name_analysis.get_gpt_response import CATEGORIES
 
 if __name__ == "__main__":
-    with open('name_analysis/results.json') as f:
+    with open('name_analysis/results.json', 'r', encoding='utf-8') as f:
         results = json.load(f)
     print(f"Length of results: {len(results)}")
 
