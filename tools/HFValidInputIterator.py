@@ -1,18 +1,29 @@
+"""
+This file contains dummy input generation for Hugging Face models.
+"""
 
-from tools.HFAutoClassIterator import HFAutoClassIterator
-from tqdm import tqdm
 from loguru import logger
 import torch
 import pandas as pd
 import numpy as np
 from transformers import AutoModel
+from tools.HFAutoClassIterator import HFAutoClassIterator
 
 class HFValidInputIterator():
+    """
+    This class is used to generate valid inputs for Hugging Face models.
 
+    Attributes:
+        model: The Hugging Face model.
+        hf_repo_name: The Hugging Face repository name.
+        func_storage: The storage for trial functions.
+        valid_autoclass_obj_list: The list of valid autoclass objects.
+        device: The device to use for inference.
+    """
     def __init__(
             self,
-            model, 
-            hf_repo_name, 
+            model,
+            hf_repo_name,
             cache_dir,
             device=None,
             trust_remote_code=False
@@ -20,7 +31,12 @@ class HFValidInputIterator():
         self.model = model
         self.hf_repo_name = hf_repo_name
         self.func_storage = TrialFunctionStorage()
-        self.valid_autoclass_obj_list = HFAutoClassIterator(hf_repo_name, cache_dir=cache_dir, trust_remote_code=trust_remote_code).get_valid_auto_class_objects()
+        self.valid_autoclass_obj_list = \
+            HFAutoClassIterator(
+                hf_repo_name,
+                cache_dir=cache_dir,
+                trust_remote_code=trust_remote_code
+            ).get_valid_auto_class_objects()
         self.err_type = ""
         if isinstance(self.valid_autoclass_obj_list, dict):
             logger.error(f"Cannot find a valid autoclass for {self.hf_repo_name}")
@@ -32,20 +48,16 @@ class HFValidInputIterator():
                 logger.error(f"-> {autoclass_type}({err})")
             return None
 
-        self.device = device if device is not None else torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        # print(self.valid_autoclass_obj_list)
-    
+        self.device = device if device is not None \
+            else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     def get_valid_input(self):
+        """
+        This function generates a valid input for the Hugging Face model.
 
-        # count iterations
-        # iter_count = 0
-        # for valid_autoclass in self.valid_autoclass_obj_list:
-        #     trial_func_list = self.func_storage.auto_get_func(valid_autoclass)
-        #     iter_count += len(trial_func_list)
-        # iter_bar = tqdm(range(iter_count))
-        
-        # actual tries
-
+        Returns:
+            A valid input for the Hugging Face model.
+        """
         err_report = {}
         for valid_autoclass_obj in self.valid_autoclass_obj_list:
             trial_func_list = self.func_storage.auto_get_func(valid_autoclass_obj)
@@ -55,85 +67,49 @@ class HFValidInputIterator():
                 logger.info(f"-> Trying Func {trial_func.__name__}")
                 try:
                     trial_input = trial_func(valid_autoclass_obj)
-                except Exception as emsg:
+                except Exception as emsg: # pylint: disable=broad-except
                     if valid_autoclass_obj.__class__.__name__ not in err_report:
                         err_report[valid_autoclass_obj.__class__.__name__] = {}
-                    err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__] = ("CannotObtainInput", emsg)
+                    err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__]\
+                        = ("CannotObtainInput", emsg)
                     continue
                 try:
-                    # print(trial_input)
-                    self.model(**trial_input) # could be yield trial_input, change it to a generator maybe??
+                    self.model(**trial_input)
                     logger.success(f"Find an input for {self.hf_repo_name}")
-                    # iter_bar.close()
                     return trial_input
-
-                except Exception as emsg:
+                except Exception as emsg: # pylint: disable=broad-except
                     if valid_autoclass_obj.__class__.__name__ not in err_report:
                         err_report[valid_autoclass_obj.__class__.__name__] = {}
-                    err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__] = ("InferenceError", emsg)
-                    pass
-        
+                    err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__]\
+                        = ("InferenceError", emsg)
+
         logger.error(f"Cannot find a valid input for {self.hf_repo_name} or Request Time Out")
         for autoclass_type, trial_func_dict in err_report.items():
             logger.error(f"Error report for {autoclass_type}:")
             for trial_func, err in trial_func_dict.items():
                 logger.error(f"-> {trial_func}({err[0]}): {err[1]}")
-        # iter_bar.close()
         return (err_report, "ErrMark")
 
 class TrialFunctionStorage():
+    """
+    This class is used to store trial functions for Hugging Face models.
 
+    Attributes:
+        None
+    """
     def __init__(self):
         pass
 
-    # def get_autotokenizer_func(self):
-    #     return [
-    #         self.t_txt_10,
-    #         self.t_enc_txt_10
-    #     ]
-
-    # def get_autofeatureextractor_func(self):
-    #     return [
-    #         self.fe_img_1_3_224_224,
-    #         self.fe_voice_sr8k,
-    #         self.fe_voice_sr16k,
-    #         self.fe_voice_sr44k,
-    #         self.fe_voice_sr48k,
-    #         self.fe_voice_sr96k,
-    #         self.fe_voice_sr192k
-    #     ]
-
-    # def get_autoimage_processor_func(self):
-    #     return [
-    #         self.ip_img_1_3_224_224
-    #     ]
-
-    # def get_autoprocessor_func(self):
-    #     return [
-    #         self.p_txt_10,
-    #         self.p_img_1_3_224_224,
-    #         self.p_pd_df,
-    #         self.p_voice_sr8k,
-    #         self.p_voice_sr16k,
-    #         self.p_voice_sr44k,
-    #         self.p_voice_sr48k,
-    #         self.p_voice_sr96k,
-    #         self.p_voice_sr192k
-    #     ]
-
-    # def auto_get_func(self, auto_class_obj): # might not be right, need to check
-    #     if "Tokenizer" in auto_class_obj.__class__.__name__:
-    #         return self.get_autotokenizer_func()
-    #     elif "FeatureExtractor" in auto_class_obj.__class__.__name__:
-    #         return self.get_autofeatureextractor_func()
-    #     elif "ImageProcessor" in auto_class_obj.__class__.__name__:
-    #         return self.get_autoimage_processor_func()
-    #     elif "Processor" in auto_class_obj.__class__.__name__:
-    #         return self.get_autoprocessor_func()
-    #     else:
-    #         raise ValueError("Incorrect object type.")
-
     def auto_get_func(self, auto_class_obj):
+        """
+        This function retrieves the trial functions for the Hugging Face model.
+
+        Args:
+            auto_class_obj: The Hugging Face model.
+
+        Returns:
+            The list of trial functions for the Hugging Face model.
+        """
         prefix_map = {
             "Tokenizer": "t_",
             "FeatureExtractor": "fe_",
@@ -146,15 +122,20 @@ class TrialFunctionStorage():
             if key in class_name:
                 prefix = value
                 break
-        
+
         if prefix is None:
             raise ValueError("Incorrect object type.")
 
         # Dynamically retrieve methods with the matching prefix
-        return [getattr(self, method_name) for method_name in dir(self) if callable(getattr(self, method_name)) and method_name.startswith(prefix)]
-        
+        return [getattr(self, method_name) for method_name in dir(self)\
+            if callable(getattr(self, method_name)) \
+            and method_name.startswith(prefix)]
+
+
+    # Trial Functions List
+
     # AutoTokenizer
-    
+
     def t_txt_10(self, auto_class_obj):
         return auto_class_obj("Test Input", return_tensors="pt")
     def t_enc_txt_10(self, auto_class_obj):
@@ -164,7 +145,7 @@ class TrialFunctionStorage():
         decoder_input_ids = encoded_input['input_ids'].clone()
         decoder_input_ids[:] = auto_class_obj.pad_token_id
         return {"input_ids": encoded_input['input_ids'], "decoder_input_ids": decoder_input_ids}
-    
+
     # AutoFeatureExtractor
 
     def fe_img_1_3_224_224(self, auto_class_obj):
@@ -181,12 +162,12 @@ class TrialFunctionStorage():
         return auto_class_obj(np.random.randn(96000), sampling_rate=96000, return_tensors='pt')
     def fe_voice_sr192k(self, auto_class_obj):
         return auto_class_obj(np.random.randn(192000), sampling_rate=192000, return_tensors='pt')
-    
+
     # AutoImageProcessor
 
     def ip_img_1_3_224_224(self, auto_class_obj):
         return auto_class_obj(images=torch.rand(1, 3, 224, 224), return_tensors="pt")
-    
+
     # AutoProcessor
 
     def p_txt_10(self, auto_class_obj):
@@ -207,7 +188,7 @@ class TrialFunctionStorage():
         return auto_class_obj(np.random.randn(96000), sampling_rate=96000, return_tensors='pt')
     def p_voice_sr192k(self, auto_class_obj):
         return auto_class_obj(np.random.randn(192000), sampling_rate=192000, return_tensors='pt')
-    
+
 if __name__ == "__main__":
     repo_name = "anton-l/distilhubert-ft-keyword-spotting"
     model = AutoModel.from_pretrained(repo_name)
