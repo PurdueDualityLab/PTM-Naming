@@ -61,7 +61,7 @@ class ANNVectorTriplet():
         self.vector_d = vector_d
 
     @staticmethod
-    def from_ann(model_name: str, ann: AbstractNN):
+    def from_ann(model_name: str, ann: AbstractNN, *args, **kwargs):
         """
         This function creates an ANNVectorTriplet from an AbstractNN.
 
@@ -72,7 +72,7 @@ class ANNVectorTriplet():
         Returns:
             ANNVectorTriplet: The ANNVectorTriplet object.
         """
-        fv_l, fv_p, fv_d = ann.vectorize()
+        fv_l, fv_p, fv_d = ann.vectorize(*args, **kwargs)
         triplet = ANNVectorTriplet(
             model_name,
             ANNVector.from_dict(model_name, "l", fv_l),
@@ -304,10 +304,15 @@ class ANNVectorTripletArchGroup():
         return str(self.vector_triplet_list)
 
 if __name__ == "__main__":
-    ds = ClusterDataset()
-    arch_group = ANNVectorTripletArchGroup.from_dataset(ds, "WavLMForCTC")
-    assert arch_group is not None
-    d_arch_group = arch_group.to_dict()
-    print(arch_group)
-    arch_group_recnstr = ANNVectorTripletArchGroup.from_dict(*d_arch_group)
-    print(arch_group_recnstr)
+    # ds = ClusterDataset()
+    # arch_group = ANNVectorTripletArchGroup.from_dataset(ds, "WavLMForCTC")
+    # assert arch_group is not None
+    # d_arch_group = arch_group.to_dict()
+    # print(arch_group)
+    # arch_group_recnstr = ANNVectorTripletArchGroup.from_dict(*d_arch_group)
+    # print(arch_group_recnstr)
+    # Test ngram
+    ann = AbstractNN.from_huggingface("microsoft/resnet-18")
+    ann.export_ann("rn18_test.json")
+    ann_triplet = ANNVectorTriplet.from_ann("rn18", ann, ngram = 3)
+    print(ann_triplet.vector_l.content)

@@ -233,6 +233,57 @@ class AbstractNN():
                 freq_vec[combined_str] += 1
 
         return freq_vec
+    
+    def get_sequences(self, start_node_id, n, current_sequence, sequences, id_to_node_map):
+        """
+        This method recursively builds sequences of up to length n starting from a given node.
+        """
+        assert self.connection_info is not None
+
+        # Find connection info for the given start_node_id
+        connection_info_for_node = next((conn_info for conn_info in self.connection_info if conn_info[0] == start_node_id), None)
+        if connection_info_for_node is None:
+            # If no connection info is found for this node, stop recursion
+            return
+
+        # If the current sequence has reached the desired length, add it to sequences and return
+        if len(current_sequence) == n:
+            sequences.append(current_sequence)
+            return
+
+        # Iterate over connected node IDs from the found connection info
+        for next_node_id in connection_info_for_node[1]:
+            # Ensure next_node_id is a string if your id_to_node_map uses string keys
+            next_node_str_id = str(next_node_id)
+            if next_node_str_id in id_to_node_map:
+                next_node = id_to_node_map[next_node_str_id]
+                new_sequence = current_sequence + [self.get_annlayer_layer_op_repr(next_node)]
+                # Continue building sequences from the next node
+                self.get_sequences(next_node_str_id, n, new_sequence, sequences, id_to_node_map)
+
+
+    def get_layer_vector_ngram(self, n):
+        """
+        Returns a vector representation of sequences of up to n layers in the model.
+        """
+        if self.content is None or self.connection_info is None:
+            raise ValueError("The content or connection_info is None.")
+        
+        id_to_node_map = {layer_connection_info[0]: layer_node for layer_node, layer_connection_info in zip(self.content, self.connection_info)}
+        freq_vec = {}
+
+        # For each node, find all sequences of up to length n
+        for start_node_id in id_to_node_map:
+            sequences = []
+            self.get_sequences(start_node_id, n, [], sequences, id_to_node_map)
+            
+            # Update frequency vector with found sequences
+            for sequence in sequences:
+                sequence_str = ' -> '.join(sequence)  # Adjust formatting as needed
+                freq_vec[sequence_str] = freq_vec.get(sequence_str, 0) + 1
+
+        return freq_vec
+
 
     def get_layer_param_vector(self):
         """
@@ -287,13 +338,16 @@ class AbstractNN():
 
         return freq_vec
 
-    def vectorize(self):
+    def vectorize(self, ngram: int = 2):
         """
         Vectorize the model using an n-gram like approach
         """
 
         # dictionary key orders are not deterministic
-        fv_l = self.get_layer_vector()
+        if ngram == 2:
+            fv_l = self.get_layer_vector()
+        else:
+            fv_l = self.get_layer_vector_ngram(ngram)
         fv_p = self.get_layer_param_vector()
         fv_d = self.get_dim_vector()
 

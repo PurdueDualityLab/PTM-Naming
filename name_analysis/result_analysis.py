@@ -13,7 +13,7 @@ if __name__ == "__main__":
     with open("name_analysis/results.json", "r", encoding="utf-8") as f:
         results = json.load(f)
 
-    matplotlib.rcParams.update({'font.size': 12})
+    matplotlib.rcParams.update({'font.size': 17})
 
     survey_data = {
         "A": 69/108 * 100, 
@@ -61,16 +61,6 @@ if __name__ == "__main__":
     ax.set_xticklabels(categories)
     ax.legend()
 
-    # Optional: Display percentages above bars
-    for bars in (bars1, bars2):
-        for bar in bars:
-            height = bar.get_height()
-            ax.annotate(f'{height:.1f}',
-                        xy=(bar.get_x() + bar.get_width() / 2, height),
-                        xytext=(0, 3),  # 3 points vertical offset
-                        textcoords="offset points",
-                        ha='center', va='bottom',
-                        rotation=90)
     ax.grid(which='major', axis='y', linestyle='-', linewidth=0.5, color='grey', alpha=0.7)
     # Remove the border (spines)
     ax.spines['top'].set_visible(False)
