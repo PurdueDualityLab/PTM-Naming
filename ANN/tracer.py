@@ -2,29 +2,27 @@ import torch
 import torch.nn as nn
 
 class TracerTensor(torch.Tensor):
-    _next_id = 0  # Class variable to keep track of the next available ID
+    _next_id = 0
 
-    def var_init(self):
+    def assign_id(self):
         self.id = TracerTensor._next_id
         TracerTensor._next_id += 1
-        self.creation_op = None
-        self.inputs = []
+
+    def var_init(self):
+        if not hasattr(self, 'id'):
+            self.assign_id()
+        if not hasattr(self, 'creation_op'):
+            self.creation_op = None
+        if not hasattr(self, 'inputs'):
+            self.inputs = []
 
     @staticmethod
     def __new__(cls, x, *args, **kwargs):
         if not isinstance(x, torch.Tensor):
-            x = torch.tensor(x, dtype=torch.float)  # Ensure dtype compatibility
+            x = torch.tensor(x, dtype=torch.float)
         instance = torch.Tensor._make_subclass(cls, x, *args, **kwargs)
         instance.var_init()
         return instance
-
-    def set_creation_op(self, op_description, input_tensors):
-        self.creation_op = op_description
-        for inp in input_tensors:
-            if not hasattr(inp, 'id'):
-                inp.var_init()
-            if isinstance(inp, TracerTensor):
-                self.inputs.append(inp.id)
 
 class TracerModule():
 
@@ -39,14 +37,19 @@ class TracerModule():
         
         def wrapped_forward(*inputs, **kwargs):
             self.visited = True
-            new_inputs = [TracerTensor(inp) if not isinstance(inp, TracerTensor) else inp for inp in inputs]
+            # new_inputs = [TracerTensor(inp) if not isinstance(inp, TracerTensor) else inp for inp in inputs]
+            new_inputs = []
+            for inp in inputs:
+                if not isinstance(inp, TracerTensor):
+                    inp = TracerTensor(inp)
+                inp.var_init()
+                new_inputs.append(inp)
             self.input_tracer_tensor = new_inputs
-            output = original_forward(*new_inputs, **kwargs)
+            new_inputs_clone = [inp.clone() for inp in new_inputs] # avoid modifying the original input
+            output = original_forward(*new_inputs_clone, **kwargs)
             if not isinstance(output, TracerTensor):
                 output = TracerTensor(output)
             output.var_init()
-            # Record the operation and inputs in the output tensor
-            output.set_creation_op(str(self.module), new_inputs)
             self.output_tracer_tensor = output
             return output
 
