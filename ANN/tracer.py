@@ -20,7 +20,11 @@ class TracerTensor(torch.Tensor):
 
     def set_creation_op(self, op_description, input_tensors):
         self.creation_op = op_description
-        self.inputs = [inp.id for inp in input_tensors if isinstance(inp, TracerTensor)]
+        for inp in input_tensors:
+            if not hasattr(inp, 'id'):
+                inp.var_init()
+            if isinstance(inp, TracerTensor):
+                self.inputs.append(inp.id)
 
 class TracerModule():
 
@@ -56,11 +60,13 @@ class Tracer:
         self.wrap_modules(model)
 
     def wrap_modules(self, module):
-        for child in module.children():
-            tracer_module = TracerModule(child)
+        if not list(module.children()):
+            tracer_module = TracerModule(module)
             self.tracer_module_list.append(tracer_module)
             tracer_module.wrap_forward()
-            self.wrap_modules(child)
+        else:
+            for child in module.children():
+                self.wrap_modules(child)
 
     def trace(self, input_tensor):
         if not isinstance(input_tensor, TracerTensor):
@@ -68,10 +74,11 @@ class Tracer:
         output = self.model(input_tensor)
         return output
 
-# Example usage
-model = nn.Sequential(nn.Conv2d(1, 20, 5), nn.ReLU(), nn.Conv2d(20, 1, 5))
+import torchvision.models as models
+
+model = models.resnet18(pretrained=True)  # You can use any variant of ResNet
 tracer = Tracer(model)
-dummy_input = torch.randn(1, 1, 28, 28)
+dummy_input = torch.randn(1, 3, 224, 224)
 output = tracer.trace(dummy_input)
 
 for tracer_module in tracer.tracer_module_list:
