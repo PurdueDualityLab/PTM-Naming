@@ -4,6 +4,7 @@ This file contains the class definition for the AbstractNNLayer class.
 from typing import List, Tuple, Optional
 import onnx
 from onnx import NodeProto # type: ignore
+from torch import Tensor
 from torchview.computation_node.base_node import Node
 from torchview.computation_node.compute_node import FunctionNode, ModuleNode, TensorNode
 from ANN.ann_layer_param import AbstractNNLayerParam
@@ -60,6 +61,8 @@ class AbstractNNLayer():
     def __init__(
         self,
         node_id: int = -1,
+        input_tensors: Optional[List[Tensor]] = None,
+        output_tensors: Optional[List[Tensor]] = None,
         input_shape: Optional[List[Tuple[int, ...]]] = None,
         output_shape: Optional[List[Tuple[int, ...]]] = None,
         operation: str = 'Undefined',
@@ -72,6 +75,8 @@ class AbstractNNLayer():
         postorder_visited: bool = False # handles cyclic graphs
     ) -> None:
         self.node_id = node_id
+        self.input_tensors = input_tensors
+        self.output_tensors = output_tensors
         self.input_shape = input_shape
         self.output_shape = output_shape
         self.operation = operation

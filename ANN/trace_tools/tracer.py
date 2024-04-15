@@ -5,6 +5,7 @@ trace the computation graph of a PyTorch model.
 import torch
 import torchvision.models as models
 from node import Node, TensorNode, FunctionNode
+from ANN.abstract_neural_network import AbstractNN
 
 class TracerTensor(torch.Tensor):
     """
@@ -140,6 +141,25 @@ class Tracer:
         self.input_tensor = input_tensor
         output = self.model(input_tensor)
         return output
+    
+    def get_input_tensornode(self):
+        """
+        This method returns the input TensorNode object.
+
+        Returns:
+            input_tensor: The input TensorNode object.
+        """
+        assert self.input_tensor is not None, 'Input tensor is not set.'
+        return self.input_tensor.node
+    
+    def to_ann(self):
+        """
+        This method converts the traced computation graph to an ANN object.
+
+        Returns:
+            ann: The ANN object representing the computation graph.
+        """
+        
 
 if __name__ == "__main__":
     # Example usage
@@ -153,7 +173,7 @@ if __name__ == "__main__":
     def traverse(node):
         if node in visited:
             return
-        visited.add(node)
+        visited.add(node) # pylance: disable=undefined-variable
         for child in node.children:
             traverse(child)
 
