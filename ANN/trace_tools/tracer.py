@@ -6,6 +6,7 @@ import torch
 import torchvision.models as models
 from node import Node, TensorNode, FunctionNode
 from ANN.abstract_neural_network import AbstractNN
+from ANN.ann_layer import AbstractNNLayer
 
 class TracerTensor(torch.Tensor):
     """
@@ -75,6 +76,7 @@ class TracerModule():
     """
     def __init__(self, module):
         self.module = module
+        self.visited = False
         self.wrap_forward()
 
     def wrap_forward(self):
@@ -84,6 +86,7 @@ class TracerModule():
         original_forward = self.module.forward
 
         def wrapped_forward(*inputs, **kwargs):
+            self.visited = True
             new_inputs = [
                 TracerTensor(inp) \
                 if not isinstance(inp, TracerTensor) \
@@ -95,6 +98,7 @@ class TracerModule():
             output.var_init()
             for inp in new_inputs:
                 for child in inp.node.children:
+                    # it is garanteed to be a FunctionNode
                     child.contained_in_module = True
                     child.module_info = self.module
             return output
@@ -159,7 +163,36 @@ class Tracer:
         Returns:
             ann: The ANN object representing the computation graph.
         """
-        
+        # create ann layer list and connection info
+        ann_layer_list = []
+        connection_info = []
+
+        # for each module node in the graph, create an AbstractNNLayer object
+        visited = set()
+        def traverse(node):
+            if node in visited:
+                return
+            visited.add(node)
+            if isinstance(node, FunctionNode):
+                ann_layer, io_ids = node.to_annlayer()
+                ann_layer_list.append(ann_layer)
+                # only include output connection
+                connection_info.append((ann_layer.node_id, io_ids[1]))
+            for child in node.children:
+                traverse(child)
+        traverse(self.get_input_tensornode())
+
+        print(ann_layer_list)
+        print('-=-=-=-=-=-=-=-=-')
+        print(connection_info)
+
+        # create an ANN object
+        ann = AbstractNN(
+            annlayer_list=ann_layer_list,
+            connection_info=connection_info,
+        )
+
+        return ann
 
 if __name__ == "__main__":
     # Example usage
@@ -168,16 +201,5 @@ if __name__ == "__main__":
     dummy_input = torch.randn(1, 3, 224, 224)
     output = tracer.trace(dummy_input)
 
-    # traverse the graph and print the nodes
-    visited = set()
-    def traverse(node):
-        if node in visited:
-            return
-        visited.add(node) # pylance: disable=undefined-variable
-        for child in node.children:
-            traverse(child)
-
-    traverse(tracer.input_tensor.node)
-    visited = sorted(list(visited), key=lambda x: x.id) # Sort the nodes by ID
-    for node in visited:
-        print(node)
+    ann = tracer.to_ann()
+    print(ann)

@@ -16,6 +16,8 @@ class AbstractNNLayer():
 
     Attributes:
         node_id: The unique identifier of the node
+        input_tensors: A list of input tensors
+        output_tensors: A list of output tensors
         input_shape: The shape of the input tensor
         output_shape: The shape of the output tensor
         operation: The operation performed by the layer
