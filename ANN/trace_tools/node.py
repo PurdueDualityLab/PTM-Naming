@@ -7,6 +7,11 @@ from torch import Tensor
 from ANN.ann_layer import AbstractNNLayer
 from ANN.ann_layer_param import AbstractNNLayerParam
 
+SKIP_LAYER_PARAM = {
+    'weight', 'bias', 'T_destination', 'call_super_init', 'training', 'dump_patches', 
+    'running_var', 'running_mean', 'num_batches_tracked', 'track_running_stats',
+}
+
 class Node:
     """
     The Node class is used to represent the nodes in the computation graph.
@@ -109,7 +114,7 @@ class FunctionNode(Node):
             attr: getattr(self.module_info, attr) \
             for attr in dir(self.module_info) \
             if not callable(getattr(self.module_info, attr)) \
-            and not attr.startswith('_') and not attr == 'weight' and not attr == 'bias' \
+            and not attr.startswith('_') and not attr in SKIP_LAYER_PARAM
         }
         for name, param in all_properties.items():
             named_param = AbstractNNLayerParam(

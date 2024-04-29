@@ -362,5 +362,5 @@ class AbstractNNLayer():
             for pm in self.parameters:
                 pm_list.append(str(pm))
             return f'[{self.operation}] in: {str(self.input_shape)}' \
-                f'out: {str(self.output_shape)} {str(pm_list)}'
+                f' out: {str(self.output_shape)} {str(pm_list)}'
         return f'[{self.operation}] in: {str(self.input_shape)} out: {str(self.output_shape)}'

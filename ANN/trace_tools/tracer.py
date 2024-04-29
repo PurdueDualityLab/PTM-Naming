@@ -4,6 +4,7 @@ trace the computation graph of a PyTorch model.
 """
 import torch
 import torchvision.models as models
+from transformers import AutoModel, AutoProcessor
 from node import Node, TensorNode, FunctionNode
 from ANN.abstract_neural_network import AbstractNN
 from ANN.ann_layer import AbstractNNLayer
@@ -196,10 +197,17 @@ class Tracer:
 
 if __name__ == "__main__":
     # Example usage
-    model = models.resnet18(pretrained=True)
+    # model = models.resnet18(pretrained=True)
+    # tracer = Tracer(model)
+    # dummy_input = torch.randn(1, 3, 224, 224)
+    # output = tracer.trace(dummy_input)
+
+    # ann = tracer.to_ann()
+    # print(ann)
+    # load microsoft/resnet-50 from huggingface
+    model = AutoModel.from_pretrained("microsoft/resnet-18")
     tracer = Tracer(model)
     dummy_input = torch.randn(1, 3, 224, 224)
     output = tracer.trace(dummy_input)
-
     ann = tracer.to_ann()
     print(ann)
