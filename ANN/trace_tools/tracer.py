@@ -55,6 +55,13 @@ class TracerTensor(torch.Tensor):
     def __torch_function__(cls, func, types, args=(), kwargs=None):
         if kwargs is None:
             kwargs = {}
+        
+        excluded_functions = {"__get__", "__getitem__", "__repr__", "__dir__", "dim"}
+
+        # Avoid processing non-tensor operations
+        if func.__name__ in excluded_functions:
+            return super().__torch_function__(func, types, args, kwargs)
+        
         ret = super().__torch_function__(func, types, args, kwargs)
         if isinstance(ret, torch.Tensor):
             ret = TracerTensor(ret) if not isinstance(ret, TracerTensor) else ret
@@ -65,6 +72,9 @@ class TracerTensor(torch.Tensor):
             if isinstance(ret, TracerTensor):
                 ret.node = TensorNode(ret)
                 func_node.add_child(ret.node)
+        elif not isinstance(ret, torch.Tensor):
+            # Log non-tensor returns for debug purposes
+            print(f"Function {func.__name__} returned a non-tensor of type {type(ret)}.")
         return ret
 
 class TracerModule():
@@ -78,6 +88,7 @@ class TracerModule():
     def __init__(self, module):
         self.module = module
         self.visited = False
+        self.io_pairs = []
         self.wrap_forward()
 
     def wrap_forward(self):
@@ -97,11 +108,16 @@ class TracerModule():
             if not isinstance(output, TracerTensor):
                 output = TracerTensor(output)
             output.var_init()
+
+            # Store the input-output pair in case the
+            # module is called multiple times
+            self.io_pairs.append((new_inputs, output))
+
             for inp in new_inputs:
                 for child in inp.node.children:
                     # it is garanteed to be a FunctionNode
                     child.contained_in_module = True
-                    child.module_info = self.module
+                    child.module_info = self.module # TODO: fix bug here
             return output
 
         self.module.forward = wrapped_forward
@@ -183,9 +199,11 @@ class Tracer:
                 traverse(child)
         traverse(self.get_input_tensornode())
 
-        print(ann_layer_list)
-        print('-=-=-=-=-=-=-=-=-')
-        print(connection_info)
+        # print(ann_layer_list)
+        # print('-=-=-=-=-=-=-=-=-')
+        # print(connection_info)
+        for node in sorted(list(visited), key=lambda x: x.id):
+            print(node)
 
         # create an ANN object
         ann = AbstractNN(
@@ -205,9 +223,9 @@ if __name__ == "__main__":
     # ann = tracer.to_ann()
     # print(ann)
     # load microsoft/resnet-50 from huggingface
-    model = AutoModel.from_pretrained("microsoft/resnet-18")
+    model = AutoModel.from_pretrained("microsoft/resnet-50")
     tracer = Tracer(model)
     dummy_input = torch.randn(1, 3, 224, 224)
     output = tracer.trace(dummy_input)
     ann = tracer.to_ann()
-    print(ann)
+    ann.export_ann('test_ann.json')
