@@ -3,6 +3,7 @@ This module contains the Tracer class which is used to
 trace the computation graph of a PyTorch model.
 """
 import torch
+import tqdm
 import torchvision.models as models
 from transformers import AutoModel, AutoProcessor
 from node import Node, TensorNode, FunctionNode
@@ -130,6 +131,7 @@ class TracerModule():
         original_forward = self.module.forward
 
         def wrapped_forward(*inputs, **kwargs):
+            progress_bar.update(1)
             self.visited = True
             new_inputs = [
                 TracerTensor(inp) \
@@ -160,11 +162,19 @@ class Tracer:
     This class wraps a PyTorch model and replaces the forward method of its
     modules with a wrapped version that adds tracing functionality.
     """
-    def __init__(self, model):
+    def __init__(self, model, mode="eval"):
         self.model = model
         self.tracer_module_list = []
         self.input_tensor = None
+        self.module_cnt = 0
+        self.mode = mode
+        if mode == "eval":
+            self.model.eval()
+        elif mode == "train":
+            self.model.train()
         self.wrap_modules(model)
+        global progress_bar
+        progress_bar = tqdm.tqdm(total=self.module_cnt, desc="Module Coverage")
 
     def wrap_modules(self, module):
         """
@@ -179,6 +189,7 @@ class Tracer:
         else:
             for child in module.children():
                 self.wrap_modules(child)
+                self.module_cnt += 1
 
     def trace(self, input_tensor):
         """
@@ -235,8 +246,8 @@ class Tracer:
         # print(ann_layer_list)
         # print('-=-=-=-=-=-=-=-=-')
         # print(connection_info)
-        for node in sorted(list(visited), key=lambda x: x.id):
-            print(node)
+        # for node in sorted(list(visited), key=lambda x: x.id):
+        #     print(node)
 
         # create an ANN object
         ann = AbstractNN(
@@ -247,15 +258,6 @@ class Tracer:
         return ann
 
 if __name__ == "__main__":
-    # Example usage
-    # model = models.resnet18(pretrained=True)
-    # tracer = Tracer(model)
-    # dummy_input = torch.randn(1, 3, 224, 224)
-    # output = tracer.trace(dummy_input)
-
-    # ann = tracer.to_ann()
-    # print(ann)
-    # load microsoft/resnet-50 from huggingface
     model = AutoModel.from_pretrained("microsoft/resnet-50")
     tracer = Tracer(model)
     dummy_input = torch.randn(1, 3, 224, 224)
