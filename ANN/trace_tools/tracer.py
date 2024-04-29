@@ -51,6 +51,35 @@ class TracerTensor(torch.Tensor):
             self.id = TracerTensor._next_id
             TracerTensor._next_id += 1
 
+    def set_contained_in_module(self, module_info):
+        """
+        This method sets the contained_in_module attribute of the tensor's node to True.
+        """
+        self.contained_in_module = True
+        self.module_info = module_info
+
+    def is_contained_in_module(self):
+        """
+        This method returns the contained_in_module attribute of the tensor's node.
+
+        Returns:
+            contained_in_module: A flag indicating whether the tensor is contained in a module.
+        """
+        return self.contained_in_module if hasattr(self, 'contained_in_module') else False
+    
+    def get_module_info(self):
+        """
+        This method returns the module_info attribute of the tensor's node.
+
+        Returns:
+            module_info: Information about the module containing the tensor.
+        """
+        ret = self.module_info if hasattr(self, 'module_info') else None
+        # reset module_info and contained_in_module
+        self.module_info = None
+        self.contained_in_module = False
+        return ret
+
     @classmethod
     def __torch_function__(cls, func, types, args=(), kwargs=None):
         if kwargs is None:
@@ -66,6 +95,9 @@ class TracerTensor(torch.Tensor):
         if isinstance(ret, torch.Tensor):
             ret = TracerTensor(ret) if not isinstance(ret, TracerTensor) else ret
             func_node = FunctionNode(func.__name__)
+            func_node.contained_in_module = args[0].is_contained_in_module()
+            if func_node.contained_in_module:
+                func_node.module_info = args[0].get_module_info()
             input_nodes = [arg.node for arg in args if isinstance(arg, TracerTensor)]
             for node_ in input_nodes:
                 node_.add_child(func_node)
@@ -104,20 +136,21 @@ class TracerModule():
                 if not isinstance(inp, TracerTensor) \
                 else inp for inp in inputs
             ]
+
+            for inp in new_inputs:
+                inp.set_contained_in_module(self.module)
+
             output = original_forward(*new_inputs, **kwargs)
+
             if not isinstance(output, TracerTensor):
                 output = TracerTensor(output)
+
             output.var_init()
 
             # Store the input-output pair in case the
             # module is called multiple times
             self.io_pairs.append((new_inputs, output))
 
-            for inp in new_inputs:
-                for child in inp.node.children:
-                    # it is garanteed to be a FunctionNode
-                    child.contained_in_module = True
-                    child.module_info = self.module # TODO: fix bug here
             return output
 
         self.module.forward = wrapped_forward
