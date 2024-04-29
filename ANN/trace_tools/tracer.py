@@ -264,3 +264,4 @@ if __name__ == "__main__":
     output = tracer.trace(dummy_input)
     ann = tracer.to_ann()
     ann.export_ann('test_ann.json')
+    # TODO: check why the progress bar shows very low coverage
