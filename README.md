@@ -32,6 +32,11 @@ pip install -r requirements.txt
 export PYTHONPATH="${PYTHONPATH}:absolute/path/to/PTM-Naming"
 ```
 
+## TODOs
+
+1. Change the dummy input to non-random inputs for `tools/HFAutoClassIterator.py` and `tools/HFValidInputIterator.py`.
+2. Test `ANN/abstract_neural_network.py:265`. Evaluate results in other n-grams.
+
 ## High level class description
 
 ### `abstract_neural_network.AbstractNN` Class
