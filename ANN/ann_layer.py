@@ -1,7 +1,7 @@
 """
 This file contains the class definition for the AbstractNNLayer class.
 """
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Any
 import onnx
 from onnx import NodeProto # type: ignore
 from torch import Tensor
@@ -74,7 +74,8 @@ class AbstractNNLayer():
         sorting_identifier: Optional[str] = None,
         sorting_hash: Optional[int] = None,
         preorder_visited: bool = False,
-        postorder_visited: bool = False # handles cyclic graphs
+        postorder_visited: bool = False, # handles cyclic graphs
+        weight: Any = None
     ) -> None:
         self.node_id = node_id
         self.input_tensors = input_tensors
@@ -89,6 +90,7 @@ class AbstractNNLayer():
         self.sorting_hash = sorting_hash
         self.preorder_visited = preorder_visited
         self.postorder_visited = postorder_visited
+        self.weight = weight
 
     def __hash__(self):
         return hash(self.node_id)

@@ -8,7 +8,7 @@ from ANN.ann_layer import AbstractNNLayer
 from ANN.ann_layer_param import AbstractNNLayerParam
 
 SKIP_LAYER_PARAM = {
-    'weight', 'bias', 'T_destination', 'call_super_init', 'training', 'dump_patches', 
+    'bias', 'T_destination', 'call_super_init', 'training', 'dump_patches', 
     'running_var', 'running_mean', 'num_batches_tracked', 'track_running_stats',
 }
 
@@ -116,12 +116,17 @@ class FunctionNode(Node):
             if not callable(getattr(self.module_info, attr)) \
             and not attr.startswith('_') and not attr in SKIP_LAYER_PARAM
         }
+
+        layer_weight = None
         for name, param in all_properties.items():
-            named_param = AbstractNNLayerParam(
-                param_name=name,
-                param_value=param,
-            )
-            param_list.append(named_param)
+            if name == 'weight':
+                layer_weight = param
+            else:
+                named_param = AbstractNNLayerParam(
+                    param_name=name,
+                    param_value=param,
+                )
+                param_list.append(named_param)
 
         # modify the name of the operation if the function is contained in a module
         if self.contained_in_module:
@@ -141,6 +146,7 @@ class FunctionNode(Node):
             parameters=param_list,
             is_input_node=bool(not self.parents),
             is_output_node=bool(not self.children),
+            weight=layer_weight if get_weight else None,
         )
 
         return ann_layer, (input_ids, output_ids)
