@@ -11,13 +11,61 @@ import time
 import json
 from typing import List, Tuple, Union, Optional, Any
 from loguru import logger
-from transformers import AutoModel
+from transformers import AutoModel, AutoModelForCausalLM
 import torch
 from ANN.ann_generator import AbstractNNGenerator
 from ANN.ann_layer import AbstractNNLayer
 from ANN.old_pipelines.ANNToJSONConverter import read_annlayer_list_from_json, annlayer_list_to_json
 from tools.HFValidInputIterator import HFValidInputIterator
+from collections import Counter
 
+class ModelWrapper(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+        self.total_layers = 0
+        self.passed_layers = set()
+        self.layers = self.get_children(model)
+        self.coverage = ""
+        
+        def forward_hook(module, input, output):
+            self.passed_layers.add(module)
+        
+        for layer in self.layers:
+            if isinstance(layer, torch.nn.Identity):
+                continue
+            layer.register_forward_hook(forward_hook)
+            self.total_layers += 1
+            
+    def forward(self, *args, **kwargs):
+        output = self.model(*args, **kwargs)
+        self.coverage = f"{len(self.passed_layers)}/{self.total_layers}"
+        logger.info(f"Coverage: {self.coverage}")
+        # self.passed_layers = 0
+        return output
+    
+    def get_children(self, model: torch.nn.Module) -> List[torch.nn.Module]:
+        """
+        Returns a list of children of the model
+
+        Returns:
+            A list of children (trainable parameters) of the model
+        """
+        children = list(model.children())
+        flat_children = []
+        if children == []:
+            return model
+        else:
+            for child in children:
+                try:
+                    flat_children.extend(self.get_children(child))
+                except TypeError:
+                    flat_children.append(self.get_children(child))
+        return flat_children
+    
+    # def initialize_coverage(self, valid_autoclass_obj_list):
+    #     self.coverage = {key.__class__.__name__: None for key in valid_autoclass_obj_list}
+    
 class AbstractNN():
     """
     AbstractNN is a high-level wrapper for the ANNLayer class. 
@@ -69,6 +117,16 @@ class AbstractNN():
         except Exception as emsg: # pylint: disable=broad-except
             err_msg = str(emsg)
         if model is None:
+            # if fine-tuned for casual language modeling tasks
+            try:
+                model = AutoModelForCausalLM.from_pretrained(
+                    hf_repo_name,
+                    trust_remote_code=trust_remote_code,
+                    **kwargs
+                )
+            except Exception as emsg: # pylint: disable=broad-except
+                err_msg = str(emsg)
+        if model is None:
             try:
                 model = AutoModel.from_pretrained(
                     hf_repo_name,
@@ -113,7 +171,7 @@ class AbstractNN():
         start_time = time.time()
 
         # assert isinstance(tracing_input, torch.Tensor)
-
+        model = ModelWrapper(model)
         ann_gen = AbstractNNGenerator(
             model = model,
             inputs = tracing_input, # type: ignore
@@ -134,10 +192,10 @@ class AbstractNN():
             logger.info("Vectorizing...")
 
         ret_ann = AbstractNN(layer_list, conn_info)
-
+        # logger.info(ret_ann.layer_connection_vector)
         if verbose:
             logger.success("Success.")
-        return ret_ann
+        return ret_ann#, model.coverage
 
     @staticmethod
     def from_json(

@@ -28,7 +28,7 @@ Run the following commands:
 
 ```
 git clone -b Evaluation https://github.com/PurdueDualityLab/PTM-Naming.git
-pip install -r requirements.txt
+pip install -r requirement.txt
 export PYTHONPATH="${PYTHONPATH}:absolute/path/to/PTM-Naming"
 ```
 

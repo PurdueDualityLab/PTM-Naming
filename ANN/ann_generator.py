@@ -304,12 +304,14 @@ class AbstractNNGenerator():
                 depth=depth,
                 expand_nested=True
             )
+            # logger.info(model_graph.root_container)
 
             if self.verbose:
                 iter_bar.set_description("Converting torch Graph to ANN")
                 iter_bar.update(1)
 
             conversion_handler.populate_class_var_from_torchview(model_graph.edge_list)
+            # logger.info([ann.operation for ann in conversion_handler.ann_layer_set])
 
         elif self.framework == 'onnx':
 
@@ -318,12 +320,13 @@ class AbstractNNGenerator():
                 iter_bar.update(1)
 
             conversion_handler.populate_class_var_from_onnx(self.model)
-
+        # logger.info(conversion_handler.ann_layer_edge_list)
         if self.verbose:
             iter_bar.set_description("Converting onnx Graph to ANN")
             iter_bar.update(1)
 
         traverser = AbstractNNSorter(conversion_handler, self.use_hash)
+        logger.info(len([ann.operation for anns in traverser.adj_dict.values() for ann in anns]))   # total passed layers
         annlayer_list = traverser.generate_annlayer_list()
 
         if include_connection:

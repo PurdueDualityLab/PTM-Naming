@@ -302,7 +302,7 @@ class BranchingModel(torch.nn.Module):
         x = self.fc2(x)
         x = self.fc3(x)
         return x
-
+from transformers import AutoTokenizer
 if __name__ == "__main__":
     # model = AutoModel.from_pretrained("microsoft/resnet-50")
     # tracer = Tracer(model)
@@ -310,9 +310,13 @@ if __name__ == "__main__":
     # output = tracer.trace(dummy_input)
     # ann = tracer.to_ann()
     # ann.export_ann('test_ann.json')
-    model = BranchingModel()
+    # model = BranchingModel()
+    repo_name = "stuartmesham/deberta-v3-large_spell_5k_2_p3"
+    model = AutoModel.from_pretrained(repo_name)
+    tokenizer = AutoTokenizer.from_pretrained(repo_name)
+    inputs = tokenizer("Hello, my dog is cute", return_tensors="pt")
     tracer = Tracer(model)
-    dummy_input = torch.randn(1, 3, 32, 32)
-    output = tracer.trace(dummy_input)
+    # dummy_input = torch.randn(1, 3, 244, 244)
+    output = tracer.trace(**inputs)
     ann = tracer.to_ann(weight_output='test_weight.json')
     ann.export_ann('test_ann.json')

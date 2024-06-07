@@ -1,13 +1,15 @@
 """
 This file contains dummy input generation for Hugging Face models.
 """
-
 from loguru import logger
 import torch
 import pandas as pd
 import numpy as np
 from transformers import AutoModel
+from tokenizers import Tokenizer
+from tokenizers.models import BPE
 from tools.HFAutoClassIterator import HFAutoClassIterator
+import json
 
 class HFValidInputIterator():
     """
@@ -72,7 +74,12 @@ class HFValidInputIterator():
                         err_report[valid_autoclass_obj.__class__.__name__] = {}
                     err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__]\
                         = ("CannotObtainInput", emsg)
+                    # logger.warning(f"Cannot obtain input for {self.hf_repo_name} due to {emsg}")
                     continue
+                if "voice" in trial_func.__name__ and "Wav2Vec2" not in valid_autoclass_obj.__class__.__name__:    
+                    trial_input["input_features"] = trial_input['input_features'].to(torch.float32)
+                    decoder_input_ids = torch.tensor([[self.model.config.decoder_start_token_id]], dtype=torch.long)
+                    trial_input["decoder_input_ids"] = decoder_input_ids
                 try:
                     self.model(**trial_input)
                     logger.success(f"Find an input for {self.hf_repo_name}")
@@ -82,6 +89,7 @@ class HFValidInputIterator():
                         err_report[valid_autoclass_obj.__class__.__name__] = {}
                     err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__]\
                         = ("InferenceError", emsg)
+                    # logger.warning(f"Cannot infer {self.hf_repo_name} due to {emsg}")
 
         logger.error(f"Cannot find a valid input for {self.hf_repo_name} or Request Time Out")
         for autoclass_type, trial_func_dict in err_report.items():
@@ -98,7 +106,11 @@ class TrialFunctionStorage():
         None
     """
     def __init__(self):
-        pass
+        torch.manual_seed(0)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(0)
+        np.random.seed(0)
+        # self.img_1_3_244_244 = torch.rand(1, 3, 224, 224)
 
     def auto_get_func(self, auto_class_obj):
         """
@@ -138,6 +150,10 @@ class TrialFunctionStorage():
 
     def t_txt_10(self, auto_class_obj):
         return auto_class_obj("Test Input", return_tensors="pt")
+    def t_txt_input_ids(self, auto_class_obj):
+        encoded_input = auto_class_obj("Test Input", return_tensors="pt")
+        input_dict = {"input_ids": encoded_input['input_ids']}
+        return input_dict
     def t_enc_txt_10(self, auto_class_obj):
         return auto_class_obj.encode("Test Input", return_tensors="pt")
     def t_enc_dec_t5_10(self, auto_class_obj):
@@ -146,14 +162,19 @@ class TrialFunctionStorage():
         decoder_input_ids[:] = auto_class_obj.pad_token_id
         return {"input_ids": encoded_input['input_ids'], "decoder_input_ids": decoder_input_ids}
 
-    # AutoFeatureExtractor
+    # TODO: add tokenizer for voice models
 
+    # AutoFeatureExtractor
+    def fe_voice_dummy(self, auto_class_obj):
+        with open("./tools/librispeech_asr_dummy.json", "r") as f:
+            ds = json.load(f)
+        return auto_class_obj(ds["audio"]["array"], sampling_rate=16000, return_tensors='pt')
     def fe_img_1_3_224_224(self, auto_class_obj):
-        return auto_class_obj(images=torch.rand(1, 3, 224, 224), return_tensors="pt")["pixel_values"]
+        return auto_class_obj(images=torch.rand(1, 3, 224, 224), do_rescale=False, return_tensors="pt")["pixel_values"]
     def fe_voice_sr8k(self, auto_class_obj):
         return auto_class_obj(np.random.randn(8000), sampling_rate=8000, return_tensors='pt')
     def fe_voice_sr16k(self, auto_class_obj):
-        return auto_class_obj(np.random.randn(16000), sampling_rate=16000, return_tensors='pt')
+        return auto_class_obj(np.random.randn(16000), sampling_rate=16000, return_tensors='pt') #You have to specify either decoder_input_ids or decoder_inputs_embeds
     def fe_voice_sr44k(self, auto_class_obj):
         return auto_class_obj(np.random.randn(44100), sampling_rate=44100, return_tensors='pt')
     def fe_voice_sr48k(self, auto_class_obj):
@@ -166,10 +187,14 @@ class TrialFunctionStorage():
     # AutoImageProcessor
 
     def ip_img_1_3_224_224(self, auto_class_obj):
-        return auto_class_obj(images=torch.rand(1, 3, 224, 224), return_tensors="pt")
+        return auto_class_obj(images=torch.rand(1, 3, 224, 224), do_rescale=False, return_tensors="pt")
 
     # AutoProcessor
 
+    def p_voice_dummy(self, auto_class_obj):
+        with open("./tools/librispeech_asr_dummy.json", "r") as f:
+            ds = json.load(f)
+        return auto_class_obj(ds["audio"]["array"], sampling_rate=16000, return_tensors='pt')
     def p_txt_10(self, auto_class_obj):
         return auto_class_obj("Test Input", return_tensors="pt")
     def p_img_1_3_224_224(self, auto_class_obj):
@@ -179,7 +204,7 @@ class TrialFunctionStorage():
     def p_voice_sr8k(self, auto_class_obj):
         return auto_class_obj(np.random.randn(8000), sampling_rate=8000, return_tensors='pt')
     def p_voice_sr16k(self, auto_class_obj):
-        return auto_class_obj(np.random.randn(16000), sampling_rate=16000, return_tensors='pt')
+        return auto_class_obj(torch.randn(16000, dtype=torch.float16).numpy(), sampling_rate=16000, return_tensors='pt')
     def p_voice_sr44k(self, auto_class_obj):
         return auto_class_obj(np.random.randn(44100), sampling_rate=44100, return_tensors='pt')
     def p_voice_sr48k(self, auto_class_obj):
@@ -188,9 +213,9 @@ class TrialFunctionStorage():
         return auto_class_obj(np.random.randn(96000), sampling_rate=96000, return_tensors='pt')
     def p_voice_sr192k(self, auto_class_obj):
         return auto_class_obj(np.random.randn(192000), sampling_rate=192000, return_tensors='pt')
-
 if __name__ == "__main__":
-    repo_name = "anton-l/distilhubert-ft-keyword-spotting"
+    # repo_name = "anton-l/distilhubert-ft-keyword-spotting"
+    repo_name = "microsoft/resnet-50"
     model = AutoModel.from_pretrained(repo_name)
     in_iter = HFValidInputIterator(model, repo_name, None)
     print(in_iter.get_valid_input())

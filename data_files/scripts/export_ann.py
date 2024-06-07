@@ -13,6 +13,7 @@ import torchview
 from convert_all_peatmoss_models_to_ann import forward_prop
 from dotenv import load_dotenv
 from ANN.abstract_neural_network import AbstractNN
+from transformers import BitsAndBytesConfig
 
 def get_ordered_model_list() -> list:
     """
@@ -24,7 +25,7 @@ def get_ordered_model_list() -> list:
     load_dotenv(".env")
     conn = sqlite3.connect(str(os.getenv("PEATMOSS_DB")))
     c = conn.cursor()
-    c.execute("SELECT model.context_id FROM model")
+    c.execute("SELECT model.context_id FROM model WHERE model.downloads >= 50")
     repo_names = c.fetchall()
     return sorted([repo_name[0] for repo_name in repo_names])
 
@@ -65,21 +66,25 @@ def get_local_model_list() -> list:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 5:
-        print("Invalid number of arguments.")
+    if len(sys.argv) != 5 and len(sys.argv) != 7:
+        logger.error("Invalid number of arguments.")
         sys.exit(1)
     elif sys.argv[1] == "help":
-        print("This script exports ann from a hf repository.")
-        print("Usage: python export_ann.py -j <json_output_loc> -c <run_count>")
+        logger.error("This script exports ann from a hf repository.")
+        logger.error("Usage: python export_ann.py -j <json_output_loc> -c <run_count>")
         sys.exit(0)
     elif sys.argv[1] != "-j" or sys.argv[3] != "-c":
-        print("Invalid arguments.")
+        logger.error("Invalid arguments.")
         sys.exit(1)
     else:
         json_output_loc = sys.argv[2]
         run_count = int(sys.argv[4])
-
-    model_list = get_ordered_model_list()
+        
+    if sys.argv[5] != "-s": #sampled list
+        model_list = get_ordered_model_list()
+    else:
+        with open(sys.argv[6], "r", encoding="utf-8") as f:
+            model_list = json.load(f)
     # model_list = get_local_model_list()
     torchview.torchview.forward_prop = forward_prop
     with open("data_files/other_files/temp_index.txt", "r", encoding="utf-8") as f:
@@ -101,30 +106,37 @@ if __name__ == "__main__":
         logger.info(f"[{i}] Processing {repo_name}.")
         try:
             if os.path.exists(json_output_loc + f"/{repo_name}.json"):
-                logger.sucesss(f"File {json_output_loc + f'/{repo_name}'}.json already exists.")
+                logger.success(f"File {json_output_loc + f'/{repo_name}'}.json already exists.")
                 logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
                 continue
             
-            if os.path.exists(str(os.getenv("LOCAL_WEIGHT_PATH")) + '/' + repo_name):
+            first_letter = repo_name[0].upper()
+            if os.path.exists(str(os.getenv("LOCAL_WEIGHT_PATH")) + f'/{first_letter}/' + repo_name):
+                load_in_4_bit = True
                 try:
                     logger.debug(f"Loading {repo_name} in_4bit=True")
+                    q_config = BitsAndBytesConfig(load_in_4_bit=True)
                     ann = AbstractNN.from_huggingface(
-                        str(os.getenv("LOCAL_WEIGHT_PATH")) + '/' + repo_name,
+                        str(os.getenv("LOCAL_WEIGHT_PATH")) + f'/{first_letter}/' + repo_name,
+                        quantization_config=q_config,
                         load_in_4bit = True
                     )
                 
                 except:
                     logger.debug(f"Loading {repo_name} in_4bit=False")
+                    # q_config = BitsAndBytesConfig(load_in_4_bit=False)
                     ann = AbstractNN.from_huggingface(
-                        str(os.getenv("LOCAL_WEIGHT_PATH")) + '/' + repo_name,
+                        str(os.getenv("LOCAL_WEIGHT_PATH")) + f'/{first_letter}/' + repo_name,
+                        # quantization_config=q_config,
                         load_in_4bit = False
                     )
+                    load_in_4_bit = False
 
             else:
                 ############
                 # TODO: Remove this if need to download weights from HF
                 # Just load the local files
-                logger.warning(f"Model {repo_name} not found in local weights. Continueing...")
+                logger.warning(f"Model {repo_name} not found in local weights. Continuing...")
                 continue
                 ############
                 ann = AbstractNN.from_huggingface(
@@ -136,18 +148,30 @@ if __name__ == "__main__":
                 os.makedirs('/'.join(curr_json_output_loc.split('/')[:-1]), exist_ok=True)
             ann.export_ann(json_output_loc + f"/{repo_name}.json")
             logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
+            
+            # Check if model is quantized
+            if not os.path.exists("data_files/json_files/selected_quantized_model.json"):
+                with open("data_files/json_files/selected_quantized_model.json", "w", encoding="utf-8") as f:
+                    json.dump({}, f)
+            with open("data_files/json_files/selected_quantized_model.json", "r", encoding="utf-8") as f:
+                quantized_model = json.load(f)
+                
+            quantized_model[repo_name] = load_in_4_bit
+            with open("data_files/json_files/selected_quantized_model.json", "w", encoding="utf-8") as f:
+                json.dump(quantized_model, f)
+                
         except Exception as emsg: # pylint: disable=broad-except
 
-            if not os.path.exists("data_files/json_files/failed_ann.json"):
-                with open("data_files/json_files/failed_ann.json", "w", encoding="utf-8") as f:
+            if not os.path.exists("data_files/json_files/selected_failed_aptm.json"):
+                with open("data_files/json_files/selected_failed_aptm.json", "w", encoding="utf-8") as f:
                     json.dump({}, f)
-            with open("data_files/json_files/failed_ann.json", "r", encoding="utf-8") as f:
+            with open("data_files/json_files/selected_failed_aptm.json", "r", encoding="utf-8") as f:
                 failed_ann = json.load(f)
 
             tb_str = traceback.format_exc()
             failed_ann[repo_name] = tb_str
 
-            with open("data_files/json_files/failed_ann.json", "w", encoding="utf-8") as f:
+            with open("data_files/json_files/selected_failed_aptm.json", "w", encoding="utf-8") as f:
                 json.dump(failed_ann, f)
 
             logger.error(tb_str)

@@ -61,7 +61,17 @@ if __name__ == "__main__":
                     logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
                     continue
 
-            ann = AbstractNN.from_huggingface(repo_name)
+            ann, coverage = AbstractNN.from_huggingface(repo_name)  #testing coverage
+            coverage_file_path = os.path.join(json_output_loc, "coverage.json")
+            if not os.path.exists(coverage_file_path):
+                with open(coverage_file_path, 'w') as f:
+                    json.dump([], f)  # Initialize the file with an empty list
+            coverage_json = []
+            with open(coverage_file_path, "r") as f:    #change to reponame: {autoclass: coverage}
+                coverage_json = json.load(f)
+            coverage_json.append({repo_name: coverage})
+            with open(coverage_file_path, "w") as f:
+                json.dump(coverage_json, f)
             if not os.path.exists(json_output_loc + f"/{repo_name}.json"):
                 os.makedirs(json_output_loc, exist_ok=True)
             ann.export_vector(json_output_loc + f"/{repo_name}.json")

@@ -100,3 +100,7 @@ if __name__ == "__main__":
     run_count = 9999999999999
     p = run_process(run_count)
     monitor_process(p)
+    # pid = os.getpid()
+    # python_process = psutil.Process(pid)
+    # memoryUse = python_process.memory_info()[0]/2.**30 
+    # print('memory use:', memoryUse)
