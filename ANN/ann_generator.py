@@ -57,7 +57,7 @@ class AbstractNNGenerator():
         self.verbose = verbose
 
         if framework is None:
-            framework = "pytorch"
+            self.framework = "pytorch"
             logger.warning("Framework unspecified, using 'pytorch'.")
 
 
