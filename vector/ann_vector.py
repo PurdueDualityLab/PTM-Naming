@@ -4,7 +4,7 @@ and ANNVectorTripletArchGroup.
 """
 from typing import List
 from vector.cluster_dataset import ClusterDataset
-from ANN.abstract_neural_network import AbstractNN
+from APTM.abstract_neural_network import AbstractNN
 
 class ANNVector():
     """
