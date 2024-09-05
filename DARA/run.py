@@ -1,3 +1,4 @@
+import random
 import os
 import json
 import numpy as np
@@ -21,8 +22,15 @@ from loguru import logger  # Ensure logger is imported if used for logging
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logger.info(f"Using device: {device}")
 
-torch.random.manual_seed(42)  # Set random seed for reproducibility
-
+# torch.random.manual_seed(42)  # Set random seed for reproducibility
+def set_seed(seed=42):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 def train_and_evaluate(model, train_loader, eval_loader, criterion, optimizer, scheduler, device="cuda", epochs=10, eval_interval=10):
     model.train()  # Set model to training mode
@@ -227,12 +235,12 @@ def CV_run():
     train_batch_size = 256
     eval_batch_size = 32
 
-    label_type = "model_type"
-    # label_type = "arch" # TODO: This needs a different hyperparameter setting
+    # label_type = "model_type"
+    label_type = "arch" # TODO: This needs a different hyperparameter setting
     # label_type = "task"
     ############################
-    # vec_path = './data_cleaned.json'
-    vec_path = './data_cleaned_filtered.json'
+    vec_path = './data_cleaned.json'
+    # vec_path = './data_cleaned_filtered.json'
     
     data_loader = DataLoader(vec_path)
 
@@ -245,6 +253,7 @@ def CV_run():
     
     logger.info(f"Number of classes: {num_classes}")
     logger.info(f"Input shape: {input_shape}")
+    logger.info(f"label type: {label_type}")
 
     model = DARA_classifier(input_size=input_shape[0], output_size=num_classes).to(device)
     
@@ -274,8 +283,8 @@ def CV_run():
         eval_subset = torch.utils.data.Subset(full_dataset, eval_index)
 
         # Initialize DataLoaders for the current fold
-        train_loader = DataLoader(train_subset, batch_size=train_batch_size, shuffle=True, num_workers=4, pin_memory=True)
-        eval_loader = DataLoader(eval_subset, batch_size=eval_batch_size, num_workers=4, pin_memory=True)
+        train_loader = DataLoader(train_subset, batch_size=train_batch_size, shuffle=True, num_workers=0, pin_memory=True)
+        eval_loader = DataLoader(eval_subset, batch_size=eval_batch_size, num_workers=0, pin_memory=True)
 
         # Initialize the model for the current fold
         model = DARA_classifier(input_size=input_shape[1], output_size=num_classes).to(device)
@@ -310,14 +319,14 @@ def CV_run():
     logger.success("5-Fold Cross Validation completed")
 
     # Save the inputs to confusion matrix
-    np.save('all_fold_preds.npy', all_fold_preds)
-    np.save('all_fold_targets.npy', all_fold_targets)
+    np.save(f'{label_type}_all_fold_preds.npy', all_fold_preds)
+    np.save(f'{label_type}_all_fold_targets.npy', all_fold_targets)
 
     # Save index_to_label and label_type
-    with open('index_to_label.json', 'w') as f:
+    with open(f'{label_type}_index_to_label.json', 'w') as f:
         json.dump(index_to_label, f)
     
-    with open('label_type.json', 'w') as f:
+    with open(f'{label_type}_label_type.json', 'w') as f:
         json.dump(label_type, f)
 
     # # Plotting the confusion matrix for all folds
@@ -326,9 +335,9 @@ def CV_run():
 
 if __name__ == "__main__":
     # Set random seed
-    torch.manual_seed(0)
-    np.random.seed(0)
-
+    # torch.manual_seed(0)
+    # np.random.seed(0)
+    set_seed(0)
     # run_PTMTorrent()
     # run()
     CV_run()

@@ -19,22 +19,25 @@ def plot_confusion_matrix_heatmap(preds, targets, index_to_label, label_type):
     ax = sns.heatmap(cm_normalized, annot=False, cmap='Blues', xticklabels=labels_ordered, yticklabels=labels_ordered, linewidths=.5)
     
     # Decrease the font size of the category labels for both axes
-    ax.set_xticklabels(ax.get_xticklabels(), fontsize=8)  # Adjust fontsize for x-axis labels
-    ax.set_yticklabels(ax.get_yticklabels(), fontsize=8)  # Adjust fontsize for y-axis labels
+    ax.set_xticklabels(ax.get_xticklabels(), fontsize=2)  # Adjust fontsize for x-axis labels
+    ax.set_yticklabels(ax.get_yticklabels(), fontsize=2)  # Adjust fontsize for y-axis labels
     
     plt.tight_layout()
-    plt.savefig(f"confusion_matrix_heatmap_{label_type}.png", dpi=300)
+    plt.savefig(f"confusion_matrix_heatmap_{label_type}.pdf", dpi=300)
 
+# label_type = "model_type"
+# label_type = "task"
+label_type = "arch" 
 
 # Open the file and read the data
-with open('index_to_label.json', 'r') as f:
+with open(f'{label_type}_index_to_label.json', 'r') as f:
     index_to_label = json.load(f)
 
-with open('label_type.json', 'r') as f:
+with open(f'{label_type}_label_type.json', 'r') as f:
     label_type = json.load(f)
 
 # Load the predictions and targets
-all_fold_preds = np.load('all_fold_preds.npy')
-all_fold_targets = np.load('all_fold_targets.npy')
+all_fold_preds = np.load(f'{label_type}_all_fold_preds.npy')
+all_fold_targets = np.load(f'{label_type}_all_fold_targets.npy')
 
 plot_confusion_matrix_heatmap(all_fold_preds, all_fold_targets, index_to_label, label_type)

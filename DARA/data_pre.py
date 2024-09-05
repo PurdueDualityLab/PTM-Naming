@@ -5,38 +5,48 @@ import requests
 from tqdm import tqdm
 from collections import defaultdict
 
+import sqlite3
+from dotenv import load_dotenv
+
 import huggingface_hub as hf_hub
 
 
 from loguru import logger
 
 api = hf_hub.HfApi()
+load_dotenv(".env")
 
 # Set arg values
 def arg_parser():
     parser = argparse.ArgumentParser(description="Process the data for the PTM-Naming project")
-    parser.add_argument("--data_path", type=str, default="/depot/davisjam/data/chingwo/PTM-v2/PTM-Naming/peatmoss_ann/rand_sample", help="Path to the data folder")
+    parser.add_argument("--data_path", type=str, default="/depot/davisjam/data/mingyu/PTM-Naming/selected_peatmoss_vec_data_path/vector", help="Path to the data folder")
     parser.add_argument("--ann", type=bool, default=False, help="Whether the data is ANN or vectors")
     args = parser.parse_args()
     return args
 
 
-def data_processing(data_path="/depot/davisjam/data/chingwo/PTM-v2/PTM-Naming/peatmoss_ann/rand_sample", ann=False):
+def data_processing(data_path="/depot/davisjam/data/mingyu/PTM-Naming/selected_peatmoss_vec_data_path/vector", ann=False):
 
     if ann==True:
         '''Convert ANN to feature vectors first'''
         # TODO
     
-    # open all folders under data_path and read the json files
+    json_files = []
     data = {}
     all_keys = defaultdict(set)  # Store all unique keys for each vector type
+    
+    with open("/depot/davisjam/data/mingyu/PTM-Naming/selected_peatmoss_vec_data_path/balanced_peatmoss_data.json", "r") as f:
+        balanced_peatmoss_data = json.load(f)
+    for model in balanced_peatmoss_data:
+        repo_name = model['repo_name'] + '.json'
+        json_files.append(os.path.join(data_path, repo_name))
 
+    # open all folders under data_path and read the json files
     # Collect all json files first to provide a progress bar
-    json_files = []
-    for root, dirs, files in os.walk(data_path):
-        for file in files:
-            if file.endswith(".json"):
-                json_files.append(os.path.join(root, file))
+    # for root, dirs, files in os.walk(data_path):
+    #     for file in files:
+    #         if file.endswith(".json"):
+    #             json_files.append(os.path.join(root, file))
 
     # First pass to collect all unique keys and their maximum lengths
     for json_file in tqdm(json_files, desc="Collecting keys"):
@@ -69,11 +79,61 @@ def data_processing(data_path="/depot/davisjam/data/chingwo/PTM-v2/PTM-Naming/pe
                 processed_vecs[vec_type] = processed_vec
             
             data[model_name] = processed_vecs
-            data[model_name]['model_type'], data[model_name]['arch'], data[model_name]['task'] = get_model_arch(model_name)
+            data[model_name]['model_type'], data[model_name]['arch'], data[model_name]['task'] = get_model_arch_db(model_name)
 
     # Write the processed data to a file
     with open("data.json", "w") as f:
         json.dump(data, f)
+        
+def get_task_list():    
+    with open("/depot/davisjam/data/mingyu/PTM-Naming/data_files/sql/get_distinct_task.sql", "r", encoding="utf-8") as f:
+        query = f.read()
+    conn = sqlite3.connect(str(os.getenv("PEATMOSS_DB")))
+    c = conn.cursor()
+    c.execute(query)
+    
+    task_list = c.fetchall()
+    task_list = sorted(['unknown' if task[0] == None else task[0] for task in task_list])
+    task_list = ','.join(f"'{task}'" for task in task_list)
+    
+    conn.close()
+    
+    return task_list
+
+def get_model_arch_db(model_name):
+    query = '''
+    SELECT model.context_id, architecture.name, framework.name, 
+        CASE 
+            WHEN COUNT(tag.name) > 0 THEN 
+                MAX(CASE WHEN tag.name IN ({}) THEN tag.name END)
+            ELSE 'unknown'
+        END AS tags
+    FROM model
+        LEFT OUTER JOIN model_to_architecture ON model.id = model_to_architecture.model_id
+        LEFT OUTER JOIN architecture ON architecture.id = model_to_architecture.architecture_id
+        LEFT OUTER JOIN model_to_framework ON model.id = model_to_framework.model_id
+        LEFT OUTER JOIN framework ON model_to_framework.framework_id = framework.id
+        LEFT OUTER JOIN model_to_tag ON model.id = model_to_tag.model_id
+        LEFT OUTER JOIN tag ON model_to_tag.tag_id = tag.id
+    WHERE model.context_id = ?
+        AND framework.name NOT IN ('pytorch', 'tf', 'jax') 
+        AND architecture.name NOT IN ('LLaMAForCausalLM') 
+    GROUP BY model.context_id
+    '''.format(task_list)
+    
+    conn = sqlite3.connect(str(os.getenv("PEATMOSS_DB")))
+    c = conn.cursor()
+    if model_name.split("/")[0] == "vector":
+        model_name = model_name.split("/")[1]
+    c.execute(query, (model_name,))
+    try:
+        model_info = list(c.fetchall()[0])
+    except:
+        return get_model_arch(model_name)
+    if model_info[3] == None:
+        model_info[3] = get_model_arch(model_name)[2]
+        
+    return model_info[2], model_info[1], model_info[3]
 
 def get_model_arch(model_name):
     '''Fetch model_type and architecture from config.json in the model's Hugging Face repository'''
@@ -83,7 +143,7 @@ def get_model_arch(model_name):
         task = model_info.pipeline_tag if model_info.pipeline_tag else 'unknown'
     except:
         logger.warning(f"Error retrieving model info for {model_name}. Skipping...")
-        return None, None, None
+        return None, None, 'unknown'
     
     try:
         response = requests.get(config_url)
@@ -107,11 +167,11 @@ def data_cleaning():
     with open("data_cleaned.json", "w") as f:
         json.dump(data, f)
 
+task_list = get_task_list()
 
 if __name__ == "__main__":
     args = arg_parser()
     data_path = args.data_path
-    data_path = "/depot/davisjam/data/chingwo/PTM-v2/PTM-Naming/peatmoss_ann/rand_sample_2500"
     ann = args.ann
     data_processing(data_path, ann=False)
     logger.success("Data processing complete.")

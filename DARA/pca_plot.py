@@ -1,5 +1,5 @@
 import numpy as np
-import plotly.express as px
+# import plotly.express as px
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
@@ -26,7 +26,7 @@ def plot_reduced_data_with_lines(dataset, label_type='category', method='PCA', c
     reduced_data = reducer.fit_transform(all_data)
 
     # Plotting
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(20, 16))
 
     # Unique labels (different architectures)
     unique_labels = set(all_labels)
@@ -122,14 +122,14 @@ def plot_reduced_data(dataset, label_type='category', method='PCA', components=2
 
     # Plot
     color_list = [
-        'red', 'blue', 'green', 'orange', 'purple', 
-        'brown', 'pink', 'gray', 'olive', 'cyan',
-        'darkred', 'darkblue', 'darkgreen', 'darkorange', 'darkviolet', 
-        'sienna', 'lightpink', 'lightgray', 'lime', 'skyblue', 
-        'gold', 'teal', 'coral', 'navy', 'magenta', 
-        'yellowgreen', 'lavender', 'maroon', 'aqua', 'chocolate', 
-        'steelblue', 'fuchsia', 'crimson', 'forestgreen', 'indigo', 
-        'darkturquoise', 'goldenrod', 'mediumseagreen', 'tomato', 'slateblue'
+        'red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan',
+        'darkred', 'darkblue', 'darkgreen', 'darkorange', 'darkviolet', 'sienna', 'lightpink', 'lightgray', 'lime', 'skyblue',
+        'gold', 'teal', 'coral', 'navy', 'magenta', 'yellowgreen', 'lavender', 'maroon', 'aqua', 'chocolate',
+        'steelblue', 'fuchsia', 'crimson', 'forestgreen', 'indigo', 'darkturquoise', 'goldenrod', 'mediumseagreen', 'tomato', 'slateblue',
+        'darkkhaki', 'palevioletred', 'cadetblue', 'olive', 'salmon', 'deeppink', 'peru', 'midnightblue', 'limegreen', 'dimgray',
+        'hotpink', 'indianred', 'mediumorchid', 'royalblue', 'darkslategray', 'darkcyan', 'firebrick', 'seagreen', 'darkgoldenrod', 'mediumvioletred',
+        'darkslateblue', 'saddlebrown', 'palegreen', 'orchid', 'darkolivegreen', 'rosybrown', 'cornflowerblue', 'tan', 'lightseagreen', 'turquoise',
+        'springgreen', 'plum', 'dodgerblue', 'olivedrab', 'paleturquoise', 'mediumaquamarine', 'lawngreen', 'lightcoral'
     ]
     if len(set(all_labels_text)) > len(color_list):
         print("Warning: Not enough colors specified for the number of categories. Consider adding more colors.")
@@ -170,14 +170,14 @@ def plot_reduced_data(dataset, label_type='category', method='PCA', components=2
 # Example usage with your data
 if __name__ == "__main__":
     # Load your dataset
-    vec_path = './data_cleaned_filtered.json'
+    vec_path = './data_cleaned.json'
     full_dataset = DARA_dataset(dict_path=vec_path, label_type="model_type")  # or "model_type" or "task"
     plot_reduced_data(full_dataset, label_type="model_type", method='PCA', components=2)
     plot_reduced_data(full_dataset, label_type="model_type", method='TSNE', components=2)
 
-    full_dataset = DARA_dataset(dict_path=vec_path, label_type="arch")  # or "model_type" or "task"
-    plot_reduced_data(full_dataset, label_type="arch", method='PCA', components=2)
-    plot_reduced_data(full_dataset, label_type="arch", method='TSNE', components=2)
+    # full_dataset = DARA_dataset(dict_path=vec_path, label_type="arch")  # or "model_type" or "task"
+    # plot_reduced_data(full_dataset, label_type="arch", method='PCA', components=2)
+    # plot_reduced_data(full_dataset, label_type="arch", method='TSNE', components=2)
 
     # Plotting the data reduced by PCA
     # plot_reduced_data_with_sequential_lines(full_dataset, label_type="task", method='PCA', components=2)
