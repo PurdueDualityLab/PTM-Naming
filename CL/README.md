@@ -13,8 +13,6 @@ python train_prev.py --do_train --train_mode='model_type' --loss_fn='CLCE' --mod
 
 ## Parameters
 
-Explain the main parameters:
-
 - `--do_train`: Run training
 - `--train_mode`: Choose from 'model_type', 'task', or 'arch'
 - `--loss_fn`: Loss function (CLCE, CL, FoCL)
