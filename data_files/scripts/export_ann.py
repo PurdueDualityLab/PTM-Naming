@@ -12,8 +12,9 @@ import traceback
 import torchview
 from convert_all_peatmoss_models_to_ann import forward_prop
 from dotenv import load_dotenv
-from ANN.abstract_neural_network import AbstractNN
+from APTM.abstract_neural_network import AbstractNN
 from transformers import BitsAndBytesConfig
+import torch
 
 def get_ordered_model_list() -> list:
     """
@@ -66,25 +67,28 @@ def get_local_model_list() -> list:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 5 and len(sys.argv) != 7:
+    if len(sys.argv) != 7 and len(sys.argv) != 9:
         logger.error("Invalid number of arguments.")
         sys.exit(1)
     elif sys.argv[1] == "help":
         logger.error("This script exports ann from a hf repository.")
         logger.error("Usage: python export_ann.py -j <json_output_loc> -c <run_count>")
         sys.exit(0)
-    elif sys.argv[1] != "-j" or sys.argv[3] != "-c":
+    elif sys.argv[1] != "-ja" or sys.argv[3] != "-jv" or sys.argv[5] != "-c":
         logger.error("Invalid arguments.")
         sys.exit(1)
     else:
-        json_output_loc = sys.argv[2]
-        run_count = int(sys.argv[4])
+        json_output_loc_ann = sys.argv[2]
+        json_output_loc_vec = sys.argv[4]
+        json_output_loc_intermediate = sys.argv[2].split('/')[0] + '/intermediate'
+        run_count = int(sys.argv[6])
         
-    if sys.argv[5] != "-s": #sampled list
+    if sys.argv[7] != "-s": #sampled list
         model_list = get_ordered_model_list()
     else:
-        with open(sys.argv[6], "r", encoding="utf-8") as f:
+        with open(sys.argv[8], "r", encoding="utf-8") as f:
             model_list = json.load(f)
+            model_list = list(model_list.keys())    # temp
     # model_list = get_local_model_list()
     torchview.torchview.forward_prop = forward_prop
     with open("data_files/other_files/temp_index.txt", "r", encoding="utf-8") as f:
@@ -93,7 +97,8 @@ if __name__ == "__main__":
     model_list = model_list[idx:]
     count = 0
     for i, repo_name in enumerate(model_list):
-
+        # torch.cuda.empty_cache()
+        # torch.cuda.synchronize()
         if count >= run_count:
             break
 
@@ -103,76 +108,119 @@ if __name__ == "__main__":
         with open("data_files/other_files/temp_index.txt", "w", encoding="utf-8") as f:
             f.seek(0)
             f.writelines(str(idx))
+        if 'blip' in repo_name or 'Blip' in repo_name or 'clip-roberta-finetuned' in repo_name:
+            logger.info(f"Skipping {repo_name}.")
+            continue
         logger.info(f"[{i}] Processing {repo_name}.")
         try:
-            if os.path.exists(json_output_loc + f"/{repo_name}.json"):
-                logger.success(f"File {json_output_loc + f'/{repo_name}'}.json already exists.")
+            # Check if model is quantized
+            if not os.path.exists("data_files/json_files/selected_peatmoss_repos.json"):
+                with open("data_files/json_files/selected_peatmoss_repos.json", "w", encoding="utf-8") as f:
+                    json.dump({}, f)
+            quantized_model = {}
+            with open("data_files/json_files/selected_peatmoss_repos.json", "r", encoding="utf-8") as f:
+                quantized_model = json.load(f)
+                
+            # if os.path.exists(json_output_loc_vec + f"/{repo_name}.json"):
+            if os.path.exists(json_output_loc_ann + f"/{repo_name}.json") and os.path.exists(json_output_loc_vec + f"/{repo_name}.json"):# and os.path.exists(json_output_loc_intermediate + f"/{repo_name}.json"):
+                logger.success(f"{repo_name} files already exist.")
                 logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
                 continue
             
             first_letter = repo_name[0].upper()
+            load_in_4_bit = True
             if os.path.exists(str(os.getenv("LOCAL_WEIGHT_PATH")) + f'/{first_letter}/' + repo_name):
-                load_in_4_bit = True
                 try:
                     logger.debug(f"Loading {repo_name} in_4bit=True")
                     q_config = BitsAndBytesConfig(load_in_4_bit=True)
                     ann = AbstractNN.from_huggingface(
                         str(os.getenv("LOCAL_WEIGHT_PATH")) + f'/{first_letter}/' + repo_name,
                         quantization_config=q_config,
-                        load_in_4bit = True
+                        # load_in_4bit = True
                     )
-                
                 except:
                     logger.debug(f"Loading {repo_name} in_4bit=False")
                     # q_config = BitsAndBytesConfig(load_in_4_bit=False)
                     ann = AbstractNN.from_huggingface(
                         str(os.getenv("LOCAL_WEIGHT_PATH")) + f'/{first_letter}/' + repo_name,
                         # quantization_config=q_config,
-                        load_in_4bit = False
+                        # load_in_4bit = False
                     )
                     load_in_4_bit = False
-
             else:
                 ############
                 # TODO: Remove this if need to download weights from HF
                 # Just load the local files
-                logger.warning(f"Model {repo_name} not found in local weights. Continuing...")
-                continue
+                # logger.warning(f"Model {repo_name} not found in local weights. Continuing...")
+                # continue
                 ############
-                ann = AbstractNN.from_huggingface(
-                    repo_name,
-                    load_in_4bit = True
-                )
-            curr_json_output_loc = json_output_loc + f"/{repo_name}.json"
-            if not os.path.exists(curr_json_output_loc):
-                os.makedirs('/'.join(curr_json_output_loc.split('/')[:-1]), exist_ok=True)
-            ann.export_ann(json_output_loc + f"/{repo_name}.json")
-            logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
+                logger.info("Downloading model checkpoints from HF...")
+                try:
+                    logger.debug(f"Loading {repo_name} in_4bit=True")
+                    q_config = BitsAndBytesConfig(load_in_4_bit=True)
+                    ann = AbstractNN.from_huggingface(
+                        repo_name,
+                        quantization_config=q_config,
+                        cache_dir='/scratch/gilbreth/kim3118/.cache/huggingface'
+                    )
+                    load_in_4_bit = True
+                except:
+                    logger.debug(f"Loading {repo_name} in_4bit=False")
+                    ann = AbstractNN.from_huggingface(
+                        repo_name,
+                        cache_dir='/scratch/gilbreth/kim3118/.cache/huggingface'
+                    )
+                    load_in_4_bit = False
+
             
-            # Check if model is quantized
-            if not os.path.exists("data_files/json_files/selected_quantized_model.json"):
-                with open("data_files/json_files/selected_quantized_model.json", "w", encoding="utf-8") as f:
-                    json.dump({}, f)
-            with open("data_files/json_files/selected_quantized_model.json", "r", encoding="utf-8") as f:
-                quantized_model = json.load(f)
+            curr_json_output_loc = json_output_loc_ann + f"/{repo_name}.json"
+            if not os.path.exists(curr_json_output_loc):
+                os.makedirs(os.path.dirname(curr_json_output_loc), exist_ok=True)
+                ann.export_ann(json_output_loc_ann + f"/{repo_name}.json")
+                logger.success("Exported ann.")
+            else:
+                logger.info("ANN file already exists.")
+            curr_json_output_loc = json_output_loc_vec + f"/{repo_name}.json"
+            if not os.path.exists(curr_json_output_loc):
+                # os.makedirs(os.path.dirname(curr_json_output_loc), exist_ok=True)
+                ann.export_vector(curr_json_output_loc + f"/{repo_name}.json")
+                logger.success("Exported vector")
+            else:
+                logger.info("Vector file already exists.")
+            
+            logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
                 
             quantized_model[repo_name] = load_in_4_bit
-            with open("data_files/json_files/selected_quantized_model.json", "w", encoding="utf-8") as f:
+            with open("data_files/json_files/selected_peatmoss_repos.json", "w", encoding="utf-8") as f:
                 json.dump(quantized_model, f)
+            
+            failed_aptms = {}
+            with open("data_files/json_files/failed_aptm.json", 'r') as f:
+                failed_aptms = json.load(f)
+            if repo_name in failed_aptms:
+                del failed_aptms[repo_name]
+                with open("data_files/json_files/failed_aptm.json", 'w') as f:
+                    json.dump(failed_aptms, f)
                 
         except Exception as emsg: # pylint: disable=broad-except
-
-            if not os.path.exists("data_files/json_files/selected_failed_aptm.json"):
-                with open("data_files/json_files/selected_failed_aptm.json", "w", encoding="utf-8") as f:
+            json_file_path = "data_files/json_files/failed_aptm.json"
+            os.makedirs(os.path.dirname(json_file_path), exist_ok=True)
+            if not os.path.exists("data_files/json_files/failed_aptm.json"):
+                with open("data_files/json_files/failed_aptm.json", "w", encoding="utf-8") as f:
                     json.dump({}, f)
-            with open("data_files/json_files/selected_failed_aptm.json", "r", encoding="utf-8") as f:
+            
+            failed_ann = {}
+            with open("data_files/json_files/failed_aptm.json", "r", encoding="utf-8") as f:
                 failed_ann = json.load(f)
-
             tb_str = traceback.format_exc()
             failed_ann[repo_name] = tb_str
 
-            with open("data_files/json_files/selected_failed_aptm.json", "w", encoding="utf-8") as f:
+            with open("data_files/json_files/failed_aptm.json", "w", encoding="utf-8") as f:
                 json.dump(failed_ann, f)
 
             logger.error(tb_str)
             logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
+            
+            if "CUDA error: device-side assert triggered" in tb_str or 'TORCH_USE_CUDA_DSA' in tb_str:
+                logger.error("CUDA error: device-side assert triggered. Exiting...")
+                break

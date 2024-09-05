@@ -24,7 +24,7 @@ from typing import (
     Sequence, Any, Mapping, Union, Callable, Iterable, Optional,
     Iterator, List
 )
-
+#def run_process(idx):
 def run_process(idx):
     """Run the main application process."""
 
@@ -32,13 +32,14 @@ def run_process(idx):
     module_use_path = str(os.getenv("MODULE_USE_PATH"))
     module_load_path = str(os.getenv("MODULE_LOAD_PATH"))
     python_path = str(os.getenv("PYTHONPATH"))
-    if not os.path.exists(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/rand_sample"):
-        os.makedirs(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/rand_sample", exist_ok=True)
+    if not os.path.exists(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/vec"):
+        os.makedirs(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/vec", exist_ok=True)
     if not os.path.exists(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/ann"):
         os.makedirs(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/ann", exist_ok=True)
-    json_file_loc = f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/rand_sample"
     json_file_loc_ann = f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/ann"
-    model_list_json_loc = "data_files/json_files/new_selected_peatmoss_repos.json"
+    json_file_loc_vec = f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/vector"
+    model_list_json_loc = "data_files/json_files/selected_peatmoss_repos.json"
+
     if not os.path.exists(model_list_json_loc):
         raise FileNotFoundError(f"File {model_list_json_loc} does not exist.")
 
@@ -46,9 +47,10 @@ def run_process(idx):
     module use {module_use_path} && 
     module load {module_load_path} && 
     export PYTHONPATH=$PYTHONPATH:{python_path} &&
-    python data_files/scripts/export_ann.py -j {json_file_loc_ann} -c {idx} -s {model_list_json_loc}
+    export TRANSFORMERS_CACHE=/scratch/gilbreth/kim3118/.cache/huggingface
+    python data_files/scripts/export_ann.py -ja {json_file_loc_ann} -jv {json_file_loc_vec} -c {idx} -s {model_list_json_loc}
     """
-    # python data_files/scripts/export_vec.py -j {json_file_loc} -l {model_list_json_loc}
+    # python data_files/scripts/export_vec.py -j {json_file_loc_vec} -l {model_list_json_loc}
 
     return subprocess.Popen(command, shell=True, executable='/bin/bash')
 
@@ -104,9 +106,10 @@ def forward_prop(
         model.train(saved_model_mode)
 
 if __name__ == "__main__":
-    # idx = -1
+    idx = -1
     run_count = 9999999999999
     # while idx < 9000:
+        # p = run_process(run_count)
     p = run_process(run_count)
     res = monitor_process(p)
     # with open("data_files/other_files/temp_index.txt", "r", encoding="utf-8") as f:

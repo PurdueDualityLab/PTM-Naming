@@ -5,3 +5,4 @@ FROM
     architecture
 WHERE architecture.id = model_to_architecture.architecture_id
     AND model.id = model_to_architecture.model_id
+    AND model.downloads > 20

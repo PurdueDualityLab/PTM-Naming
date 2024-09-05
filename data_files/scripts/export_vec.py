@@ -10,7 +10,7 @@ import sys
 import sqlite3
 from loguru import logger
 from dotenv import load_dotenv
-from ANN.abstract_neural_network import AbstractNN
+from APTM.abstract_neural_network import AbstractNN
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
@@ -28,6 +28,7 @@ if __name__ == "__main__":
         model_list_json_loc = sys.argv[4]
     with open(model_list_json_loc, "r", encoding="utf-8") as f:
         model_list = json.load(f)
+        model_list = list(model_list.keys())    # temp
     with open("data_files/other_files/temp_index.txt", "r", encoding="utf-8") as f:
         idx = int(f.readline())
     logger.info(f"Index: {idx}.")
@@ -61,17 +62,7 @@ if __name__ == "__main__":
                     logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
                     continue
 
-            ann, coverage = AbstractNN.from_huggingface(repo_name)  #testing coverage
-            coverage_file_path = os.path.join(json_output_loc, "coverage.json")
-            if not os.path.exists(coverage_file_path):
-                with open(coverage_file_path, 'w') as f:
-                    json.dump([], f)  # Initialize the file with an empty list
-            coverage_json = []
-            with open(coverage_file_path, "r") as f:    #change to reponame: {autoclass: coverage}
-                coverage_json = json.load(f)
-            coverage_json.append({repo_name: coverage})
-            with open(coverage_file_path, "w") as f:
-                json.dump(coverage_json, f)
+            ann = AbstractNN.from_huggingface(repo_name)  
             if not os.path.exists(json_output_loc + f"/{repo_name}.json"):
                 os.makedirs(json_output_loc, exist_ok=True)
             ann.export_vector(json_output_loc + f"/{repo_name}.json")
