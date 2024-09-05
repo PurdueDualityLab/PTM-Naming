@@ -4,8 +4,8 @@ This module contains the Node class, which is used to represent the nodes in the
 from typing import List, Tuple
 import torch
 from torch import Tensor
-from ANN.ann_layer import AbstractNNLayer
-from ANN.ann_layer_param import AbstractNNLayerParam
+from APTM.aptm_layer import AbstractNNLayer
+from APTM.aptm_layer_param import AbstractNNLayerParam
 
 SKIP_LAYER_PARAM = {
     'bias', 'T_destination', 'call_super_init', 'training', 'dump_patches', 
@@ -76,7 +76,7 @@ class FunctionNode(Node):
         self.contained_in_module = False
         self.module_info = None
 
-    def to_annlayer(self, get_weight=False) -> Tuple[AbstractNNLayer, Tuple[List[int], List[int]]]:
+    def to_aptmlayer(self, get_weight=False) -> Tuple[AbstractNNLayer, Tuple[List[int], List[int]]]:
         """
         Convert the FunctionNode to an AbstractNNLayer object.
 
@@ -136,7 +136,7 @@ class FunctionNode(Node):
             operation_name = str(self.operation)
 
         # create an AbstractNNLayer object
-        ann_layer = AbstractNNLayer(
+        aptm_layer = AbstractNNLayer(
             node_id=self.id,
             input_tensors=input_tensors,
             output_tensors=output_tensors,
@@ -149,7 +149,7 @@ class FunctionNode(Node):
             weight=layer_weight if get_weight else None,
         )
 
-        return ann_layer, (input_ids, output_ids)
+        return aptm_layer, (input_ids, output_ids)
 
     def __repr__(self):
         return f'<FunctionNode [{self.id}] operation={self.operation} module={self.module_info}> -> {[child.id for child in self.children]}'

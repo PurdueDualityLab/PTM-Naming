@@ -1,12 +1,12 @@
 import json
-from ANN.ann_layer import AbstractNNLayer
+from APTM.aptm_layer import AbstractNNLayer
 from typing import List, Tuple, Union
-from transformers import ResNetForImageClassification, AlbertForMaskedLM
+# from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import AutoModel, AutoTokenizer
-from ANN.ann_generator import AbstractNNGenerator
-from ANN.ann_layer_param import AbstractNNLayerParam
+from APTM.aptm_generator import AbstractNNGenerator
+from APTM.aptm_layer_param import AbstractNNLayerParam
 
-def annlayer_list_to_json(layer_list: List[AbstractNNLayer], connection_info: List[Tuple[Union[int, str], List[Union[int, str]]]], output_loc):
+def aptmlayer_list_to_json(layer_list: List[AbstractNNLayer], connection_info: List[Tuple[Union[int, str], List[Union[int, str]]]], output_loc):
     if len(layer_list) != len(connection_info): 
         print('Unrecognized connection info')
         return None
@@ -48,7 +48,7 @@ def annlayer_list_to_json(layer_list: List[AbstractNNLayer], connection_info: Li
     with open(output_loc, 'w') as f:
         json.dump(json_compat_list, f)
 
-def read_annlayer_list_from_json(json_loc):
+def read_aptmlayer_list_from_json(json_loc):
     with open(json_loc) as f:
         data = json.load(f)
     l_l = []
@@ -76,8 +76,8 @@ def Custom_Test():
     i = t("Test Input", return_tensors="pt")
     gen = AbstractNNGenerator(m, i)
     l_l, c_i = gen.get_connection()
-    annlayer_list_to_json(l_l, c_i, '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test.json')
-    ll2, ci2 = read_annlayer_list_from_json('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test.json')
-    annlayer_list_to_json(ll2, ci2, '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test2.json')
+    aptmlayer_list_to_json(l_l, c_i, '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test.json')
+    ll2, ci2 = read_aptmlayer_list_from_json('/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test.json')
+    aptmlayer_list_to_json(ll2, ci2, '/depot/davisjam/data/chingwo/PTM-Naming/comparators/pytorch/convert_test2.json')
 
 #Custom_Test()

@@ -10,10 +10,10 @@ import torchview
 from loguru import logger
 from torchview.computation_graph import ComputationGraph
 from tqdm import tqdm
-from ANN.ann_sorter import AbstractNNSorter
-from ANN.ann_conversion_handler import AbstractNNConversionHandler
-from ANN.ann_layer import AbstractNNLayer
-from ANN.utils import overwrite_torchview_func
+from APTM.aptm_sorter import AbstractNNSorter
+from APTM.aptm_conversion_handler import AbstractNNConversionHandler
+from APTM.aptm_layer import AbstractNNLayer
+from APTM.utils import overwrite_torchview_func
 
 
 class AbstractNNGenerator():
@@ -63,7 +63,7 @@ class AbstractNNGenerator():
 
         overwrite_torchview_func()
 
-    def get_annlayer_list(self) -> List[AbstractNNLayer]:
+    def get_aptmlayer_list(self) -> List[AbstractNNLayer]:
         """
         Returns an ordered list for the model
 
@@ -73,13 +73,13 @@ class AbstractNNGenerator():
         if self.framework == 'pytorch':
             if self.inputs is None:
                 raise ValueError("PyTorch framework need an input to trace the computation graph.")
-            return self.generate_ann_from_pytorch_model(
+            return self.generate_aptm_from_pytorch_model(
                 self.model,
                 self.inputs,
                 use_hash=self.use_hash
             )
         if self.framework == 'onnx':
-            return self.generate_ann_from_onnx_model(self.model, use_hash=self.use_hash)
+            return self.generate_aptm_from_onnx_model(self.model, use_hash=self.use_hash)
         raise ValueError(f"Unsupported framework {self.framework}.")
 
     def get_connection(self) -> Tuple[
@@ -100,13 +100,13 @@ class AbstractNNGenerator():
         if self.framework == 'pytorch':
             if self.inputs is None:
                 raise ValueError("PyTorch framework need an input to trace the computation graph.")
-            l = self.generate_ann_from_pytorch_model_with_id_and_connection(
+            l = self.generate_aptm_from_pytorch_model_with_id_and_connection(
                 self.model,
                 self.inputs,
                 use_hash=self.use_hash
             )
         if self.framework == 'onnx':
-            l = self.generate_ann_from_onnx_model_with_id_and_connection(
+            l = self.generate_aptm_from_onnx_model_with_id_and_connection(
                 self.model,
                 use_hash=self.use_hash
             )
@@ -114,7 +114,7 @@ class AbstractNNGenerator():
             raise ValueError(f"Unsupported framework {self.framework}.")
         return l
 
-    def generate_ann_from_pytorch_model(
+    def generate_aptm_from_pytorch_model(
             self,
             model: Any,
             inputs: Tuple[torch.Tensor],
@@ -149,11 +149,11 @@ class AbstractNNGenerator():
         print('Mapper Populated')
 
         traverser = AbstractNNSorter(mapper, use_hash)
-        l = traverser.generate_annlayer_list()
+        l = traverser.generate_aptmlayer_list()
         print('Ordered List Generated')
         return l
 
-    def generate_ann_from_onnx_model(
+    def generate_aptm_from_onnx_model(
             self,
             model: Any,
             use_hash: bool = False
@@ -172,10 +172,10 @@ class AbstractNNGenerator():
         mapper.populate_class_var_from_onnx(model)
 
         traverser = AbstractNNSorter(mapper, use_hash)
-        l = traverser.generate_annlayer_list()
+        l = traverser.generate_aptmlayer_list()
         return l
 
-    def generate_ann_from_onnx_model_with_id_and_connection(
+    def generate_aptm_from_onnx_model_with_id_and_connection(
             self,
             model: Any,
             use_hash: bool = False
@@ -196,7 +196,7 @@ class AbstractNNGenerator():
         mapper.populate_class_var_from_onnx(model)
 
         traverser = AbstractNNSorter(mapper, use_hash)
-        l = traverser.generate_annlayer_list()
+        l = traverser.generate_aptmlayer_list()
 
         layer_id_connection_list: List[Tuple[Union[int, str], List[Union[int, str]]]] = []
 
@@ -209,7 +209,7 @@ class AbstractNNGenerator():
             layer_id_connection_list.append((layer.node_id, connection_id_list))
         return l, layer_id_connection_list
 
-    def generate_ann_from_pytorch_model_with_id_and_connection(
+    def generate_aptm_from_pytorch_model_with_id_and_connection(
             self,
             model: Any,
             inputs: Tuple[torch.Tensor],
@@ -248,7 +248,7 @@ class AbstractNNGenerator():
         print('Mapper Populated')
 
         traverser = AbstractNNSorter(mapper, use_hash)
-        l = traverser.generate_annlayer_list()
+        l = traverser.generate_aptmlayer_list()
 
         print('Ordered List Generated')
 
@@ -263,8 +263,8 @@ class AbstractNNGenerator():
             layer_id_connection_list.append((layer.node_id, connection_id_list))
         return l, layer_id_connection_list
 
-    # wrapper for generating ann
-    def generate_annlayer_list(
+    # wrapper for generating aptm
+    def generate_aptmlayer_list(
         self,
         graph_name: str = "NotSpecified",
         depth: int = 16,
@@ -311,7 +311,7 @@ class AbstractNNGenerator():
                 iter_bar.update(1)
 
             conversion_handler.populate_class_var_from_torchview(model_graph.edge_list)
-            # logger.info([ann.operation for ann in conversion_handler.ann_layer_set])
+            # logger.info([aptm.operation for aptm in conversion_handler.aptm_layer_set])
 
         elif self.framework == 'onnx':
 
@@ -320,23 +320,23 @@ class AbstractNNGenerator():
                 iter_bar.update(1)
 
             conversion_handler.populate_class_var_from_onnx(self.model)
-        # logger.info(conversion_handler.ann_layer_edge_list)
+        # logger.info(conversion_handler.aptm_layer_edge_list)
         if self.verbose:
             iter_bar.set_description("Converting onnx Graph to ANN")
             iter_bar.update(1)
 
         traverser = AbstractNNSorter(conversion_handler, self.use_hash)
-        logger.info(len([ann.operation for anns in traverser.adj_dict.values() for ann in anns]))   # total passed layers
-        annlayer_list = traverser.generate_annlayer_list()
+        logger.info(len([aptm.operation for aptms in traverser.adj_dict.values() for aptm in aptms]))   # total passed layers
+        aptmlayer_list = traverser.generate_aptmlayer_list()
 
         if include_connection:
             layer_id_connection_list: List[Tuple[Union[int, str], List[Union[int, str]]]] = []
-            for layer in annlayer_list:
+            for layer in aptmlayer_list:
                 connection_list = traverser.adj_dict[layer.node_id] \
                     if layer.node_id in traverser.adj_dict else []
                 connection_id_list: List[Union[int, str]] = []
                 for node in connection_list:
                     connection_id_list.append(node.node_id)
                 layer_id_connection_list.append((layer.node_id, connection_id_list))
-            return annlayer_list, layer_id_connection_list
-        return annlayer_list
+            return aptmlayer_list, layer_id_connection_list
+        return aptmlayer_list

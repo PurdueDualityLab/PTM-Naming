@@ -1,7 +1,9 @@
 
 import torch
 import torch.nn as nn
-from ANN.ann_generator import AbstractNNGenerator
+import torch.nn.functional as F
+from APTM.aptm_generator import AbstractNNGenerator
+from APTM.abstract_neural_network import AbstractNN
 import onnx
 from transformers import ResNetForImageClassification, AlbertForMaskedLM
 from transformers import (
@@ -20,12 +22,27 @@ from PIL import Image
 
 import pandas as pd
 import numpy as np
-
+from torchview import draw_graph
 # use under general env
 # module use /depot/davisjam/data/chingwo/general_env/modules
 # module load conda-env/general_env-py3.8.5
 
-cache_dir = "/scratch/gilbreth/cheung59/cache_huggingface"
+cache_dir = "/scratch/gilbreth/kim3118/cache_huggingface"
+
+class TestCyclical(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.A = nn.Linear(10, 10)  
+        self.B = nn.Linear(10, 10)  
+        self.C = nn.Linear(10, 10)
+    
+    def forward(self, x):
+        out_A = F.relu(self.A(x))
+        out_B = F.relu(self.B(out_A))
+        out_C = F.relu(self.C(out_B))
+        out = F.relu(self.A(out_C))
+        
+        return out
 
 class TestRNN(nn.Module):
     def __init__(self, inplace: bool = True) -> None:
@@ -210,10 +227,25 @@ class ParallelNet(nn.Module):
         x = torch.cat(outputs, dim=-1)
         x = self.output_layer(x)
         return x
-
+    
+def cyclical_test():
+    gen = AbstractNNGenerator(TestCyclical(), torch.randn(1, 10))
+    layer_list, conn_info = gen.generate_aptmlayer_list(include_connection=True)
+    ret_aptm = AbstractNN(layer_list, conn_info)
+    # print(len(layer_list), len(conn_info))
+    print(ret_aptm)
+    # print([l.operation for l in aptmlayer_list])
+    for conn in conn_info:
+        print(f"{conn}\n")
+        
 def RNN_test():
     gen = AbstractNNGenerator(TestRNN(), torch.randn(2, 3))
-    gen.print_connection()
+    layer_list, conn_info = gen.generate_aptmlayer_list(include_connection=True)
+    print(len(layer_list), len(conn_info))
+    # print([l.operation for l in aptmlayer_list])
+    for conn in conn_info:
+        print(f"{conn}\n")
+    # print(len(layer_list))
 
 def MLP_Test():
     gen = AbstractNNGenerator(TestMLP(), torch.randn(2, 128))
@@ -235,13 +267,13 @@ def ResNet50_Hash_Comp_Test():
     st = time.time()
     genN = AbstractNNGenerator(rn50, torch.randn(1, 3, 224, 224))
     #genN.print_ordered_list()
-    l1 = genN.get_annlayer_list()
+    l1 = genN.get_aptmlayer_list()
     ed = time.time()
     t1 = ed - st
     st = time.time()
     genH = AbstractNNGenerator(rn50, torch.randn(1, 3, 224, 224))
     #genH.print_ordered_list()
-    l2 = genH.get_annlayer_list()
+    l2 = genH.get_aptmlayer_list()
     ed = time.time()
     t2 = ed - st
     print(t1, t2)
@@ -253,13 +285,13 @@ def ResNet101_Hash_Comp_Test():
     st = time.time()
     genN = AbstractNNGenerator(rn101, torch.randn(1, 3, 224, 224))
     #genN.print_ordered_list()
-    l1 = genN.get_annlayer_list()
+    l1 = genN.get_aptmlayer_list()
     ed = time.time()
     t1 = ed - st
     st = time.time()
     genH = AbstractNNGenerator(rn101, torch.randn(1, 3, 224, 224))
     #genH.print_ordered_list()
-    l2 = genH.get_annlayer_list()
+    l2 = genH.get_aptmlayer_list()
     ed = time.time()
     t2 = ed - st
     print(t1, t2)
@@ -272,13 +304,13 @@ def BigNet_Hash_Comp_Test():
     st = time.time()
     genN = AbstractNNGenerator(bn, torch.randn(100, 100))
     #genN.print_ordered_list()
-    l1 = genN.get_annlayer_list()
+    l1 = genN.get_aptmlayer_list()
     ed = time.time()
     t1 = ed - st
     st = time.time()
     genH = AbstractNNGenerator(bn, torch.randn(100, 100))
     #genH.print_ordered_list()
-    l2 = genH.get_annlayer_list()
+    l2 = genH.get_aptmlayer_list()
     ed = time.time()
     t2 = ed - st
     print(t1, t2)
@@ -291,13 +323,13 @@ def BigResNet_Hash_Comp_Test():
     st = time.time()
     genN = AbstractNNGenerator(bn, torch.randn(100, 100))
     #genN.print_ordered_list()
-    l1 = genN.get_annlayer_list()
+    l1 = genN.get_aptmlayer_list()
     ed = time.time()
     t1 = ed - st
     st = time.time()
     genH = AbstractNNGenerator(bn, torch.randn(100, 100))
     #genH.print_ordered_list()
-    l2 = genH.get_annlayer_list()
+    l2 = genH.get_aptmlayer_list()
     ed = time.time()
     t2 = ed - st
     print(t1, t2)
@@ -310,13 +342,13 @@ def ParallelNet_Hash_Comp_Test():
     st = time.time()
     genN = AbstractNNGenerator(bn, torch.randn(100, 100))
     #genN.print_ordered_list()
-    l1 = genN.get_annlayer_list()
+    l1 = genN.get_aptmlayer_list()
     ed = time.time()
     t1 = ed - st
     st = time.time()
     genH = AbstractNNGenerator(bn, torch.randn(100, 100))
     #genH.print_ordered_list()
-    l2 = genH.get_annlayer_list()
+    l2 = genH.get_aptmlayer_list()
     ed = time.time()
     t2 = ed - st
     print(t1, t2)
@@ -337,7 +369,7 @@ def HugeNet_Hash_Comp_Test():
     st = time.time()
     genH = AbstractNNGenerator(bn, torch.randn(100, 100))
     #genH.print_ordered_list()
-    l2 = genH.get_annlayer_list()
+    l2 = genH.get_aptmlayer_list()
     ed = time.time()
     t2 = ed - st
     #print(t1, t2)
@@ -349,60 +381,60 @@ def Order_Test():
     orderB = OrderBTest()
     i = (torch.randn(1, 10))
     genA = AbstractNNGenerator(orderA, i)
-    genA.print_ann()
+    genA.print_aptm()
     print()
     genB = AbstractNNGenerator(orderB, i) 
-    genB.print_ann()
+    genB.print_aptm()
 
 def Hash_Order_Test():
     orderA = OrderATest()
     orderB = OrderBTest()
     i = (torch.randn(1, 10))
     genA = AbstractNNGenerator(orderA, i, use_hash=True)
-    genA.print_ann()
+    genA.print_aptm()
     print()
     genB = AbstractNNGenerator(orderB, i, use_hash=True) 
-    genB.print_ann()
+    genB.print_aptm()
 
 def ResNet18_Onnx_Test():
     rn18 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/models/resnet18-v1-7.onnx')
     gen = AbstractNNGenerator(model=rn18, framework='onnx')
-    gen.print_ann()
+    gen.print_aptm()
 
 def ResNet101_Onnx_Test():
     rn101 = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/test_models/resnet101-v1-torch.onnx')
     gen = AbstractNNGenerator(model=rn101, framework='onnx')
-    gen.print_ann()
+    gen.print_aptm()
 
 def SkipConnection_Test():
     skta = SkipConnectionATest()
     sktb = SkipConnectionBTest()
     i = (torch.randn(1, 10))
     gena = AbstractNNGenerator(skta, i)
-    gena.print_ann()
+    gena.print_aptm()
     print('-=-=-=')
     genb = AbstractNNGenerator(sktb, i)
-    genb.print_ann()
+    genb.print_aptm()
 
 def Custom_Test():
     t = AutoTokenizer.from_pretrained("bert-base-cased")
     m = AutoModel.from_pretrained('mlcorelib/deberta-base-uncased')
     i = t("Test Input", return_tensors="pt")
     gen = AbstractNNGenerator(m, i)
-    gen.print_ann()
+    gen.print_aptm()
 
 def Custom3_Test():
     t = AutoTokenizer.from_pretrained("bert-base-cased")
     m = AutoModel.from_pretrained('bert-base-cased')
     i = t("Test Input", return_tensors="pt")
     gen = AbstractNNGenerator(m, i)
-    gen.print_ann()
+    gen.print_aptm()
     print('\n\n-=-=-=-=-=-==-=-==-=-=-=-=\n\n')
     t = AutoTokenizer.from_pretrained("mlcorelib/deberta-base-uncased")
     m = AutoModel.from_pretrained('mlcorelib/deberta-base-uncased')
     i = t("Test Input", return_tensors="pt")
     gen = AbstractNNGenerator(m, i)
-    gen.print_ann()
+    gen.print_aptm()
 
 def Custom2_Test():
     t = AutoTokenizer.from_pretrained("saghar/xtremedistil-l12-h384-uncased-finetuned-wikitext103")
@@ -414,18 +446,18 @@ def Custom2_Test():
 def AN_TORCHONNX_Val_Test():
     an = onnx.load('/depot/davisjam/data/chingwo/PTM-Naming/model_for_validation/alexnet-torch.onnx')
     gen = AbstractNNGenerator(model=an, framework='onnx')
-    gen.print_ann()
+    gen.print_aptm()
 
 def ResNet101_comp_Test():
     d1 = '/depot/davisjam/data/chingwo/PTM-Naming/model_for_validation/resnet101-v1-onnx.onnx' # ONNX resnet101v1
     d2 = '/depot/davisjam/data/chingwo/PTM-Naming/model_for_validation/resnet101-v1-torch.onnx' # keras resnet101v1
     rn101onnx = onnx.load(d1)
     gen = AbstractNNGenerator(model=rn101onnx, framework='onnx')
-    gen.print_ann()
+    gen.print_aptm()
     print('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
     rn101t = onnx.load(d2)
     gen = AbstractNNGenerator(model=rn101t, framework='onnx')
-    gen.print_ann()
+    gen.print_aptm()
 
 def print_dict(d):
     for k, v in d.items():
@@ -516,15 +548,22 @@ def HF_Failed_Model_11_Test(): HF_Failed_Model_Test_Fix6("anton-l/distilhubert-f
 
 if __name__ == "__main__":
 
-    #RNN_test()
-    #MLP_Test()
+    cyclical_test()
+    model_graph_1 = draw_graph(
+        TestCyclical(), input_size=(1, 10),
+        graph_name='RecursiveNet',
+        roll=True
+    )
+    print(model_graph_1.edge_list)
+    print(len(model_graph_1.edge_list))
+    # MLP_Test()
     #print('===')
 
     #ResNet50_Test()
     #ResNet18_Test()
     #Order_Test()
     #ResNet18_Onnx_Test()
-    Custom_Test()
+    # Custom_Test()
     #ResNet101_Onnx_Test()
     #AN_TORCHONNX_Val_Test()
     #ResNet101_comp_Test()

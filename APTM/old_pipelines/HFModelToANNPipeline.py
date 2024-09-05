@@ -1,5 +1,5 @@
-from ANN.pipelines.ANNToJSONConverter import annlayer_list_to_json
-from ANN.ann_generator import AbstractNNGenerator
+from APTM.pipelines.APTMToJSONConverter import aptmlayer_list_to_json
+from APTM.aptm_generator import AbstractNNGenerator
 from transformers import AutoModel, AutoTokenizer, AutoFeatureExtractor, AutoImageProcessor, AutoProcessor
 import json
 import os
@@ -102,7 +102,7 @@ def download_and_convert_model_to_json(models_dict_json_dir, output_dir, d):
             try:
                 gen = AbstractNNGenerator(m, inp0, use_hash=True)
                 l_l, c_i = gen.get_connection()
-                annlayer_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
+                aptmlayer_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
             except Exception as e:
                 print(e)
                 gc += 1
@@ -111,7 +111,7 @@ def download_and_convert_model_to_json(models_dict_json_dir, output_dir, d):
                 try:
                     gen = AbstractNNGenerator(m, inp1, use_hash=True)
                     l_l, c_i = gen.get_connection()
-                    annlayer_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
+                    aptmlayer_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
                 except Exception as e:
                     print(e)
                     gc += 1
@@ -120,7 +120,7 @@ def download_and_convert_model_to_json(models_dict_json_dir, output_dir, d):
                 try:
                     gen = AbstractNNGenerator(m, inp2, use_hash=True)
                     l_l, c_i = gen.get_connection()
-                    annlayer_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
+                    aptmlayer_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
                 except Exception as e:
                     print(e)
                     gc += 1
@@ -129,7 +129,7 @@ def download_and_convert_model_to_json(models_dict_json_dir, output_dir, d):
                 try:
                     gen = AbstractNNGenerator(m, inp3, use_hash=True)
                     l_l, c_i = gen.get_connection()
-                    annlayer_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
+                    aptmlayer_list_to_json(l_l, c_i, output_dir + '/' + modified_model_name + '.json')
                 except Exception as e:
                     print(e)
                     gc += 1

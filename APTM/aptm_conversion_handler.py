@@ -5,7 +5,7 @@ AbstractNNLayer and the torchview NodeInfo objects.
 
 from typing import Any, Dict, List, Set, Tuple, Optional, Union, Sequence
 from torchview.computation_node.base_node import Node
-from ANN.ann_layer import AbstractNNLayer
+from APTM.aptm_layer import AbstractNNLayer
 
 
 class AbstractNNConversionHandler():
@@ -13,9 +13,9 @@ class AbstractNNConversionHandler():
     This class is used to convert between the AbstractNNLayer and the torchview NodeInfo objects.
 
     Attributes:
-        ann_layer_set: A set of all AbstractNNLayer objects
-        ann_layer_id_to_ann_layer_obj_mapping: A map of [AbstractNNLayer.node_id -> AbstractNNLayer]
-        ann_layer_edge_list: A list of all the edges represented as 
+        aptm_layer_set: A set of all AbstractNNLayer objects
+        aptm_layer_id_to_aptm_layer_obj_mapping: A map of [AbstractNNLayer.node_id -> AbstractNNLayer]
+        aptm_layer_edge_list: A list of all the edges represented as 
         Tuple[AbstractNNLayer, AbstractNNLayer], where the first AbstractNNLayer 
         points to the second
     """
@@ -23,11 +23,11 @@ class AbstractNNConversionHandler():
         self,
         node_info_obj_set: Optional[Set[AbstractNNLayer]] = None,
         node_id_to_node_obj_mapping: Optional[Dict[int, AbstractNNLayer]] = None,
-        ann_layer_edge_list: Optional[List[Tuple[AbstractNNLayer, AbstractNNLayer]]] = None
+        aptm_layer_edge_list: Optional[List[Tuple[AbstractNNLayer, AbstractNNLayer]]] = None
     ) -> None:
-        self.ann_layer_set = node_info_obj_set
-        self.ann_layer_id_to_ann_layer_obj_mapping = node_id_to_node_obj_mapping
-        self.ann_layer_edge_list = ann_layer_edge_list
+        self.aptm_layer_set = node_info_obj_set
+        self.aptm_layer_id_to_aptm_layer_obj_mapping = node_id_to_node_obj_mapping
+        self.aptm_layer_edge_list = aptm_layer_edge_list
 
     def populate_class_var_from_torchview(
         self,
@@ -43,29 +43,29 @@ class AbstractNNConversionHandler():
         Returns:
             None
         """
-        self.ann_layer_set = set()
-        self.ann_layer_id_to_ann_layer_obj_mapping = {}
-        self.ann_layer_edge_list = []
+        self.aptm_layer_set = set()
+        self.aptm_layer_id_to_aptm_layer_obj_mapping = {}
+        self.aptm_layer_edge_list = []
         for edge_tuple in edge_list:
 
-            if edge_tuple[0].node_id not in self.ann_layer_id_to_ann_layer_obj_mapping:
+            if edge_tuple[0].node_id not in self.aptm_layer_id_to_aptm_layer_obj_mapping:
                 n_info_0 = AbstractNNLayer()
                 n_info_0.from_torchview(edge_tuple[0])
-                self.ann_layer_set.add(n_info_0)
-                self.ann_layer_id_to_ann_layer_obj_mapping[n_info_0.node_id] = n_info_0
+                self.aptm_layer_set.add(n_info_0)
+                self.aptm_layer_id_to_aptm_layer_obj_mapping[n_info_0.node_id] = n_info_0
             else:
-                n_info_0 = self.ann_layer_id_to_ann_layer_obj_mapping[edge_tuple[0].node_id]
+                n_info_0 = self.aptm_layer_id_to_aptm_layer_obj_mapping[edge_tuple[0].node_id]
 
 
-            if edge_tuple[1].node_id not in self.ann_layer_id_to_ann_layer_obj_mapping:
+            if edge_tuple[1].node_id not in self.aptm_layer_id_to_aptm_layer_obj_mapping:
                 n_info_1 = AbstractNNLayer()
                 n_info_1.from_torchview(edge_tuple[1])
-                self.ann_layer_set.add(n_info_1)
-                self.ann_layer_id_to_ann_layer_obj_mapping[n_info_1.node_id] = n_info_1
+                self.aptm_layer_set.add(n_info_1)
+                self.aptm_layer_id_to_aptm_layer_obj_mapping[n_info_1.node_id] = n_info_1
             else:
-                n_info_1 = self.ann_layer_id_to_ann_layer_obj_mapping[edge_tuple[1].node_id]
+                n_info_1 = self.aptm_layer_id_to_aptm_layer_obj_mapping[edge_tuple[1].node_id]
 
-            self.ann_layer_edge_list.append((n_info_0, n_info_1))
+            self.aptm_layer_edge_list.append((n_info_0, n_info_1))
 
     def populate_class_var_from_onnx(
         self,
@@ -80,9 +80,9 @@ class AbstractNNConversionHandler():
         Returns:
             None
         """
-        self.ann_layer_set = set()
-        self.ann_layer_id_to_ann_layer_obj_mapping = {}
-        self.ann_layer_edge_list = []
+        self.aptm_layer_set = set()
+        self.aptm_layer_id_to_aptm_layer_obj_mapping = {}
+        self.aptm_layer_edge_list = []
 
         node_list = onnx_model.graph.node
 
@@ -114,15 +114,15 @@ class AbstractNNConversionHandler():
         for inp in input_nodes:
             input_node_info = AbstractNNLayer()
             input_node_info.from_onnx(custom_id=io_id_cnt, is_input=True)
-            self.ann_layer_set.add(input_node_info)
-            self.ann_layer_id_to_ann_layer_obj_mapping[io_id_cnt] = input_node_info
+            self.aptm_layer_set.add(input_node_info)
+            self.aptm_layer_id_to_aptm_layer_obj_mapping[io_id_cnt] = input_node_info
             io_id_cnt += 1
             input_node_info_list.append(input_node_info)
         for output in output_nodes:
             output_node_info = AbstractNNLayer()
             output_node_info.from_onnx(custom_id=io_id_cnt, is_output=True)
-            self.ann_layer_set.add(output_node_info)
-            self.ann_layer_id_to_ann_layer_obj_mapping[io_id_cnt] = output_node_info
+            self.aptm_layer_set.add(output_node_info)
+            self.aptm_layer_id_to_aptm_layer_obj_mapping[io_id_cnt] = output_node_info
             io_id_cnt += 1
             output_node_info_list.append(output_node_info)
 
@@ -162,8 +162,8 @@ class AbstractNNConversionHandler():
                             ]
 
                             # Fix issue that this program omits the first layer
-                            if in_idx in self.ann_layer_id_to_ann_layer_obj_mapping:
-                                end_node_info = self.ann_layer_id_to_ann_layer_obj_mapping[in_idx]
+                            if in_idx in self.aptm_layer_id_to_aptm_layer_obj_mapping:
+                                end_node_info = self.aptm_layer_id_to_aptm_layer_obj_mapping[in_idx]
                             else:
                                 end_node_info = AbstractNNLayer()
                                 end_node_info.from_onnx(
@@ -171,14 +171,14 @@ class AbstractNNConversionHandler():
                                     input_ = idx2shape_map[in_idx],
                                     custom_id = in_idx
                                 )
-                                self.ann_layer_id_to_ann_layer_obj_mapping[in_idx] = end_node_info
-                                self.ann_layer_set.add(end_node_info)
+                                self.aptm_layer_id_to_aptm_layer_obj_mapping[in_idx] = end_node_info
+                                self.aptm_layer_set.add(end_node_info)
 
-                            self.ann_layer_edge_list.append((start_node_info, end_node_info))
+                            self.aptm_layer_edge_list.append((start_node_info, end_node_info))
                             start_node_info = end_node_info
 
-                        elif in_idx in self.ann_layer_id_to_ann_layer_obj_mapping:
-                            start_node_info = self.ann_layer_id_to_ann_layer_obj_mapping[in_idx]
+                        elif in_idx in self.aptm_layer_id_to_aptm_layer_obj_mapping:
+                            start_node_info = self.aptm_layer_id_to_aptm_layer_obj_mapping[in_idx]
                         else:
                             start_node_info = AbstractNNLayer()
                             start_node_info.from_onnx(
@@ -186,13 +186,13 @@ class AbstractNNConversionHandler():
                                 input_ = idx2shape_map[in_idx],
                                 custom_id = in_idx
                             )
-                            self.ann_layer_id_to_ann_layer_obj_mapping[in_idx] = start_node_info
-                            self.ann_layer_set.add(start_node_info)
+                            self.aptm_layer_id_to_aptm_layer_obj_mapping[in_idx] = start_node_info
+                            self.aptm_layer_set.add(start_node_info)
 
                         for out_idx in out_indexes:
 
-                            if out_idx in self.ann_layer_id_to_ann_layer_obj_mapping:
-                                end_node_info = self.ann_layer_id_to_ann_layer_obj_mapping[out_idx]
+                            if out_idx in self.aptm_layer_id_to_aptm_layer_obj_mapping:
+                                end_node_info = self.aptm_layer_id_to_aptm_layer_obj_mapping[out_idx]
                             else:
                                 end_node_info = AbstractNNLayer()
                                 end_node_info.from_onnx(
@@ -200,10 +200,10 @@ class AbstractNNConversionHandler():
                                     input_ = idx2shape_map[out_idx],
                                     custom_id = out_idx
                                 )
-                                self.ann_layer_id_to_ann_layer_obj_mapping[out_idx] = end_node_info
-                                self.ann_layer_set.add(end_node_info)
+                                self.aptm_layer_id_to_aptm_layer_obj_mapping[out_idx] = end_node_info
+                                self.aptm_layer_set.add(end_node_info)
 
-                            self.ann_layer_edge_list.append((start_node_info, end_node_info))
+                            self.aptm_layer_edge_list.append((start_node_info, end_node_info))
 
     def get_adj_dict(
         self, options: Optional[Set] = None
@@ -218,9 +218,9 @@ class AbstractNNConversionHandler():
         Returns:
             A dictionary that maps NodeInfo.node_id to a list of all the 'next node's it points to
         """
-        assert self.ann_layer_edge_list is not None
+        assert self.aptm_layer_edge_list is not None
         adj_dict = {}
-        for node_info_tuple in self.ann_layer_edge_list:
+        for node_info_tuple in self.aptm_layer_edge_list:
             if node_info_tuple[0].node_id not in adj_dict:
                 adj_dict[node_info_tuple[0].node_id] = []
             adj_dict[node_info_tuple[0].node_id].append(node_info_tuple[1])

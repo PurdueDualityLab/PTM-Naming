@@ -11,8 +11,8 @@ import time
 import torchvision.models as models
 from transformers import AutoModel, AutoProcessor
 from node import Node, TensorNode, FunctionNode
-from ANN.abstract_neural_network import AbstractNN
-from ANN.ann_layer import AbstractNNLayer
+from APTM.abstract_neural_network import AbstractNN
+from APTM.aptm_layer import AbstractNNLayer
 
 class TracerTensor(torch.Tensor):
     """
@@ -228,15 +228,15 @@ class Tracer:
         assert self.input_tensor is not None, 'Input tensor is not set.'
         return self.input_tensor.node
     
-    def to_ann(self, weight_output=None):
+    def to_aptm(self, weight_output=None):
         """
         This method converts the traced computation graph to an ANN object.
 
         Returns:
-            ann: The ANN object representing the computation graph.
+            aptm: The ANN object representing the computation graph.
         """
-        # create ann layer list and connection info
-        ann_layer_list = []
+        # create aptm layer list and connection info
+        aptm_layer_list = []
         id_to_weight_dict = {}
         connection_info = []
 
@@ -247,28 +247,28 @@ class Tracer:
                 return
             visited.add(node)
             if isinstance(node, FunctionNode):
-                ann_layer, io_ids = node.to_annlayer(get_weight=weight_output is not None)
-                id_to_weight_dict[ann_layer.node_id] = ann_layer.weight.data.tolist() if ann_layer.weight is not None else None
+                aptm_layer, io_ids = node.to_aptmlayer(get_weight=weight_output is not None)
+                id_to_weight_dict[aptm_layer.node_id] = aptm_layer.weight.data.tolist() if aptm_layer.weight is not None else None
                 if io_ids[0] == []:
-                    ann_layer.is_input_node = True
+                    aptm_layer.is_input_node = True
                 if io_ids[1] == []:
-                    ann_layer.is_output_node = True
-                ann_layer_list.append(ann_layer)
+                    aptm_layer.is_output_node = True
+                aptm_layer_list.append(aptm_layer)
                 # only include output connection
-                connection_info.append((ann_layer.node_id, io_ids[1]))
+                connection_info.append((aptm_layer.node_id, io_ids[1]))
             for child in node.children:
                 traverse(child)
         traverse(self.get_input_tensornode())
 
-        # print(ann_layer_list)
+        # print(aptm_layer_list)
         # print('-=-=-=-=-=-=-=-=-')
         # print(connection_info)
         # for node in sorted(list(visited), key=lambda x: x.id):
         #     print(node)
 
         # create an ANN object
-        ann = AbstractNN(
-            annlayer_list=ann_layer_list,
+        aptm = AbstractNN(
+            aptmlayer_list=aptm_layer_list,
             connection_info=connection_info,
         )
 
@@ -276,7 +276,7 @@ class Tracer:
             with open(weight_output, 'w') as f:
                 json.dump(id_to_weight_dict, f)
 
-        return ann
+        return aptm
 
 #write a pytorch model with if branching
 import torch.functional as F
@@ -308,8 +308,8 @@ if __name__ == "__main__":
     # tracer = Tracer(model)
     # dummy_input = torch.randn(1, 3, 224, 224)
     # output = tracer.trace(dummy_input)
-    # ann = tracer.to_ann()
-    # ann.export_ann('test_ann.json')
+    # aptm = tracer.to_aptm()
+    # aptm.export_aptm('test_aptm.json')
     # model = BranchingModel()
     repo_name = "stuartmesham/deberta-v3-large_spell_5k_2_p3"
     model = AutoModel.from_pretrained(repo_name)
@@ -318,5 +318,5 @@ if __name__ == "__main__":
     tracer = Tracer(model)
     # dummy_input = torch.randn(1, 3, 244, 244)
     output = tracer.trace(**inputs)
-    ann = tracer.to_ann(weight_output='test_weight.json')
-    ann.export_ann('test_ann.json')
+    aptm = tracer.to_aptm(weight_output='test_weight.json')
+    aptm.export_aptm('test_aptm.json')

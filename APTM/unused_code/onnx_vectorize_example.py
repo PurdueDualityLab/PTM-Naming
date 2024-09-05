@@ -1,4 +1,4 @@
-from ANN.pipelines.ONNXModelToVectorPipeline import vectorize
+from APTM.pipelines.ONNXModelToVectorPipeline import vectorize
 
 if __name__ == '__main__':
 

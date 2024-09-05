@@ -4,8 +4,8 @@ their sorting identifier and to generate a list of graph nodes based on the orde
 identifier.
 """
 from typing import List, Tuple
-from ANN.ann_conversion_handler import AbstractNNConversionHandler
-from ANN.ann_layer import AbstractNNLayer
+from APTM.aptm_conversion_handler import AbstractNNConversionHandler
+from APTM.aptm_layer import AbstractNNLayer
 
 
 class AbstractNNSorter():
@@ -25,25 +25,25 @@ class AbstractNNSorter():
         use_hash: bool = False
     ):
         self.mapper = mapper
-        self.input_annlayer_list: List[AbstractNNLayer] = []
-        self.output_annlayer_list: List[AbstractNNLayer] = []
+        self.input_aptmlayer_list: List[AbstractNNLayer] = []
+        self.output_aptmlayer_list: List[AbstractNNLayer] = []
         self.use_hash = use_hash
 
-        if mapper.ann_layer_edge_list is None:
+        if mapper.aptm_layer_edge_list is None:
             raise ValueError("The mapper object does not contain the edge list information")
 
         # identify input/output node and put them into the class var
-        for edge_node_info_tuple in mapper.ann_layer_edge_list:
+        for edge_node_info_tuple in mapper.aptm_layer_edge_list:
             if edge_node_info_tuple[0].is_input_node \
-                and edge_node_info_tuple[0] not in self.input_annlayer_list:
-                self.input_annlayer_list.append(edge_node_info_tuple[0])
+                and edge_node_info_tuple[0] not in self.input_aptmlayer_list:
+                self.input_aptmlayer_list.append(edge_node_info_tuple[0])
             if edge_node_info_tuple[1].is_output_node \
-                and edge_node_info_tuple[1] not in self.output_annlayer_list:
-                self.output_annlayer_list.append(edge_node_info_tuple[1])
+                and edge_node_info_tuple[1] not in self.output_aptmlayer_list:
+                self.output_aptmlayer_list.append(edge_node_info_tuple[1])
         self.adj_dict = mapper.get_adj_dict({'remove_identity'})
 
     # A helper function that helps to sort a list of node based on their sorting identifiers
-    def sorted_node_info_list(self, annlayer_list: List[AbstractNNLayer]):
+    def sorted_node_info_list(self, aptmlayer_list: List[AbstractNNLayer]):
         """
         This function sorts a list of node based on their sorting identifiers
 
@@ -57,9 +57,9 @@ class AbstractNNSorter():
             raise ValueError(msg)
 
         if self.use_hash:
-            return sorted(annlayer_list, key=lambda obj: obj.sorting_hash if \
+            return sorted(aptmlayer_list, key=lambda obj: obj.sorting_hash if \
                 obj.sorting_hash is not None else raise_error("The sorting hash is not assigned"))
-        return sorted(annlayer_list, key=lambda obj: obj.sorting_identifier if \
+        return sorted(aptmlayer_list, key=lambda obj: obj.sorting_identifier if \
                 obj.sorting_identifier is not None \
                     else raise_error("The sorting identifier is not assigned"))
 
@@ -71,7 +71,7 @@ class AbstractNNSorter():
         Returns:
             None
         """
-        node_info_obj_set = self.mapper.ann_layer_set
+        node_info_obj_set = self.mapper.aptm_layer_set
         if node_info_obj_set is None:
             raise ValueError("The mapper object does not contain the node info set")
         for node_info_obj in node_info_obj_set:
@@ -178,14 +178,14 @@ class AbstractNNSorter():
             return
 
         # Do the same traversal for all the inputs
-        for input_node_info_obj in self.input_annlayer_list:
+        for input_node_info_obj in self.input_aptmlayer_list:
             traverse(input_node_info_obj)
 
 
 
     # A function that generates a list of graph nodes based on the order of the sorting identifier
     # similar to the above func
-    def generate_annlayer_list(self) -> List[AbstractNNLayer]:
+    def generate_aptmlayer_list(self) -> List[AbstractNNLayer]:
         """
         This function generates a list of graph nodes based on the order of the sorting identifier
 
@@ -196,7 +196,7 @@ class AbstractNNSorter():
         self.assign_sorting_identifier()
         self.reset_visited_field()
 
-        sorted_inputs: List[AbstractNNLayer] = self.sorted_node_info_list(self.input_annlayer_list)
+        sorted_inputs: List[AbstractNNLayer] = self.sorted_node_info_list(self.input_aptmlayer_list)
 
         ordered_layer_list: List[AbstractNNLayer] = []
 
@@ -225,3 +225,4 @@ class AbstractNNSorter():
             traverse(input_)
 
         return ordered_layer_list
+    

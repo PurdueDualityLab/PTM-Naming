@@ -1,13 +1,13 @@
 
 from transformers import AutoModel, AutoTokenizer
 import json
-from ANN.ann_generator import AbstractNNGenerator
-from ANN.utils import overwrite_torchview_func
+from APTM.aptm_generator import AbstractNNGenerator
+from APTM.utils import overwrite_torchview_func
 import os
 from transformers import AutoModel, AutoTokenizer
-from ANN.ann_layer import AbstractNNLayer
+from APTM.aptm_layer import AbstractNNLayer
 from typing import List, Tuple
-from ANN.pipelines.ANNToJSONConverter import read_annlayer_list_from_json
+from APTM.pipelines.APTMToJSONConverter import read_aptmlayer_list_from_json
 import pickle
 
 # Set the cache directory
@@ -208,7 +208,7 @@ def auto_vectorize_from_model_json(input_dir, models_dict, output_dir_l, output_
                     nch = '>'
                 new_model_name += nch 
             try:
-                l_l, c_i = read_annlayer_list_from_json(input_dir + '/' + new_model_name + '.json')
+                l_l, c_i = read_aptmlayer_list_from_json(input_dir + '/' + new_model_name + '.json')
             except Exception as e:
                 print('Cannot read file', input_dir + '/' + model_name + '.json:', e)
                 if d_l[model_arch] == dict():

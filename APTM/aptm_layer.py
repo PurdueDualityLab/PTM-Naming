@@ -7,7 +7,7 @@ from onnx import NodeProto # type: ignore
 from torch import Tensor
 from torchview.computation_node.base_node import Node
 from torchview.computation_node.compute_node import FunctionNode, ModuleNode, TensorNode
-from ANN.ann_layer_param import AbstractNNLayerParam
+from APTM.aptm_layer_param import AbstractNNLayerParam
 
 
 class AbstractNNLayer():

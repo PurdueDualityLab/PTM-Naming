@@ -2,8 +2,8 @@
 from transformers import ResNetForImageClassification
 from transformers import AlbertTokenizer, AlbertModel, AutoModelForMaskedLM
 
-from ANN.unused_code.AbstractNNComparator import ANNComparator
-from ANN.abstract_neural_network import print_list
+from APTM.unused_code.AbstractNNComparator import ANNComparator
+from APTM.abstract_neural_network import print_list
 import timm
 import torch
 
