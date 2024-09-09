@@ -156,6 +156,7 @@ def plot_reduced_data(dataset, label_type='category', method='PCA', components=2
     # Adding colorbar
     cbar = plt.colorbar(scatter, ticks=ticks)
     cbar.set_ticklabels(label_names)
+    cbar.ax.tick_params(labelsize=4)
 
     plt.xlabel('Component 1')
     plt.ylabel('Component 2')
@@ -165,7 +166,7 @@ def plot_reduced_data(dataset, label_type='category', method='PCA', components=2
     # This eliminates the dual legend issue by not calling plt.legend() after plotting the lines.
     # Instead, you could explicitly define a legend for either lines or scatter points if needed, but avoid redundancy.
 
-    plt.savefig(f"{method}_projection_{label_type}.png")
+    plt.savefig(f"{method}_projection_{label_type}.pdf")
 
 # Example usage with your data
 if __name__ == "__main__":
