@@ -8,7 +8,7 @@ python train.py --do_train --train_mode='model_type' --loss_fn='CLCE' --model_na
 
 ## Example Usage (RoBERTa)
 
-python train_prev.py --do_train --train_mode='model_type' --loss_fn='CLCE' --model_name='roberta' --batch=64 --eval_batch_size=64 --lr=5e-5 --epoch=40 --trim=416 --lambd=0.3
+python train.py --do_train --train_mode='model_type' --loss_fn='CLCE' --model_name='roberta' --batch=64 --eval_batch_size=64 --lr=5e-5 --epoch=40 --trim=416 --lambd=0.3
 
 
 ## Parameters
