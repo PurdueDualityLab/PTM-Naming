@@ -47,11 +47,11 @@ This folder includes scripts and data relevant to Table 1, Table 2, Table 3, Tab
 ## [Repo mining](/Naming_practices) ($IV.B, $IV.C)
 This folder includes scripts and data relevant to Listing 1, Listing 2, Figure 4, Figure 5, Figure 6, Table 5, and Table 6 in the paper.
 
-- [Naming elements analysis](/naming_elements)
+- [Naming elements analysis](/Naming_practices/naming_elements)
   - The prompts and scripts to analyze the naming elements of the PTMs.
   - The manually labeled groud truth data for evaluation.
 
-- [Naming convention analysis](/naming_conventions)
+- [Naming convention analysis](/Naming_practices/naming_conventions)
   - The prompts and scripts to analyze the naming conventions of the PTMs.
   - The manually labeled groud truth data for evaluation.
 
@@ -61,9 +61,9 @@ This folder includes scripts and data relevant to Table 11 in the paper.
 
 - [APTMs](/Naming_anomaly_detection/APTM)
   - The APTM model and graph conversion pipeline.
-- [CL](/Naming_anomaly_detection/classifier)
+- [CL](/Naming_anomaly_detection/CL)
   - The contrastive learning solution for detecting naming anomalies.
-- [DARA](/Naming_anomaly_detection/classifier)
+- [DARA](/Naming_anomaly_detection/DARA)
   - The DNN Architecture Assessment pipeline.
 - [Data files](/Naming_anomaly_detection/data_files)
   - The data collections scripts files used in the study.
