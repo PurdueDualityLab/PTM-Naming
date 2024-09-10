@@ -29,7 +29,7 @@
 
 
 ## [Survey Study](/survey) ($IV.A)
-This folder includes scripts and data relevant to Table 1, Table 2, Figure 5, Table 5, Table 6, Figure 6, Table 7, and Table 8 in the paper.
+This folder includes scripts and data relevant to Table 1, Table 2, Table 3, Table 4, Figure 5, Table 5, Table 6, Table 7, Table 8, Table 9, Table 10 in the paper.
 
 
 - [Survey Instrument](/survey/Instruments/Survey%20Instrument.pdf): 
@@ -45,7 +45,7 @@ This folder includes scripts and data relevant to Table 1, Table 2, Figure 5, Ta
   - The extracted themes for the qualitative analysis. ($IV.A.4)
 
 ## [Repo mining](/Naming_practices) ($IV.B, $IV.C)
-This folder includes scripts and data relevant to Figure 4, Table 3, and Table 4 in the paper.
+This folder includes scripts and data relevant to Listing 1, Listing 2, Figure 4, Figure 5, Figure 6, Table 5, and Table 6 in the paper.
 
 - [Naming elements analysis](/naming_elements)
   - The prompts and scripts to analyze the naming elements of the PTMs.
@@ -55,15 +55,15 @@ This folder includes scripts and data relevant to Figure 4, Table 3, and Table 4
   - The prompts and scripts to analyze the naming conventions of the PTMs.
   - The manually labeled groud truth data for evaluation.
 
-## [Naming_anomaly_detectin](/Naming_anomaly_detection) ($V.B)
-This folder includes scripts and data relevant to Figure 8, and Table 9 in the paper.
+## [Naming_anomaly_detection](/Naming_anomaly_detection) ($V.B)
+This folder includes scripts and data relevant to Table 11 in the paper.
 
 
 - [APTMs](/Naming_anomaly_detection/APTM)
   - The APTM model and graph conversion pipeline.
 - [CL](/Naming_anomaly_detection/classifier)
   - The contrastive learning solution for detecting naming anomalies.
-- [CL](/Naming_anomaly_detection/classifier)
+- [DARA](/Naming_anomaly_detection/classifier)
   - The DNN Architecture Assessment pipeline.
 - [Data files](/Naming_anomaly_detection/data_files)
   - The data collections scripts files used in the study.
