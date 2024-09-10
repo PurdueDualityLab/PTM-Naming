@@ -1,6 +1,6 @@
-# Contrastive Learning Solution
+# Overview
 
-Train and evaluate contrastive learning solution for analyzing defects in PTM repositories
+This folder includes all the scripts and data used in our contrastive learning pipeline (CL, RQ4).
 
 ## Example Usage (Longformer)
 
@@ -40,6 +40,6 @@ python train.py --do_train --train_mode='model_type' --loss_fn='CLCE' --model_na
 - Architecture: 50.66%
 
 ### RoBERTa Accuracies
-- Model Type: 85.81%
+- Model Type: 85.61%
 - Task: 46.40%
 - Architecture: 49.34%
