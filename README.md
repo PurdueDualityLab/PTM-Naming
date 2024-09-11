@@ -5,11 +5,11 @@
 ## Overview
 
 
-- Survey study ($IV.A):
+- Survey study ($4.1):
   - This part of our study was used to answer *RQ1-3* in the paper.
-- Repository mining ($IV.B): 
+- Repository mining ($4.2): 
   - This part of our study was used to answer *RQ2, 4* in the paper.
-- DARA ($V.B):
+- DARA ($5.4.2):
   - This part of our study was used to answer *RQ4* in the paper.
 
 
