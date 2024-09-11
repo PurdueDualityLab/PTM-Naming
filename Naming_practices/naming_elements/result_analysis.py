@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
 
-    with open("name_analysis/results.json", "r", encoding="utf-8") as f:
+    with open("naming_elements/results.json", "r", encoding="utf-8") as f:
         results = json.load(f)
 
     matplotlib.rcParams.update({'font.size': 17})
@@ -69,4 +69,4 @@ if __name__ == "__main__":
     ax.spines['left'].set_visible(False)
 
     plt.tight_layout()  # Adjust layout
-    plt.savefig("name_analysis/survey_vs_practical.png")
+    plt.savefig("Naming_elements_survey_practical.png")

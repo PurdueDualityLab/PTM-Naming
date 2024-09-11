@@ -96,6 +96,7 @@ def pred_plot(pred):
     plt.figure()
     plt.box(False)
     plt.xticks(ind, naming_category, fontsize=18)
+    plt.yticks(fontsize=18)
     plt.bar(ind-width/2, survey_percentage, width=width, zorder=2, label="Survey data")
     plt.bar(ind+width/2, percentage, width=width, zorder=2, label="Practical data")
     plt.ylabel("Frequency (%)", fontsize=19)
@@ -104,7 +105,7 @@ def pred_plot(pred):
     max_value = max(max(survey_percentage, percentage))
     plt.ylim(top=max_value*1.1)
     plt.legend(loc='best', fontsize=18)
-    plt.savefig('plot/Survey_Practical_figure.pdf')
+    plt.savefig('plot/Naming_convention_survey_practical.pdf')
     
 if __name__ == "__main__":
     # pred = run()
