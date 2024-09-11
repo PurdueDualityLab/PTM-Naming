@@ -98,13 +98,10 @@ class AbstractNN():
             # logger.info(emsg)
             # exit()
         
-            # if fine-tuned for casual language modeling tasks
-            
 
         if model is None:
             raise ValueError(f"Failed to load the model: {err_msg}")
-        # model = nn.DataParallel(model)
-        # logger.success(f"Model devices: {[param.device for param in model.parameters()]}")
+
         if verbose:
             logger.success(f"Successfully load the model.")
 
@@ -136,7 +133,7 @@ class AbstractNN():
 
         start_time = time.time()
 
-        # assert isinstance(tracing_input, torch.Tensor)
+        assert isinstance(tracing_input, torch.Tensor)
         aptm_gen = AbstractNNGenerator(
             model = model,
             inputs = tracing_input, # type: ignore
@@ -157,127 +154,11 @@ class AbstractNN():
             logger.info("Vectorizing...")
 
         ret_aptm = AbstractNN(layer_list, conn_info, model.intermediate_features)
-        # logger.info(ret_aptm.layer_connection_vector)
-        if verbose:
-            logger.success("Success.")
-        return ret_aptm#, model.coverage
 
-    @staticmethod
-    def from_huggingface_2(
-        hf_repo_name: str,
-        tracing_input: Union[str, Any] = "auto",
-        verbose: bool = True,
-        cache_dir: Optional[str] = None,
-        device: Optional[str] = None,
-        device_map: Optional[str] = "auto",
-        trust_remote_code: bool = False,
-        **kwargs,
-    ) -> 'AbstractNN':
-        """
-        This method generates an AbstractNN object from a Hugging Face model.
-
-        hf_repo_name: The name of the Hugging Face model
-        tracing_input: The input to use when tracing the model
-        """
-        device = device if device is not None else "cuda" if torch.cuda.is_available() else "cpu"
-        if verbose:
-            logger.info(f"Looking for model in {hf_repo_name}...")
-
-        # try to load the model in both PyTorch and TensorFlow
-        model = None
-        err_msg = ""
-        for model in MODELS:
-            try:
-                model = model.from_pretrained(
-                    hf_repo_name,
-                    trust_remote_code=trust_remote_code,
-                    # device_map=device_map,
-                    **kwargs
-                )
-                break
-            except Exception as emsg: # pylint: disable=broad-except
-                err_msg = str(emsg)
-        if model is None:
-            try:
-                model = AutoModel.from_pretrained(
-                    hf_repo_name,
-                    trust_remote_code=trust_remote_code,
-                    **kwargs
-                )
-            except Exception as emsg: # pylint: disable=broad-except
-                err_msg = str(emsg)
-        if model is None:
-            try:
-                model = AutoModel.from_pretrained(
-                    hf_repo_name,
-                    from_tf=True,
-                    trust_remote_code=trust_remote_code,
-                    **kwargs
-                )
-            except Exception as emsg: # pylint: disable=broad-except
-                err_msg = str(emsg)
-
-        if model is None:
-            raise ValueError(f"Failed to load the model: {err_msg}")
-        # model = nn.DataParallel(model)
-        # logger.success(f"Model devices: {[param.device for param in model.parameters()]}")
-        if verbose:
-            logger.success(f"Successfully load the model.")
-
-        if tracing_input == "auto":
-            if verbose:
-                logger.info("Automatically generating an input...")
-            in_iter = HFValidInputIterator(
-                model,
-                hf_repo_name,
-                cache_dir=cache_dir,
-                device=device,
-                trust_remote_code=trust_remote_code
-            )
-            if in_iter.err_type == "requires_remote_code":
-                raise ValueError("The model requires trust_remote_code to be True.")
-            elif in_iter.err_type == "no_preprocessor_config":
-                raise ValueError("The model does not have a preprocessor_config.json file.")
-            if in_iter.valid_autoclass_obj_list == []:
-                raise ValueError("Cannot find a valid autoclass.")
-            tracing_input = in_iter.get_valid_input()
-            if verbose:
-                if isinstance(tracing_input, tuple):
-                    if tracing_input[1] == "ErrMark":
-                        raise ValueError(f"Failed to generate an input.\nError Report:\n{tracing_input[0]}")
-                logger.success("Successfully generating an input.")
-
-        if verbose:
-            logger.info("Generating APTM...")
-
-        start_time = time.time()
-
-        # assert isinstance(tracing_input, torch.Tensor)
-        aptm_gen = AbstractNNGenerator(
-            model = model,
-            inputs = tracing_input, # type: ignore
-            framework = "pytorch",
-            use_hash = True,
-            verbose = True
-        )
-
-        layer_list, conn_info = aptm_gen.generate_aptmlayer_list(include_connection=True)
-
-        assert isinstance(layer_list, list)
-        assert isinstance(conn_info, list)
-
-        end_time = time.time()
-        
-        if verbose:
-            logger.success(f"APTM generated. Time taken: {round(end_time - start_time, 4)}s")
-            logger.info("Vectorizing...")
-
-        ret_aptm = AbstractNN(layer_list, conn_info, model.intermediate_features)
-        
         if verbose:
             logger.success("Success.")
         return ret_aptm
-    
+
     @staticmethod
     def from_json(
         json_loc: str
