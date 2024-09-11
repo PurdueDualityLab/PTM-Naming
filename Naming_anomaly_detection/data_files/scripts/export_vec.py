@@ -62,10 +62,10 @@ if __name__ == "__main__":
                     logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
                     continue
 
-            ann = AbstractNN.from_huggingface(repo_name)  
+            aptm = AbstractNN.from_huggingface(repo_name)  
             if not os.path.exists(json_output_loc + f"/{repo_name}.json"):
                 os.makedirs(json_output_loc, exist_ok=True)
-            ann.export_vector(json_output_loc + f"/{repo_name}.json")
+            aptm.export_vector(json_output_loc + f"/{repo_name}.json")
             logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
         except Exception as emsg: # pylint: disable=broad-except
 

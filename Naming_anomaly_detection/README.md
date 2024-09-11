@@ -60,7 +60,7 @@ export PYTHONPATH="${PYTHONPATH}:absolute/path/to/PTM-Naming"
 #### `AbstractNN` constructor
 - **Description**: The constructor of `AbstractNN`, not necessary to use. When this object is created, the vectorization process is automated.
 - **Parameters**: 
-  - `annlayer_list: List[AbstractNNLayer]` - A list of `AbstractNNLayer` objects.
+  - `aptmlayer_list: List[AbstractNNLayer]` - A list of `AbstractNNLayer` objects.
   - `connection_info: List[Tuple[int, List[int]]]` - A list showing the computation graph connections.
 
 #### `from_huggingface`
@@ -93,9 +93,9 @@ export PYTHONPATH="${PYTHONPATH}:absolute/path/to/PTM-Naming"
 import torch
 from abstract_neural_network.AbstractNN import *
 
-ann = AbstractNN.from_huggingface(hf_repo_name, torch.randn(1, 3, 224, 224))
-print(ann.layer_connection_vector)
-print(ann.layer_with_parameter_vector)
+aptm = AbstractNN.from_huggingface(hf_repo_name, torch.randn(1, 3, 224, 224))
+print(aptm.layer_connection_vector)
+print(aptm.layer_with_parameter_vector)
 ```
 
 #### Example Result
@@ -111,9 +111,9 @@ print(ann.layer_with_parameter_vector)
 import torch
 from abstract_neural_network.AbstractNN import *
 
-ann = AbstractNN.from_huggingface(hf_repo_name)
-print(ann.layer_connection_vector)
-print(ann.layer_with_parameter_vector)
+aptm = AbstractNN.from_huggingface(hf_repo_name)
+print(aptm.layer_connection_vector)
+print(aptm.layer_with_parameter_vector)
 ```
 
 #### Example Result

@@ -2,7 +2,7 @@ import os
 import json
 from loguru import logger
 from vector.cluster_dataset import ClusterDataset
-from vector.ann_vector import ANNVectorTripletArchGroup
+from Naming_anomaly_detection.vector.aptm_vector import APTMVectorTripletArchGroup
 
 if __name__ == "__main__":
     assert os.path.exists("model_collection/modelArch_list.json")
@@ -17,15 +17,15 @@ if __name__ == "__main__":
 
     triplet_arch_group_list = []
     for arch_name in model_arch_list:
-        curr_triplet_group = ANNVectorTripletArchGroup.from_dataset(cls_ds, arch_name)
+        curr_triplet_group = APTMVectorTripletArchGroup.from_dataset(cls_ds, arch_name)
         if curr_triplet_group is None:
             logger.warning(f"Skipping {arch_name}. Could not find any models.")
             continue
         logger.info(f"Processing {arch_name}. Total models: {len(curr_triplet_group.vector_triplet_list)}")
         remove_count = 0
-        for ann_triplet in curr_triplet_group.vector_triplet_list:
-            if ann_triplet.model_name not in implm_unit_list:
-                curr_triplet_group.remove(ann_triplet.model_name)
+        for aptm_triplet in curr_triplet_group.vector_triplet_list:
+            if aptm_triplet.model_name not in implm_unit_list:
+                curr_triplet_group.remove(aptm_triplet.model_name)
                 remove_count += 1
         triplet_arch_group_list.append(list(curr_triplet_group.to_dict()))
         logger.info(f"Removed {remove_count} models from {arch_name}. Total models: {len(curr_triplet_group.vector_triplet_list)}")

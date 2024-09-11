@@ -1,5 +1,5 @@
 """
-This script exports a single ann from a hf repository.
+This script exports a single aptm from a hf repository.
 """
 
 import sys
@@ -10,7 +10,7 @@ from loguru import logger
 import sqlite3
 import traceback
 import torchview
-from convert_all_peatmoss_models_to_ann import forward_prop
+from convert_all_peatmoss_models_to_aptm import forward_prop
 from dotenv import load_dotenv
 from APTM.abstract_neural_network import AbstractNN
 from transformers import BitsAndBytesConfig
@@ -71,14 +71,14 @@ if __name__ == "__main__":
         logger.error("Invalid number of arguments.")
         sys.exit(1)
     elif sys.argv[1] == "help":
-        logger.error("This script exports ann from a hf repository.")
-        logger.error("Usage: python export_ann.py -j <json_output_loc> -c <run_count>")
+        logger.error("This script exports aptm from a hf repository.")
+        logger.error("Usage: python export_aptm.py -j <json_output_loc> -c <run_count>")
         sys.exit(0)
     elif sys.argv[1] != "-ja" or sys.argv[3] != "-jv" or sys.argv[5] != "-c":
         logger.error("Invalid arguments.")
         sys.exit(1)
     else:
-        json_output_loc_ann = sys.argv[2]
+        json_output_loc_aptm = sys.argv[2]
         json_output_loc_vec = sys.argv[4]
         json_output_loc_intermediate = sys.argv[2].split('/')[0] + '/intermediate'
         run_count = int(sys.argv[6])
@@ -122,7 +122,7 @@ if __name__ == "__main__":
                 quantized_model = json.load(f)
                 
             # if os.path.exists(json_output_loc_vec + f"/{repo_name}.json"):
-            if os.path.exists(json_output_loc_ann + f"/{repo_name}.json") and os.path.exists(json_output_loc_vec + f"/{repo_name}.json"):# and os.path.exists(json_output_loc_intermediate + f"/{repo_name}.json"):
+            if os.path.exists(json_output_loc_aptm + f"/{repo_name}.json") and os.path.exists(json_output_loc_vec + f"/{repo_name}.json"):# and os.path.exists(json_output_loc_intermediate + f"/{repo_name}.json"):
                 logger.success(f"{repo_name} files already exist.")
                 logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")
                 continue
@@ -133,7 +133,7 @@ if __name__ == "__main__":
                 try:
                     logger.debug(f"Loading {repo_name} in_4bit=True")
                     q_config = BitsAndBytesConfig(load_in_4_bit=True)
-                    ann = AbstractNN.from_huggingface(
+                    aptm = AbstractNN.from_huggingface(
                         str(os.getenv("LOCAL_WEIGHT_PATH")) + f'/{first_letter}/' + repo_name,
                         quantization_config=q_config,
                         # load_in_4bit = True
@@ -141,7 +141,7 @@ if __name__ == "__main__":
                 except:
                     logger.debug(f"Loading {repo_name} in_4bit=False")
                     # q_config = BitsAndBytesConfig(load_in_4_bit=False)
-                    ann = AbstractNN.from_huggingface(
+                    aptm = AbstractNN.from_huggingface(
                         str(os.getenv("LOCAL_WEIGHT_PATH")) + f'/{first_letter}/' + repo_name,
                         # quantization_config=q_config,
                         # load_in_4bit = False
@@ -158,7 +158,7 @@ if __name__ == "__main__":
                 try:
                     logger.debug(f"Loading {repo_name} in_4bit=True")
                     q_config = BitsAndBytesConfig(load_in_4_bit=True)
-                    ann = AbstractNN.from_huggingface(
+                    aptm = AbstractNN.from_huggingface(
                         repo_name,
                         quantization_config=q_config,
                         cache_dir='/scratch/gilbreth/kim3118/.cache/huggingface'
@@ -166,24 +166,24 @@ if __name__ == "__main__":
                     load_in_4_bit = True
                 except:
                     logger.debug(f"Loading {repo_name} in_4bit=False")
-                    ann = AbstractNN.from_huggingface(
+                    aptm = AbstractNN.from_huggingface(
                         repo_name,
                         cache_dir='/scratch/gilbreth/kim3118/.cache/huggingface'
                     )
                     load_in_4_bit = False
 
             
-            curr_json_output_loc = json_output_loc_ann + f"/{repo_name}.json"
+            curr_json_output_loc = json_output_loc_aptm + f"/{repo_name}.json"
             if not os.path.exists(curr_json_output_loc):
                 os.makedirs(os.path.dirname(curr_json_output_loc), exist_ok=True)
-                ann.export_ann(json_output_loc_ann + f"/{repo_name}.json")
-                logger.success("Exported ann.")
+                aptm.export_aptm(json_output_loc_aptm + f"/{repo_name}.json")
+                logger.success("Exported aptm.")
             else:
-                logger.info("ANN file already exists.")
+                logger.info("APTM file already exists.")
             curr_json_output_loc = json_output_loc_vec + f"/{repo_name}.json"
             if not os.path.exists(curr_json_output_loc):
                 # os.makedirs(os.path.dirname(curr_json_output_loc), exist_ok=True)
-                ann.export_vector(curr_json_output_loc + f"/{repo_name}.json")
+                aptm.export_vector(curr_json_output_loc + f"/{repo_name}.json")
                 logger.success("Exported vector")
             else:
                 logger.info("Vector file already exists.")
@@ -209,14 +209,14 @@ if __name__ == "__main__":
                 with open("data_files/json_files/failed_aptm.json", "w", encoding="utf-8") as f:
                     json.dump({}, f)
             
-            failed_ann = {}
+            failed_aptm = {}
             with open("data_files/json_files/failed_aptm.json", "r", encoding="utf-8") as f:
-                failed_ann = json.load(f)
+                failed_aptm = json.load(f)
             tb_str = traceback.format_exc()
-            failed_ann[repo_name] = tb_str
+            failed_aptm[repo_name] = tb_str
 
             with open("data_files/json_files/failed_aptm.json", "w", encoding="utf-8") as f:
-                json.dump(failed_ann, f)
+                json.dump(failed_aptm, f)
 
             logger.error(tb_str)
             logger.info(f"Time taken: {time.time() - start_time:.2f} seconds.")

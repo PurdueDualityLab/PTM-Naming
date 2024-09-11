@@ -1,5 +1,5 @@
 """
-This script is used to convert all Peatmoss models to ANN.
+This script is used to convert all Peatmoss models to APTM.
 """
 
 import os
@@ -34,15 +34,15 @@ def run_process(run_count):
     module_use_path = str(os.getenv("MODULE_USE_PATH"))
     module_load_path = str(os.getenv("MODULE_LOAD_PATH"))
     python_path = str(os.getenv("PYTHONPATH"))
-    if not os.path.exists(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/ann"):
-        os.makedirs(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/ann", exist_ok=True)
-    json_file_loc = f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/ann"
+    if not os.path.exists(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/aptm"):
+        os.makedirs(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/aptm", exist_ok=True)
+    json_file_loc = f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/aptm"
 
     command = f"""
     module use {module_use_path} && 
     module load {module_load_path} && 
     export PYTHONPATH=$PYTHONPATH:{python_path} &&
-    python data_files/scripts/export_ann.py -j {json_file_loc} -c {run_count}
+    python data_files/scripts/export_aptm.py -j {json_file_loc} -c {run_count}
     """
 
     return subprocess.Popen(command, shell=True, executable='/bin/bash')

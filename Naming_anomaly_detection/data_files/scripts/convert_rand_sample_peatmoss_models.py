@@ -34,9 +34,9 @@ def run_process(idx):
     python_path = str(os.getenv("PYTHONPATH"))
     if not os.path.exists(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/vec"):
         os.makedirs(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/vec", exist_ok=True)
-    if not os.path.exists(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/ann"):
-        os.makedirs(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/ann", exist_ok=True)
-    json_file_loc_ann = f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/ann"
+    if not os.path.exists(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/aptm"):
+        os.makedirs(f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/aptm", exist_ok=True)
+    json_file_loc_aptm = f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/aptm"
     json_file_loc_vec = f"{os.getenv('PEATMOSS_VEC_DATA_PATH')}/vector"
     model_list_json_loc = "data_files/json_files/selected_peatmoss_repos.json"
 
@@ -48,7 +48,7 @@ def run_process(idx):
     module load {module_load_path} && 
     export PYTHONPATH=$PYTHONPATH:{python_path} &&
     export TRANSFORMERS_CACHE=/scratch/gilbreth/kim3118/.cache/huggingface
-    python data_files/scripts/export_ann.py -ja {json_file_loc_ann} -jv {json_file_loc_vec} -c {idx} -s {model_list_json_loc}
+    python data_files/scripts/export_aptm.py -ja {json_file_loc_aptm} -jv {json_file_loc_vec} -c {idx} -s {model_list_json_loc}
     """
     # python data_files/scripts/export_vec.py -j {json_file_loc_vec} -l {model_list_json_loc}
 

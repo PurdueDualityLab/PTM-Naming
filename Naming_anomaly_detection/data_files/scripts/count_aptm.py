@@ -1,8 +1,8 @@
 import os
 
 
-path = "/depot/davisjam/data/chingwo/PTM-v2/PTM-Naming/peatmoss_ann/rand_sample_2500"  # Ensure this path is correctly concatenated
-# path = "/depot/davisjam/data/chingwo/PTM-v2/PTM-Naming/peatmoss_ann/ann"
+path = "/depot/davisjam/data/chingwo/PTM-v2/PTM-Naming/peatmoss_aptm/rand_sample_2500"  # Ensure this path is correctly concatenated
+# path = "/depot/davisjam/data/chingwo/PTM-v2/PTM-Naming/peatmoss_aptm/aptm"
 
 json_file_count = 0
 for root, dirs, files in os.walk(path):  # Corrected: Added colon

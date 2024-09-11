@@ -4,7 +4,7 @@ This module provides a pipeline for clustering models based on their vector repr
 from typing import Tuple, Union
 from transformers import PretrainedConfig
 from loguru import logger
-from vector.ann_vector import ANNVectorTriplet, ANNVectorTripletArchGroup, AbstractNN
+from Naming_anomaly_detection.vector.aptm_vector import APTMVectorTriplet, APTMVectorTripletArchGroup, AbstractNN
 from vector.cluster_generator import ClusterGenerator
 from vector.cluster_dataset import ClusterDataset
 
@@ -46,7 +46,7 @@ class ClusterPipeline():
     def cluster_with_extra_model(
         self,
         arch_name: str,
-        additional_model_vector: ANNVectorTriplet,
+        additional_model_vector: APTMVectorTriplet,
         eps: float = 0.3
     ) -> Tuple[dict, dict]:
         """
@@ -54,7 +54,7 @@ class ClusterPipeline():
 
         Args:
             arch_name (str): The name of the architecture.
-            additional_model_vector (ANNVectorTriplet): The vector 
+            additional_model_vector (APTMVectorTriplet): The vector 
                 representation of the additional model.
             eps (float): The maximum distance between two samples for
                 one to be considered as in the neighborhood of the other.
@@ -62,9 +62,9 @@ class ClusterPipeline():
         Returns:
             Tuple[dict, dict]: The clustered models and the outliers.
         """
-        model_vector_group = ANNVectorTripletArchGroup.from_dataset(self.cluster_data, arch_name)
+        model_vector_group = APTMVectorTripletArchGroup.from_dataset(self.cluster_data, arch_name)
         if model_vector_group is None:
-            model_vector_group = ANNVectorTripletArchGroup(arch_name, [])
+            model_vector_group = APTMVectorTripletArchGroup(arch_name, [])
         model_vector_group.add(additional_model_vector)
         vec_l, vec_p, vec_d = model_vector_group.to_array()
         model_vec = ClusterGenerator.concatenate_vec(vec_d, vec_l, vec_p)
@@ -97,9 +97,9 @@ class ClusterPipeline():
         if arch_name == "auto":
             arch_name = PretrainedConfig.from_pretrained(hf_repo_name).architectures[0]
             logger.info(f"Automatically identified architecture of hf model as {arch_name}.")
-        ann = AbstractNN.from_huggingface(hf_repo_name)
-        ann_vector_triplet = ANNVectorTriplet.from_ann(model_name, ann)
-        return self.cluster_with_extra_model(arch_name, ann_vector_triplet, eps)
+        aptm = AbstractNN.from_huggingface(hf_repo_name)
+        aptm_vector_triplet = APTMVectorTriplet.from_aptm(model_name, aptm)
+        return self.cluster_with_extra_model(arch_name, aptm_vector_triplet, eps)
 
     def cluster_single_arch_from_dict(
         self,
@@ -147,7 +147,7 @@ class ClusterPipeline():
         Returns:
             dict: The model vector.
         """
-        vec_l, vec_p, vec_d = ANNVectorTripletArchGroup.from_dict(
+        vec_l, vec_p, vec_d = APTMVectorTripletArchGroup.from_dict(
             vec_dict_triplet[0],
             vec_dict_triplet[1],
             vec_dict_triplet[2]

@@ -11,7 +11,7 @@ from sklearn.decomposition import PCA
 from sklearn.metrics import pairwise_distances
 from sklearn.preprocessing import StandardScaler
 from vector.cluster_dataset import ClusterDataset
-from vector.ann_vector import ANNVectorTripletArchGroup
+from vector.aptm_vector import APTMVectorTripletArchGroup
 
 class ClusterGenerator():
     """
