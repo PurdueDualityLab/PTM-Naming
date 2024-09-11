@@ -14,7 +14,7 @@ python train.py --do_train --train_mode='model_type' --loss_fn='CLCE' --model_na
 ## Parameters
 
 - `--do_train`: Run training
-- `--train_mode`: Choose from 'model_type', 'task', or 'arch'
+- `--train_mode`: Choose from `model_type`, `task`, or `arch`
 - `--loss_fn`: Loss function (CLCE, CL, FoCL)
 - `--model_name`: Name of the model to use
 - `--batch`: Training batch size
