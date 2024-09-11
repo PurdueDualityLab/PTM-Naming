@@ -28,23 +28,23 @@
 |                             | data/                  |
 
 
-## [Survey Study](/survey) ($IV.A)
+## [Survey Study](/survey) ($4.1)
 This folder includes scripts and data relevant to Table 1, Table 2, Table 3, Table 4, Figure 5, Table 5, Table 6, Table 7, Table 8, Table 9, Table 10 in the paper.
 
 
 - [Survey Instrument](/survey/Instruments/Survey%20Instrument.pdf): 
-  - The survey instrument used in the study. ($IV.A.2)
+  - The survey instrument used in the study. ($4.1.2)
 
 - [Survey data](/survey/data/survey_data.xlsx): 
   - The raw data of our survey study. ($V)
   
 - [Qualitative analysis - data](/survey/data/Survey%20Analysis.xlsx): 
-  - The analysis of the qualitative survey data. ($IV.A.4)
+  - The analysis of the qualitative survey data. ($4.1.4)
 
 - [Qualitative analysis - Themes](/survey/Instruments/PTMVsTraditionalNaming-Themes-v1.docx.pdf): 
   - The extracted themes for the qualitative analysis. ($IV.A.4)
 
-## [Repo mining](/Naming_practices) ($IV.B, $IV.C)
+## [Repository mining](/Naming_practices) ($4.2)
 This folder includes scripts and data relevant to Listing 1, Listing 2, Figure 4, Figure 5, Figure 6, Table 5, and Table 6 in the paper.
 
 - [Naming elements analysis](/Naming_practices/naming_elements)
@@ -55,8 +55,8 @@ This folder includes scripts and data relevant to Listing 1, Listing 2, Figure 4
   - The prompts and scripts to analyze the naming conventions of the PTMs.
   - The manually labeled groud truth data for evaluation.
 
-## [Naming_anomaly_detection](/Naming_anomaly_detection) ($V.B)
-This folder includes scripts and data relevant to Table 11 in the paper.
+## [Naming_anomaly_detection](/Naming_anomaly_detection) ($5.4)
+This folder includes scripts and data relevant to Figure 7, Figure 8, Figure 9, Figure 10, Figure 11, and Table 11 in the paper.
 
 
 - [APTMs](/Naming_anomaly_detection/APTM)
