@@ -49,7 +49,7 @@ export PYTHONPATH="${PYTHONPATH}:absolute/path/to/PTM-Naming"
 <!-- ## TODOs
 
 1. Change the dummy input to non-random inputs for `tools/HFAutoClassIterator.py` and `tools/HFValidInputIterator.py`.
-2. Test `ANN/abstract_neural_network.py:265`. Evaluate results in other n-grams. -->
+2. Test `APTM/abstract_neural_network.py:265`. Evaluate results in other n-grams. -->
 
 ## High level class description
 
@@ -72,13 +72,13 @@ export PYTHONPATH="${PYTHONPATH}:absolute/path/to/PTM-Naming"
 - **Returns**: An `AbstractNN` object with the structure of specified PTM.
 
 #### `from_json`
-- **Description**: Load the whole ANN structure from a JSON file.
+- **Description**: Load the whole APTM structure from a JSON file.
 - **Parameters**: 
   - `json_loc: str` - Input JSON location.
 - **Returns**: An `AbstractNN` object with the structure of specified PTM in the JSON file.
 
 #### `export_json`
-- **Description**: Export the whole ANN structure to a JSON file.
+- **Description**: Export the whole APTM structure to a JSON file.
 - **Parameters**: 
   - `output_loc: str` - Output JSON location.
 
@@ -129,9 +129,9 @@ The two class variables can be directly converted to JSON using:
 import json
 
 with open("path/to/json1", "w") as f:
-    json.dump(ann.layer_connection_vector, f)
+    json.dump(aptm.layer_connection_vector, f)
 with open("path/to/json2", "w") as f:
-    json.dump(ann.layer_with_parameter_vector, f)
+    json.dump(aptm.layer_with_parameter_vector, f)
 ```
 
 ### `tools.HFValidInputIterator` Class
@@ -179,7 +179,7 @@ print(in_iter.get_valid_input())
 - **Description**: A pipeline to automatically cluster a single model with a group of models in the internal cluster.
 - **Parameters**: 
   - `arch_name: str` - The name of the specified architecture, must be one of the architectures in the internal cluster.
-  - `additional_model_vector: ANNVectorTriplet` - An `ANNVectorTriplet` class object to be an extra model to cluster with the ones that already exist in the internal cluster.
+  - `additional_model_vector: APTMVectorTriplet` - An `APTMVectorTriplet` class object to be an extra model to cluster with the ones that already exist in the internal cluster.
   - `eps: int` - Controls the strictness of the clustering.
 - **Returns**: A tuple with `results` and `outliers`.
 
@@ -192,26 +192,26 @@ print(in_iter.get_valid_input())
   - `eps: int` - Controls the strictness of the clustering.
 - **Returns**: A tuple with `results` and `outliers`.
 
-### `vector.ann_vector.ANNVectorTriplet` Class
+### `vector.aptm_vector.APTMVectorTriplet` Class
 
 #### Class Methods
 
-#### `from_ANN` (static method)
-- **Description**: A function that converts an `AbstractNN` object to an `ANNVectorTriplet` object.
+#### `from_APTM` (static method)
+- **Description**: A function that converts an `AbstractNN` object to an `APTMVectorTriplet` object.
 - **Parameters**: 
   - `model_name: str` - The name of the model.
-  - `ann: AbstractNN` - The `AbstractNN` object to be converted.
-- **Returns**: An `ANNVectorTriplet` object.
+  - `aptm: AbstractNN` - The `AbstractNN` object to be converted.
+- **Returns**: An `APTMVectorTriplet` object.
 
 #### Example Usage
 
 ```python
-from vector.ANNVector import ANNVectorTriplet
+from vector.APTMVector import APTMVectorTriplet
 from vector.ClusterPipeline import ClusterPipeline
-# An AbstractNN object 'my_ann' is already defined
+# An AbstractNN object 'my_aptm' is already defined
 
-my_ann_vector_triplet = ANNVectorTriplet.from_ANN(my_ann)
-res, out = ClusterPipeline().cluster_with_extra_model("DesiredArchitecture", my_ann_vector_triplet)
+my_aptm_vector_triplet = APTMVectorTriplet.from_APTM(my_aptm)
+res, out = ClusterPipeline().cluster_with_extra_model("DesiredArchitecture", my_aptm_vector_triplet)
 ```
 
 #### Or Simply 
