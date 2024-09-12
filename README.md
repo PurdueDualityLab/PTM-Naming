@@ -36,13 +36,13 @@ This folder includes scripts and data relevant to Table 1, Table 2, Table 3, Tab
   - The survey instrument used in the study. ($4.1.2)
 
 - [Survey data](/survey/data/survey_data.xlsx): 
-  - The raw data of our survey study. ($V)
+  - The raw data of our survey study. ($4.1.3)
   
 - [Qualitative analysis - data](/survey/data/Survey%20Analysis.xlsx): 
   - The analysis of the qualitative survey data. ($4.1.4)
 
 - [Qualitative analysis - Themes](/survey/Instruments/PTMVsTraditionalNaming-Themes-v1.docx.pdf): 
-  - The extracted themes for the qualitative analysis. ($IV.A.4)
+  - The extracted themes for the qualitative analysis. ($4.1.4)
 
 ## [Repository mining](/Naming_practices) ($4.2)
 This folder includes scripts and data relevant to Listing 1, Listing 2, Figure 4, Figure 5, Figure 6, Table 5, and Table 6 in the paper.
