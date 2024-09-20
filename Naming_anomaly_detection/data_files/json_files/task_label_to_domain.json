@@ -1,0 +1,7 @@
+{
+    "Natural Language Processing": ["feature-extraction", "fill-mask", "question-answering", "sentence-similarity", "summarization", "text-classification", "text-generation", "text2text-generation", "token-classification", "translation", "zero-shot-classification"],
+    "Computer Vision": ["depth-estimation", "image-classification", "image-segmentation", "mask-generation", "object-detection", "zero-shot-image-classification"],
+    "Multimodal": ["visual-question-answering"],
+    "Audio": ["audio-classification", "automatic-speech-recognition", "text-to-audio", "text-to-speech"],
+    "Other": ["conversational", "multiple-choice", "pretraining", "text-embedding", "unknown"]
+}
