@@ -1,6 +1,6 @@
 # EMSE Artifact
 
-> Artifact repository for paper: **"I see models being a whole other thing": Naming Practices of Pre-Trained Models in Hugging Face**
+> Artifact repository for paper: **“I see models being a whole other thing”: An Empirical Study of Pre-Trained Model Naming Conventions and A Tool for Enhancing Naming Consistency**
 
 ## Overview
 
