@@ -1,0 +1,6 @@
+{
+    "Natural Language Processing": ["albert", "bart", "bert", "big_bird", "bigbird_pegasus", "blenderbot", "camembert", "canine", "codegen", "ctrl", "deberta", "deberta-v2", "distilbert", "dpr", "electra", "ernie", "esm", "fnet", "gpt2", "gpt_bigcode", "gpt_neo", "gpt_neox", "gptj", "hubert", "led", "llama", "longformer", "longt5", "m2m_100", "marian", "mbart", "mobilebert", "mpnet", "mpt", "mt5", "opt", "pegasus", "pegasus_x", "plbart", "roberta", "rwkv", "splinter", "t5", "xglm", "xlm-roberta", "xlnet"],
+    "Computer Vision": ["beit", "convnext", "convnextv2", "detr", "glpn", "mask2former", "maskformer", "mobilenet_v2", "mobilevit", "regnet", "resnet", "segformer", "swin", "vit", "yolos"],
+    "Multimodal": ["blip", "blip-2", "clip", "git", "layoutlm", "layoutlmv3", "lilt", "sam", "vision-text-dual-encoder"],
+    "Audio": ["audio-spectrogram-transformer", "speech_to_text", "speecht5", "unispeech", "unispeech-sat", "wav2vec2", "wavlm", "whisper"]
+}

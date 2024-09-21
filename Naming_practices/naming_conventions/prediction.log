@@ -1,0 +1,62 @@
+2024-03-21 19:28:13.224 | SUCCESS  | __main__:open_ai:58 - Time elapsed: 479.5992805957794. Prediction so far: {'Application and Task': 23, 'Implementation': 267, 'Implementation with Application and Task': 129, 'Other': 44} @line 0
+2024-03-21 19:35:40.586 | SUCCESS  | __main__:open_ai:58 - Time elapsed: 926.961394071579. Prediction so far: {'Application and Task': 43, 'Implementation': 538, 'Implementation with Application and Task': 243, 'Other': 105} @line 1
+2024-03-21 19:43:05.583 | SUCCESS  | __main__:open_ai:58 - Time elapsed: 1371.9587121009827. Prediction so far: {'Application and Task': 58, 'Implementation': 811, 'Implementation with Application and Task': 369, 'Other': 159} @line 2
+2024-03-21 19:50:18.656 | SUCCESS  | __main__:open_ai:58 - Time elapsed: 1805.031836271286. Prediction so far: {'Application and Task': 79, 'Implementation': 1076, 'Implementation with Application and Task': 504, 'Other': 204} @line 3
+2024-03-21 19:50:18.657 | SUCCESS  | __main__:run:70 - Prediction running all jsonl entry: {'Application and Task': 79, 'Implementation': 1076, 'Implementation with Application and Task': 504, 'Other': 204}
+2024-03-21 19:50:18.657 | SUCCESS  | __main__:run:71 - Total time elapsed: 1805.0329773426056
+2024-03-21 20:43:55.295 | SUCCESS  | __main__:open_ai:27 - Started at time 1711053835.2951283
+2024-03-21 20:43:55.295 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: deberta-base
+2024-03-21 20:50:41.237 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 405.94244408607483. Prediction so far: {'Application and Task': 101, 'Implementation': 1352, 'Implementation with Application and Task': 625, 'Other': 260} @line 4
+2024-03-21 20:50:41.238 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: mbart-english-grammar-corrector
+2024-03-21 20:57:00.716 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 785.4209537506104. Prediction so far: {'Application and Task': 118, 'Implementation': 1628, 'Implementation with Application and Task': 736, 'Other': 320} @line 5
+2024-03-21 20:57:00.716 | SUCCESS  | __main__:run:75 - Prediction running all jsonl entry: {'Application and Task': 118, 'Implementation': 1628, 'Implementation with Application and Task': 736, 'Other': 320}
+2024-03-21 20:57:00.716 | SUCCESS  | __main__:run:76 - Total time elapsed: 785.4218938350677
+2024-03-22 00:07:52.210 | SUCCESS  | __main__:open_ai:27 - Started at time 1711080472.2103498
+2024-03-22 00:07:52.210 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: cs3darknet_l.c2ns_in1k
+2024-03-22 00:14:28.729 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 396.5194523334503. Prediction so far: {'Application and Task': 137, 'Implementation': 1897, 'Implementation with Application and Task': 866, 'Other': 358} @line 6
+2024-03-22 00:14:28.730 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: chebakia-diffusionV2
+2024-03-22 00:20:35.824 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 763.6143701076508. Prediction so far: {'Application and Task': 159, 'Implementation': 2175, 'Implementation with Application and Task': 985, 'Other': 401} @line 7
+2024-03-22 00:20:35.826 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: vit_huge_patch14_224.orig_in21k
+2024-03-22 00:26:28.806 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 1116.5960681438446. Prediction so far: {'Application and Task': 185, 'Implementation': 2418, 'Implementation with Application and Task': 1130, 'Other': 456} @line 8
+2024-03-22 00:26:28.806 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: marathi-bert
+2024-03-22 00:32:16.799 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 1464.5892310142517. Prediction so far: {'Application and Task': 208, 'Implementation': 2695, 'Implementation with Application and Task': 1246, 'Other': 506} @line 9
+2024-03-22 00:32:16.800 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: vit_base_r50_s16_384.orig_in21k_ft_in1k
+2024-03-22 00:38:00.154 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 1807.9437749385834. Prediction so far: {'Application and Task': 225, 'Implementation': 2982, 'Implementation with Application and Task': 1368, 'Other': 552} @line 10
+2024-03-22 00:38:00.154 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: Codet5_60_Epochs
+2024-03-22 00:43:44.849 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 2152.6388297080994. Prediction so far: {'Application and Task': 240, 'Implementation': 3243, 'Implementation with Application and Task': 1505, 'Other': 604} @line 11
+2024-03-22 00:43:44.849 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: bert-base-uncased-mrpc
+2024-03-22 00:49:31.735 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 2499.5247559547424. Prediction so far: {'Application and Task': 260, 'Implementation': 3538, 'Implementation with Application and Task': 1614, 'Other': 649} @line 12
+2024-03-22 00:49:31.735 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: whisper-large
+2024-03-22 00:55:22.035 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 2849.8247377872467. Prediction so far: {'Application and Task': 272, 'Implementation': 3783, 'Implementation with Application and Task': 1760, 'Other': 710} @line 13
+2024-03-22 00:55:22.035 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: roberta-base-nli-mean-tokens
+2024-03-22 01:00:48.838 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 3176.627618074417. Prediction so far: {'Application and Task': 291, 'Implementation': 4067, 'Implementation with Application and Task': 1872, 'Other': 761} @line 14
+2024-03-22 01:00:48.838 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: alberti-bert-base-multilingual-cased
+2024-03-22 01:06:25.579 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 3513.3690419197083. Prediction so far: {'Application and Task': 317, 'Implementation': 4342, 'Implementation with Application and Task': 1995, 'Other': 806} @line 15
+2024-03-22 01:06:25.579 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: resnet50.b1k_in1k
+2024-03-22 01:12:07.935 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 3855.7253744602203. Prediction so far: {'Application and Task': 327, 'Implementation': 4626, 'Implementation with Application and Task': 2120, 'Other': 858} @line 16
+2024-03-22 01:12:07.936 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: trocr-base-stage1
+2024-03-22 01:17:58.980 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 4206.769809484482. Prediction so far: {'Application and Task': 346, 'Implementation': 4896, 'Implementation with Application and Task': 2247, 'Other': 907} @line 17
+2024-03-22 01:17:58.980 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: deberta-base-fine-tuned-ner
+2024-03-22 01:23:38.642 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 4546.43200302124. Prediction so far: {'Application and Task': 369, 'Implementation': 5166, 'Implementation with Application and Task': 2380, 'Other': 952} @line 18
+2024-03-22 01:23:38.642 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: clipseg-rd64
+2024-03-22 01:29:15.371 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 4883.161447286606. Prediction so far: {'Application and Task': 385, 'Implementation': 5475, 'Implementation with Application and Task': 2490, 'Other': 984} @line 19
+2024-03-22 01:29:15.372 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: musicgen-medium
+2024-03-22 01:35:04.723 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 5232.5128672122955. Prediction so far: {'Application and Task': 408, 'Implementation': 5733, 'Implementation with Application and Task': 2616, 'Other': 1047} @line 20
+2024-03-22 01:35:04.724 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: zlata
+2024-03-22 01:40:50.544 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 5578.3345692157745. Prediction so far: {'Application and Task': 419, 'Implementation': 6016, 'Implementation with Application and Task': 2747, 'Other': 1089} @line 21
+2024-03-22 01:40:50.545 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: 3dprintstyle-snkr-generator
+2024-03-22 01:46:31.717 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 5919.507177352905. Prediction so far: {'Application and Task': 443, 'Implementation': 6281, 'Implementation with Application and Task': 2860, 'Other': 1150} @line 22
+2024-03-22 01:46:31.717 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: reward-model-deberta-v3-base
+2024-03-22 01:51:59.999 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 6247.788892507553. Prediction so far: {'Application and Task': 455, 'Implementation': 6562, 'Implementation with Application and Task': 2979, 'Other': 1194} @line 23
+2024-03-22 01:51:59.999 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: falcon-7b-8bit
+2024-03-22 01:57:37.866 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 6585.656455039978. Prediction so far: {'Application and Task': 470, 'Implementation': 6838, 'Implementation with Application and Task': 3099, 'Other': 1248} @line 24
+2024-03-22 01:57:37.867 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: resnet101.tv_in1k
+2024-03-22 02:03:21.741 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 6929.530791759491. Prediction so far: {'Application and Task': 485, 'Implementation': 7118, 'Implementation with Application and Task': 3215, 'Other': 1292} @line 25
+2024-03-22 02:03:21.741 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: hrnet_w48_ssld.paddle_in1k
+2024-03-22 02:09:47.124 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 7314.914131641388. Prediction so far: {'Application and Task': 501, 'Implementation': 7411, 'Implementation with Application and Task': 3327, 'Other': 1341} @line 26
+2024-03-22 02:09:47.125 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: WizardLM-Uncensored-Falcon-40b
+2024-03-22 02:16:01.686 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 7689.47625541687. Prediction so far: {'Application and Task': 518, 'Implementation': 7703, 'Implementation with Application and Task': 3442, 'Other': 1379} @line 27
+2024-03-22 02:16:01.686 | SUCCESS  | __main__:open_ai:35 - Beginning of user_content: textual_inversion_moto_toy
+2024-03-22 02:18:21.544 | SUCCESS  | __main__:open_ai:63 - Time elapsed: 7829.33388543129. Prediction so far: {'Application and Task': 525, 'Implementation': 7793, 'Implementation with Application and Task': 3488, 'Other': 1402} @line 28
+2024-03-22 02:18:21.544 | SUCCESS  | __main__:run:75 - Prediction running all jsonl entry: {'Application and Task': 525, 'Implementation': 7793, 'Implementation with Application and Task': 3488, 'Other': 1402}
+2024-03-22 02:18:21.544 | SUCCESS  | __main__:run:76 - Total time elapsed: 7829.33478975296
