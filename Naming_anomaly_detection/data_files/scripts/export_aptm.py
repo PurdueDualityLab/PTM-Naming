@@ -132,7 +132,7 @@ if __name__ == "__main__":
             if os.path.exists(str(os.getenv("LOCAL_WEIGHT_PATH")) + f'/{first_letter}/' + repo_name):
                 try:
                     logger.debug(f"Loading {repo_name} in_4bit=True")
-                    q_config = BitsAndBytesConfig(load_in_4_bit=True)
+                    q_config = BitsAndBytesConfig(load_in_4bit=True)
                     aptm = AbstractNN.from_huggingface(
                         str(os.getenv("LOCAL_WEIGHT_PATH")) + f'/{first_letter}/' + repo_name,
                         quantization_config=q_config,
@@ -140,7 +140,7 @@ if __name__ == "__main__":
                     )
                 except:
                     logger.debug(f"Loading {repo_name} in_4bit=False")
-                    # q_config = BitsAndBytesConfig(load_in_4_bit=False)
+                    # q_config = BitsAndBytesConfig(load_in_4bit=False)
                     aptm = AbstractNN.from_huggingface(
                         str(os.getenv("LOCAL_WEIGHT_PATH")) + f'/{first_letter}/' + repo_name,
                         # quantization_config=q_config,
