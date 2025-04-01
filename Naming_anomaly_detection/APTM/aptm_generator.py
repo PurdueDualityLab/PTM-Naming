@@ -320,15 +320,13 @@ class AbstractNNGenerator():
                 iter_bar.update(1)
 
             conversion_handler.populate_class_var_from_onnx(self.model)
-        # logger.info(conversion_handler.aptm_layer_edge_list)
         if self.verbose:
             iter_bar.set_description("Converting onnx Graph to ANN")
             iter_bar.update(1)
 
         traverser = AbstractNNSorter(conversion_handler, self.use_hash)
-        logger.info(len([aptm.operation for aptms in traverser.adj_dict.values() for aptm in aptms]))   # total passed layers
+        # logger.info(len([aptm.operation for aptms in traverser.adj_dict.values() for aptm in aptms]))   # total passed layers
         aptmlayer_list = traverser.generate_aptmlayer_list()
-
         if include_connection:
             layer_id_connection_list: List[Tuple[Union[int, str], List[Union[int, str]]]] = []
             for layer in aptmlayer_list:

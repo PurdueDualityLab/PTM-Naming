@@ -10,7 +10,6 @@ import os
 import time
 import json
 from typing import List, Tuple, Union, Optional, Any
-from collections import Counter
 
 import torch
 from loguru import logger
@@ -21,8 +20,6 @@ from APTM.aptm_generator import AbstractNNGenerator
 from APTM.aptm_layer import AbstractNNLayer
 from APTM.old_pipelines.APTMToJSONConverter import read_aptmlayer_list_from_json, aptmlayer_list_to_json
 from tools.HFValidInputIterator_eval import HFValidInputIterator
-
-# MODELS = [AutoModelForDocumentQuestionAnswering, AutoModelForCausalLM, AutoModelForTextToSpectrogram, SpeechT5ForSpeechToText, UniSpeechModel, VisionEncoderDecoderModel, MistralForCausalLM]
 
 class AbstractNN():
     """
@@ -37,13 +34,11 @@ class AbstractNN():
         self,
         aptmlayer_list: Optional[List[AbstractNNLayer]] = None,
         connection_info: Optional[List[Tuple[Union[int, str], List[Union[int, str]]]]] = None,
-        intermediate_output: Optional[List[Tuple[str, torch.Tensor]]] = None
     ) -> None:
         self.content = aptmlayer_list
         self.connection_info = connection_info
         self.layer_connection_vector, self.layer_with_parameter_vector, self.dim_vector = \
             self.vectorize()
-        self.intermediate_output = intermediate_output
         
     @staticmethod
     def from_huggingface(
@@ -88,34 +83,25 @@ class AbstractNN():
                 )
             except Exception as emsg: # pylint: disable=broad-except
                 err_msg = str(emsg)
-        # if model is None:
-        #     for model in MODELS:
-        #         try:
-        #             model = model.from_pretrained(
-        #                 hf_repo_name,
-        #                 trust_remote_code=trust_remote_code,
-        #                 # device_map=device_map,
-        #                 **kwargs
-        #             )
-        #             break
-        #         except Exception as emsg: # pylint: disable=broad-except
-        #             err_msg = str(emsg)
-            # logger.info(emsg)
-            # exit()
-        
+        if model is None:
+            raise RuntimeError(f"Failed to load model from {hf_repo_name}: {err_msg}")
+
         correct_arch = model.config.architectures[0] if model.config.architectures else None
+        if correct_arch == "LLaMAForCausalLM":
+            correct_arch = "LlamaForCausalLM"
         if correct_arch and correct_arch != type(model).__name__:
-            logger.info(f"Reloading model as: {correct_arch}")
-            
+            if verbose:
+                logger.info(f"Reloading model as: {correct_arch}")
             try:
                 model_class = getattr(transformers, correct_arch, None)
                 model = model_class.from_pretrained(
                     hf_repo_name,
                     trust_remote_code=trust_remote_code,
-                    # device_map=device_map,
+                    device_map=device_map,
                     **kwargs
                 )
-                logger.info(f"Successfully loaded model as: {correct_arch}")
+                if verbose:
+                    logger.info(f"Successfully loaded model as: {correct_arch}")
             except Exception as emsg: # pylint: disable=broad-except
                 err_msg = str(emsg)
                 logger.error(f"Failed to load model as: {correct_arch}, {emsg}")
@@ -131,17 +117,22 @@ class AbstractNN():
                 except Exception as emsg: # pylint: disable=broad-except
                     err_msg = str(emsg)
         
+        model = model.to(device)
         T_loading = time.time() - loading_start_time
+        
+        # count total parameters (eval)
+        calculate_total_params_start_time = time.time()
+        total_params = sum(p.numel() for p in model.parameters())
+        T_caculate_total_params = time.time() - calculate_total_params_start_time
+        
         if model is None:
             raise ValueError(f"Failed to load the model: {err_msg}")
 
         if verbose:
             logger.success(f"Successfully load the model.")
-        total_params = sum(p.numel() for p in model.parameters())
         
         # start APTM generation, vectorization
         start_time = time.time()
-        model = model.to(device)
         if tracing_input == "auto":
             if verbose:
                 logger.info("Automatically generating an input...")
@@ -168,8 +159,6 @@ class AbstractNN():
         if verbose:
             logger.info("Generating APTM...")
         
-        # logger.info(f"Tracing input: {tracing_input}, type: {type(tracing_input)}")
-        # assert isinstance(tracing_input, torch.Tensor)# or isinstance(tracing_input, dict)
         aptm_gen = AbstractNNGenerator(
             model = model,
             inputs = tracing_input, # type: ignore
@@ -179,24 +168,22 @@ class AbstractNN():
         )
         
         layer_list, conn_info = aptm_gen.generate_aptmlayer_list(include_connection=True)
-        print(f"Layer list: {layer_list}")
-        print(f"Connection info: {conn_info}")
         assert isinstance(layer_list, list)
         assert isinstance(conn_info, list)
 
+        ret_aptm = AbstractNN(layer_list, conn_info)
+
         end_time = time.time()
-        
         if verbose:
             logger.success(f"APTM generated. Time taken: {round(end_time - start_time, 4)}s")
             logger.info("Vectorizing...")
-
-        ret_aptm = AbstractNN(layer_list, conn_info) #, model.intermediate_features)
-
-        end_time = time.time()
         
         if verbose:
             logger.success("Success.")
-        return ret_aptm, end_time - start_time, T_loading, total_params
+        T_aptm = end_time - start_time - T_caculate_total_params
+        T_latency = {"T_aptm": T_aptm, "T_loading": T_loading, "T_exclude": T_caculate_total_params}
+        
+        return ret_aptm, T_latency, total_params
 
     @staticmethod
     def from_json(
@@ -257,15 +244,6 @@ class AbstractNN():
 
         with open(output_loc, "w", encoding="utf-8") as f:
             json.dump(combined_vec, f, indent=4)
-    
-    def export_intermediate_output(
-        self,
-        output_loc: str
-    ) -> None:
-        if self.intermediate_output is None:
-            raise ValueError("The intermediate_output is None.")
-        with open(output_loc, 'w', encoding="utf-8") as f:
-            json.dump(self.intermediate_output, f)
 
     def get_aptmlayer_layer_op_repr(
         self,

@@ -5,15 +5,11 @@ from loguru import logger
 import torch
 import pandas as pd
 import numpy as np
-from transformers import AutoModel, WhisperForConditionalGeneration
-from tokenizers import Tokenizer
-from tokenizers.models import BPE
-from tools.HFAutoClassIterator import HFAutoClassIterator
+from transformers import AutoModel
+from tools.HFAutoClassIterator_eval import HFAutoClassIterator
 import json
 import requests
 from PIL import Image
-
-import itertools
 
 class HFValidInputIterator():
     """
@@ -65,18 +61,14 @@ class HFValidInputIterator():
             A valid input for the Hugging Face model.
         """
         err_report = {}
-        inputs = {} #for models that require multiple inputs
-        input_types = [torch.float16, torch.float32]
+        
         for valid_autoclass_obj in self.valid_autoclass_obj_list:
             trial_func_list = self.func_storage.auto_get_func(valid_autoclass_obj)
             logger.info(f"Using {valid_autoclass_obj.__class__.__name__}")
             for trial_func in trial_func_list:
-                # iter_bar.update(1)
                 logger.info(f"-> Trying Func {trial_func.__name__}")
                 try:
                     trial_input = trial_func(valid_autoclass_obj)
-                    # inputs.update(trial_input)
-                    # logger.info(f"{trial_input, (v.device for v in trial_input.values())}")
                 except Exception as emsg: # pylint: disable=broad-except
                     if valid_autoclass_obj.__class__.__name__ not in err_report:
                         err_report[valid_autoclass_obj.__class__.__name__] = {}
@@ -109,38 +101,9 @@ class HFValidInputIterator():
                             err_report[valid_autoclass_obj.__class__.__name__] = {}
                         err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__]\
                             = ("InferenceError", str(emsg3))
-                
-                # logger.warning(f"Cannot infer {self.hf_repo_name} due to {emsg}")
-                '''
-                if len(inputs) >= 2:
-                    combinations = list(itertools.combinations(inputs.items(), 2))
-                    for (input1, input2) in combinations:
-                        # logger.info(f"{input1}, {input2}\n")
-                        for torch_type in input_types:    
-                            input_dict = {input1[0]: input1[1], input2[0]: input2[1]} # fix to try all combinations  #input1[0]: input1[1].to(torch.long)
-                            # logger.success(f"{input_dict}, {input1[1].dtype}, {input2[1].dtype}")
-                            try:
-                                self.model(**input_dict)
-                                # logger.success(f"Find an input for {self.hf_repo_name}, {input_dict.keys()}")
-                                return input_dict
-                            except RuntimeError as emsg: 
-                                if "Input type (float) and bias type (c10::Half) should be the same" in str(emsg):
-                                    continue
-                                if "Input type (c10::Half) and bias type (float) should be the same" in str(emsg):
-                                    continue
-                                if str([input1[0], input2[0]]) not in err_report:
-                                    err_report[str([input1[0], input2[0]])] = {}
-                                err_report[str([input1[0], input2[0]])][trial_func.__name__]\
-                                    = ("InferenceError", str(emsg))
-                            except Exception as emsg: # pylint: disable=broad-except
-                                if str([input1[0], input2[0]]) not in err_report:
-                                    err_report[str([input1[0], input2[0]])] = {}
-                                err_report[str([input1[0], input2[0]])][trial_func.__name__]\
-                                    = ("InferenceError", emsg)
-                '''
 
         logger.error(f"Cannot find a valid input for {self.hf_repo_name} or Request Time Out")
-        # exit()
+
         for autoclass_type, trial_func_dict in err_report.items():
             logger.error(f"Error report for {autoclass_type}:")
             for trial_func, err in trial_func_dict.items():
@@ -155,12 +118,10 @@ class TrialFunctionStorage():
         None
     """
     def __init__(self, device):
-        # torch.manual_seed(0)
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(0)
         np.random.seed(0)
         self.device = device
-        # self.img_1_3_244_244 = torch.rand(1, 3, 224, 224)
 
     def auto_get_func(self, auto_class_obj):
         """
@@ -200,8 +161,8 @@ class TrialFunctionStorage():
 
     def t_10_txt(self, auto_class_obj):
         return auto_class_obj("Test Input", return_tensors="pt")
-    # def t_txt_10_tts(self, auto_class_obj):
-    #     return auto_class_obj(text="T", return_tensors="pt")['input_ids']
+    def t_txt_10_tts(self, auto_class_obj):
+        return auto_class_obj(text="T", return_tensors="pt")['input_ids']
     def t_10_txt_cuda(self, auto_class_obj):
         encoding = auto_class_obj("Test Input", return_tensors="pt")
         return encoding.to(self.device)
@@ -423,7 +384,7 @@ if __name__ == "__main__":
     #     device="auto",
     #     trust_remote_code=False
     # )
-    print(in_iter.get_valid_input())
+    # print(in_iter.get_valid_input())
     import torchview
     graph = torchview.draw_graph(model, input_size=[(1, 2), (1, 2)])  # Adjust input size if needed
     graph.visual_graph.view()

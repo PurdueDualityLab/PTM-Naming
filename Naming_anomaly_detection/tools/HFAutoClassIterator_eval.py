@@ -3,7 +3,7 @@ This file contains the HFAutoClassIterator class which is used to
 iterate through the Hugging Face Auto classes.
 """
 from loguru import logger
-from transformers import AutoTokenizer, AutoFeatureExtractor, AutoImageProcessor, AutoProcessor, T5Tokenizer, XLMRobertaTokenizer, GPT2Tokenizer
+from transformers import AutoTokenizer, AutoFeatureExtractor, AutoImageProcessor, AutoProcessor
 
 class HFAutoClassIterator():
     """
@@ -19,7 +19,7 @@ class HFAutoClassIterator():
     def __init__(
         self,
         hf_repo_name,
-        auto_classes = [AutoFeatureExtractor, AutoTokenizer , AutoImageProcessor, AutoProcessor],
+        auto_classes = [AutoProcessor, AutoFeatureExtractor, AutoTokenizer, AutoImageProcessor],
         cache_dir = None,
         verbose = True,
         trust_remote_code = False
