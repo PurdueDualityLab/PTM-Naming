@@ -2,8 +2,6 @@
 This script is used to load the peatmoss data into JSON files.
 """
 
-import subprocess
-import time
 import sqlite3
 import os
 import random
@@ -13,7 +11,7 @@ from loguru import logger
 
 if __name__ == "__main__":
     load_dotenv(".env")
-    with open("data_files/sql/filter_2.sql", "r", encoding="utf-8") as f:   # filter arch with >5 models, filter models with >5 downloads
+    with open("Naming_anomaly_detection/data_files/sql/filter_2.sql", "r", encoding="utf-8") as f:   # filter arch with >5 models, filter models with >5 downloads
         query = f.read()
     conn = sqlite3.connect(str(os.getenv("PEATMOSS_DB")))
     c = conn.cursor()
@@ -33,8 +31,6 @@ if __name__ == "__main__":
             
         arch_to_model[arch_name].append(repo_name)
         model_to_download[repo_name] = download_count
-    
-    
     
     selected_repos_list = []
     selected_arch_to_model = {}
@@ -93,9 +89,9 @@ if __name__ == "__main__":
     # print the number of selected models
     # print(len(selected_repos_list))
 
-    with open("data_files/PeaTMOSS_dataset/selected_peatmoss_repos.json", "w", encoding="utf-8") as f:
+    with open("Naming_anomaly_detection/data_files/json_files/selected_peatmoss_repos.json", "w", encoding="utf-8") as f:
         json.dump(selected_repos_list, f)
-    with open("data_files/PeaTMOSS_dataset/arch_to_repo_name.json", "w", encoding="utf-8") as f:
+    with open("Naming_anomaly_detection/data_files/json_files/arch_to_repo_name.json", "w", encoding="utf-8") as f:
         json.dump(selected_arch_to_model, f)
         
     # for arch_name, repo_list in arch_to_model.items():
