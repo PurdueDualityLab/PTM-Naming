@@ -7,13 +7,15 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.optim.lr_scheduler import StepLR
 from torch.utils.data import DataLoader
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, hamming_loss, accuracy_score
+
 import seaborn as sns
+from collections import defaultdict
 
 import matplotlib.pyplot as plt
 
 from modeling import DARA_classifier
 from dataloader import DARA_dataset
+from utils import top_k_accuracy, top_k_predictions, eval_metrics
 
 from loguru import logger  # Ensure logger is imported if used for logging
 
@@ -21,6 +23,7 @@ from loguru import logger  # Ensure logger is imported if used for logging
 # Check for GPU availability
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logger.info(f"Using device: {device}")
+num_classes = None
 
 # torch.random.manual_seed(42)  # Set random seed for reproducibility
 def set_seed(seed=42):
@@ -32,23 +35,54 @@ def set_seed(seed=42):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-def train_and_evaluate(model, train_loader, eval_loader, criterion, optimizer, scheduler, device="cuda", epochs=10, eval_interval=10, multi_label=False):
-    model.train()  # Set model to training mode
-    train_losses = []
-    eval_accuracies = []
-    all_preds = []
+
+def eval(model, eval_loader, criterion, device="cuda", multi_label=False, top_k=None):
+    global num_classes
+
+    model.eval()
+    all_preds_scores = []
     all_targets = []
+    total_loss = 0
+    with torch.no_grad():
+        for data, target, _ in eval_loader:
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            total_loss += criterion(output, target).item()
+            all_preds_scores.extend(output.cpu().numpy())
+            all_targets.extend(target.cpu().numpy())
+    eval_loss = total_loss / len(eval_loader)
+    logger.info(f'Eval Loss: {eval_loss:.4f}')
+
+    all_preds_scores = np.array(all_preds_scores)
+    all_targets = np.array(all_targets)
+
+    if multi_label and top_k is not None:
+        all_preds = top_k_predictions(all_preds_scores, top_k)
+    elif multi_label:
+        all_preds = (torch.sigmoid(torch.tensor(all_preds_scores)) > 0.5).int().numpy()
+    else:
+        all_preds = np.argmax(all_preds_scores, axis=1)
+    
+    metrics = eval_metrics(all_targets, all_preds, top_k)
+    
+    return eval_loss, metrics, all_preds, all_targets
+
+def train_and_evaluate(model, train_loader, eval_loader, criterion, optimizer, scheduler, device="cuda", epochs=10, eval_interval=10, multi_label=False, top_k=None):
+    model.train()  # Set model to training mode
+    train_losses, eval_losses = [], []
+    eval_metrics = defaultdict(list)
 
     for epoch in range(epochs):
         total_loss = 0
+        model.train()
         for data, target, _ in train_loader:  # Assuming data loaders yield (data, target) tuples
-            data, target = data.to(device), target.to(device)  # Ensure target is the correct type for loss calculation
-            optimizer.zero_grad()  # Clear gradients
-            output = model(data)  # Forward pass
-            loss = criterion(output, target)  # Compute loss
-            loss.backward()  # Backward pass
-            optimizer.step()  # Update model parameters
-            total_loss += loss.item()  # Accumulate the loss
+            data, target = data.to(device), target.to(device)
+            optimizer.zero_grad()
+            output = model(data)
+            loss = criterion(output, target)
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item()
 
         # Calculate and log the average loss for the epoch
         epoch_loss = total_loss / len(train_loader)
@@ -58,78 +92,17 @@ def train_and_evaluate(model, train_loader, eval_loader, criterion, optimizer, s
         # Evaluation phase
         if (epoch + 1) % eval_interval == 0 or epoch == epochs - 1:
             model.eval()  # Set model to evaluation mode
-            accuracy, preds, targets = eval(model, eval_loader, device, multi_label)  # Evaluate model
-            eval_accuracies.append(accuracy)
-            all_preds.extend(preds)  # Collect all predictions
-            all_targets.extend(targets)  # Collect all true labels
-            logger.info(f'Epoch {epoch+1}, Eval Accuracy: {accuracy:.2f}%')
-            model.train()  # Set model back to training mode
+            eval_loss, metrics, preds, targets = eval(model, eval_loader, criterion, device, multi_label, top_k)  # Evaluate model
+            eval_losses.append(eval_loss)
+            for k, v in metrics.items():
+                eval_metrics[k].append(v)
+
+            logger.info(f'Epoch {epoch+1}, Eval Metrics: {", ".join([f"{k}: {v:.2f}" for k, v in metrics.items()])}')
 
         # Step the learning rate scheduler
         scheduler.step()
 
-    return train_losses, eval_accuracies, all_preds, all_targets
-
-
-
-# def eval(model, eval_loader, device="cuda"):
-#     model.eval()  # Set the model to evaluation mode
-#     all_preds = []
-#     all_targets = []
-#     with torch.no_grad():  # No need to track gradients for evaluation
-#         for data, target, _ in eval_loader:  # Change this line to match the expected output
-#             data, target = data.to(device), target.to(device).long()
-#             output = model(data)
-#             _, predicted = torch.max(output, 1)
-#             all_preds.extend(predicted.cpu().numpy())
-#             all_targets.extend(target.cpu().numpy())
-#     correct = (np.array(all_preds) == np.array(all_targets)).sum()
-#     total = len(all_targets)
-#     accuracy = 100 * correct / total
-#     return accuracy, all_preds, all_targets
-
-def top_2_accuracy(y_true, y_logits):
-    top_2 = np.argsort(y_logits, axis=1)[:, -2:]  # Get indices of top 2 predictions
-    accuracy = 0
-    
-    for i in range(len(y_true)):
-        true_labels = np.where(y_true[i] == 1)[0]  # Get indices of true labels
-        for label in true_labels:
-            if label in top_2[i]:
-                accuracy += 1
-                break  # Count a sample as correct if any true label is in top 2
-    return accuracy / len(y_true)
-
-def eval(model, eval_loader, device="cuda", multi_label=False):
-    model.eval()
-    all_preds = []
-    all_targets = []
-    with torch.no_grad():
-        for data, target, _ in eval_loader:
-            data, target = data.to(device), target.to(device)
-            output = model(data)
-            if multi_label:
-                preds = torch.sigmoid(output)
-                all_preds.extend(preds.cpu().numpy())
-                all_targets.extend(target.cpu().numpy())
-            else:
-                _, preds = torch.max(output, 1)
-                all_preds.extend(preds.cpu().numpy())
-                all_targets.extend(target.cpu().numpy())
-
-    if multi_label:
-        # hamming = hamming_loss(all_targets, np.array(all_preds) > 0.5)
-        # accuracy = accuracy_score(all_targets, np.array(all_preds) > 0.5)
-        # return accuracy * 100, all_preds, all_targets
-        accuracy = top_2_accuracy(all_targets, np.array(all_preds)) #calculate top 2 accuracy.
-        return accuracy * 100, all_preds, all_targets
-    else:
-        correct = (np.array(all_preds) == np.array(all_targets)).sum()
-        total = len(all_targets)
-        accuracy = 100 * correct / total
-        return accuracy, all_preds, all_targets
-
-
+    return train_losses, eval_losses, eval_metrics, preds, targets
 
 def evaluate_and_save_results(model, eval_loader, index_to_label, device="cuda", filepath='evaluation_results.json'):
     model.eval()  # Set the model to evaluation mode
@@ -158,8 +131,6 @@ def evaluate_and_save_results(model, eval_loader, index_to_label, device="cuda",
     logger.success(f"Saved incorrect predictions to {filepath}")
 
     print(f"Saved incorrect predictions to {filepath}")
-
-
 
 def plot_confusion_matrix(preds, targets, index_to_label, label_type):
     with open(f'./Naming_anomaly_detection/data_files/json_files/{label_type}_label_to_domain.json', 'r') as f:
@@ -195,7 +166,7 @@ def plot_confusion_matrix(preds, targets, index_to_label, label_type):
         # Filter out the labels that are not in the filtered targets
         index_to_label = {idx: label for idx, label in index_to_label.items() if idx in set(filtered_targets)}
         label_to_index = {label: idx for idx, label in index_to_label.items()}
-        # label_to_domain = {domain: [label for label in labels if label in label_to_index] for domain, labels in label_to_domain.items()}
+        # label_to_domain = {domain: [label for label in laberls if label in label_to_index] for domain, labels in label_to_domain.items()}
             
     # labels_ordered = [index_to_label[str(i)] for i in range(len(index_to_label))]
     # Order labels based on domain
@@ -277,16 +248,15 @@ def plot_confusion_matrix(preds, targets, index_to_label, label_type):
     
     # plt.tight_layout()  # Adjust layout to not cut off labels
 
-
-def plot_loss(train_losses, epochs, lr, batch_size, label_type):
+def plot_loss(train_losses, eval_losses, epochs, lr, batch_size, label_type, eval_interval):
     plt.figure(figsize=(10, 6))
     plt.plot(range(1, epochs + 1), train_losses, label='Training Loss')
+    plt.plot(range(eval_interval, epochs + 1, eval_interval), eval_losses, label='Evaluation Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.title(f'Training Loss over Epochs | LR: {lr}, Batch Size: {batch_size}')
     plt.legend()
-    plt.savefig(f"{label_type}_train_loss_{epochs}epochs_lr{lr}_batch{batch_size}_final.png")
-
+    plt.savefig(f"Naming_anomaly_detection/DARA/results/{label_type}_train_loss_{epochs}epochs_lr{lr}_batch{batch_size}_final.png")
 
 def plot_accuracy(test_accuracies, epochs, lr, batch_size, label_type):
     eval_interval = epochs // len(test_accuracies) if len(test_accuracies) > 0 else 1
@@ -298,8 +268,7 @@ def plot_accuracy(test_accuracies, epochs, lr, batch_size, label_type):
     plt.title(f'Test Accuracy over Epochs | LR: {lr}, Eval Batch Size: {batch_size}')
     plt.xticks(x_vals)
     plt.legend()
-    plt.savefig(f"{label_type}_test_accuracy_{epochs}epochs_lr{lr}_batch{batch_size}_final.png")
-
+    plt.savefig(f"Naming_anomaly_detection/DARA/results/{label_type}_test_accuracy_{epochs}epochs_lr{lr}_batch{batch_size}_final.png")
 
 def run():
     ############################
@@ -359,7 +328,6 @@ def run():
 
     evaluate_and_save_results(model, eval_loader, index_to_label, filepath=f'{label_type}_evaluation_results.json')
 
-
 def CV_run():
     from sklearn.model_selection import KFold
     ############################
@@ -368,22 +336,26 @@ def CV_run():
     lr = 1e-3
     train_batch_size = 256
     eval_batch_size = 32
-
-    # label_type = "model_type"
+    eval_interval=10
+    # label_type = "model_type" # 50 epochs, lr=1e-3, batch_size=256 macro_recall: 0.97 (± 0.02) macro_precision: 0.98 (± 0.01) macro_f1: 0.97 (± 0.02) accuracy: 0.99 (± 0.01)
     label_type = "task"
-    # label_type = "arch" # TODO: This needs a different hyperparameter setting
+    # label_type = "arch" # 50 epochs, lr=1e-3, batch_size=256 macro_recall: 0.56 (± 0.05) macro_precision: 0.51 (± 0.06) macro_f1: 0.50 (± 0.06) accuracy: 0.57 (± 0.05)
     ############################
+    top_k = None
     if label_type == "task":
         vec_path = 'data_cleaned.json'
         multi_label = True
+        top_k = 1
+        # vec_path = 'data_cleaned_prev.json'
     else:
         vec_path = 'data.json'
         multi_label = False
+        # vec_path = 'data_prev.json'
     # data_loader = DataLoader(vec_path)
 
-    full_dataset = DARA_dataset(dict_path=vec_path, label_type=label_type, multi_label=multi_label)
-
-
+    full_dataset = DARA_dataset(dict_path=vec_path, label_type=label_type)
+    
+    global num_classes
     index_to_label = full_dataset.get_label_mapping()
     num_classes = full_dataset.get_num_classes()
     input_shape = full_dataset.get_data_shape()
@@ -392,13 +364,11 @@ def CV_run():
     logger.info(f"Input shape: {input_shape}")
     logger.info(f"label type: {label_type}")
 
-
-
     kf = KFold(n_splits=5, shuffle=True, random_state=42)
 
     # Variables to store cumulative results
-    cumulative_train_losses = []
-    cumulative_eval_accuracies = []
+    cumulative_train_losses, cumulative_eval_losses = [], []
+    cumulative_eval_metrics = defaultdict(list)
 
     fold = 0  # Counter for current fold
 
@@ -416,25 +386,37 @@ def CV_run():
         # Initialize DataLoaders for the current fold
         train_loader = DataLoader(train_subset, batch_size=train_batch_size, shuffle=True, num_workers=0, pin_memory=True)
         eval_loader = DataLoader(eval_subset, batch_size=eval_batch_size, num_workers=0, pin_memory=True)
-
         # Initialize the model for the current fold
         model = DARA_classifier(input_size=input_shape[1], output_size=num_classes).to(device)
         optimizer = optim.Adam(model.parameters(), lr=lr)
         scheduler = StepLR(optimizer, step_size=30, gamma=0.1)
-        if multi_label:
+        if label_type == 'task':
             criterion = nn.BCEWithLogitsLoss()
         else:
             criterion = nn.CrossEntropyLoss()
         
         # Train and evaluate the model on the current fold
-        train_losses, eval_accuracies, preds, targets = train_and_evaluate(model, train_loader, eval_loader, criterion, optimizer, scheduler, device=device, epochs=epochs, eval_interval=10, multi_label=multi_label)
-        logger.success(f"Fold {fold}, Final Eval Accuracy: {eval_accuracies[-1]:.2f}%")
+        train_losses, eval_losses, eval_metrics, preds, targets = train_and_evaluate(model, 
+                                                                        train_loader, 
+                                                                        eval_loader, 
+                                                                        criterion, 
+                                                                        optimizer, 
+                                                                        scheduler, 
+                                                                        device=device, 
+                                                                        epochs=epochs, 
+                                                                        eval_interval=eval_interval, 
+                                                                        multi_label=multi_label,
+                                                                        top_k=top_k
+                                                                        )
+        logger.info(f'Fold {fold}, Final Eval Metrics: {", ".join([f"{k}: {v[-1]:.2f}" for k, v in eval_metrics.items()])}')
 
         all_fold_preds.extend(preds)
         all_fold_targets.extend(targets)
         # Append results from the current fold
         cumulative_train_losses.append(train_losses)
-        cumulative_eval_accuracies.append(eval_accuracies)
+        cumulative_eval_losses.append(eval_losses)
+        for key, value in eval_metrics.items():
+            cumulative_eval_metrics[key].append(value)
 
         # Optionally, save model and results per fold
         '''
@@ -444,14 +426,21 @@ def CV_run():
 
     # After all folds are completed, calculate and log the average performance across all folds
     average_train_loss = [sum(losses) / len(losses) for losses in zip(*cumulative_train_losses)]
-    average_eval_accuracy = [sum(accs) / len(accs) for accs in zip(*cumulative_eval_accuracies)]
+    average_eval_loss = [sum(losses) / len(losses) for losses in zip(*cumulative_eval_losses)]
+    average_eval_accuracy = [sum(accs) / len(accs) for accs in zip(*cumulative_eval_metrics['accuracy'])]
     logger.info(f"Average Eval Accuracy across all folds: {average_eval_accuracy[-1]:.2f}%")
 
     # Call plotting functions for the averages
-    # plot_loss(average_train_loss, epochs, lr, train_batch_size, label_type)
-    # plot_accuracy(average_eval_accuracy, epochs, lr, eval_batch_size, label_type)
-
+    plot_loss(average_train_loss, average_eval_loss, epochs, lr, train_batch_size, label_type, eval_interval)
+    plot_accuracy(average_eval_accuracy, epochs, lr, eval_batch_size, label_type)
     logger.success("5-Fold Cross Validation completed")
+    print(f"top_k: {top_k}")
+    for k, v in cumulative_eval_metrics.items():
+        last_element = [sublist[-1] for sublist in v]
+        mean = np.mean(last_element)
+        std = np.std(last_element)
+        print(f"{k}: {mean:.2f} (± {std:.2f})")
+        
     '''
     # Save the inputs to confusion matrix
     np.save(f'{label_type}_all_fold_preds_final.npy', all_fold_preds)
@@ -469,11 +458,5 @@ def CV_run():
     '''
 if __name__ == "__main__":
     # Set random seed
-    # torch.manual_seed(0)
-    # np.random.seed(0)
     set_seed(0)
-    # run_PTMTorrent()
-    # run()
     CV_run()
-
-

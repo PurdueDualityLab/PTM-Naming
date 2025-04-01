@@ -5,9 +5,8 @@ from torch.utils.data import Dataset
 from sklearn.preprocessing import MultiLabelBinarizer
 
 class DARA_dataset(Dataset):
-    def __init__(self, dict_path: str, label_type: str, train_ratio: float = 0.8, multi_label=False) -> None:
+    def __init__(self, dict_path: str, label_type: str, train_ratio: float = 0.8) -> None:
         self.label_type = label_type
-        self.multi_label = multi_label
         self.model_dict = self.load_dict(dict_path)
         self.model_names = list(self.model_dict.keys())
         self.data = self.processing()
@@ -15,7 +14,7 @@ class DARA_dataset(Dataset):
         self.mlb.fit([item[1] for item in self.data])
         self.label_to_index = {label: idx for idx, label in enumerate(self.mlb.classes_)}
         self.index_to_label = {idx: label for label, idx in self.label_to_index.items()}
-        if multi_label:
+        if label_type == 'task':
             self.convert_labels_to_binary()
         else:
             self.convert_labels_to_indices()
@@ -31,8 +30,9 @@ class DARA_dataset(Dataset):
             l_tensor = torch.tensor(self.model_dict[model_name]['l'], dtype=torch.float).unsqueeze(0)
             p_tensor = (1 * torch.tensor(self.model_dict[model_name]['p'], dtype=torch.float)).unsqueeze(0)
             vec = torch.cat((l_tensor, p_tensor), dim=1)
+            # vec = torch.tensor(self.model_dict[model_name]['l'], dtype=torch.float).unsqueeze(0)
             label = self.model_dict[model_name][self.label_type]
-            if self.multi_label and not isinstance(label, list):
+            if not isinstance(label, list):
                 label = [label]  # Ensure labels are always lists
             data.append((vec, label, model_name))
         return data
@@ -47,14 +47,14 @@ class DARA_dataset(Dataset):
     def convert_labels_to_indices(self):
         self.data = [(vec, self.label_to_index[label[0]], name) for vec, label, name in self.data]
 
-                
-
     def shuffle_data(self):
         random.shuffle(self.data)
 
     def __getitem__(self, idx):
         vec, label, name = self.data[idx]  # Adjust if your data structure is different
-        return vec, torch.tensor(label, dtype=torch.float), name
+        if self.label_type == 'task':
+            label = torch.tensor(label, dtype=torch.float)
+        return vec, label, name
     
     def __len__(self):
         return len(self.data)
