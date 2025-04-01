@@ -1,0 +1,411 @@
+import argparse
+import json
+import os
+import random
+import evaluate
+from collections import defaultdict
+
+import numpy as np
+import torch
+import torch.nn as nn
+from datasets import Dataset
+from dotenv import load_dotenv
+from loguru import logger
+from sklearn.metrics import confusion_matrix, average_precision_score, f1_score
+from sklearn.model_selection import KFold
+from sklearn.preprocessing import LabelEncoder
+from torch.utils.data import DataLoader
+from tokenizers import ByteLevelBPETokenizer
+from transformers import (
+    DataCollatorForLanguageModeling,
+    RobertaConfig,
+    RobertaForMaskedLM,
+    RobertaForSequenceClassification,
+    RobertaTokenizerFast,
+    Trainer,
+    TrainingArguments,
+    AutoConfig, 
+    AutoModel, 
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+)
+
+from DARA.utils import eval_metrics, plot_accuracy, plot_loss, top_k_predictions
+from dataloader import transformer_dataset
+from loss import contrastive_loss
+from cl_trainer import ContrastiveCrossEntropyTrainer
+
+load_dotenv()
+os.environ['HF_HOME'] = os.getenv("HF_HOME")
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+# Check for GPU availability
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+logger.info(f"Using device: {device}")
+
+MODELS = {
+    'roberta': 'roberta-base',
+    'bert': 'bert-base-uncased',
+    'distilroberta': 'distilroberta-base',
+    'convbert': 'YituTech/conv-bert-base',
+    'electra': 'google/electra-base-discriminator',
+    'mobilebert': 'google/mobilebert-uncased',
+    'tinybert': 'prajjwal1/bert-tiny', 
+    'deberta': 'microsoft/deberta-base',
+    'longformer': 'allenai/longformer-base-4096',
+    'bge': 'BAAI/bge-en-icl',
+    'stella': 'dunzhang/stella_en_1.5B_v5'
+    }
+
+def parse_arg():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--batch', type=int, default=64, help='batch size')
+    parser.add_argument('--eval_batch_size', type=int, default=64, help='batch size')
+    parser.add_argument('--epoch', type=int, default=30, help='epochs')
+    parser.add_argument('--num_workers', type=int, default=2, help='number of workers')
+    parser.add_argument('--root', type=str, default='/depot/davisjam/data/mingyu/ptm-contrastive-learning/contrastive_learning', help='root directory for operation strings')
+    parser.add_argument('--cp', '-checkpoint', type=str, default='', help='path to checkpoint of pretrained model')
+    parser.add_argument('--lr', type=float, default=5e-5, help='Learning rate')
+    
+    parser.add_argument("--output_dir", default='./layer_pretrained', type=str,
+                        help="The output directory where the model predictions and checkpoints will be written.")
+    
+    parser.add_argument('--model_name', type=str, choices=['roberta', 'bert', 'distilroberta', 'distilbert', 'convbert', 'albert', 'electra', 'mobilebert', 'tinybert', 'deberta', 'longformer', 'bge', 'stella'], default='roberta', help='model type')
+    parser.add_argument('--loss_fn', type=str, choices=['CL', 'CLCE', 'FoCL'], default='CLCE', help='Loss function')
+    parser.add_argument('--tau', type=int, default=50, help='tau value for loss function, higher values soften the similarity scores')
+    parser.add_argument('--lambd', type=float, default=0.3, help='lambda value for loss function, higher value adds more weight to CL loss')
+    parser.add_argument('--trim', type=int, default=416, help='trim length (512 - trim_length) for RoBERTa')
+    
+    parser.add_argument('--train_mode', type=str, choices=['pre-train', 'fine-tune'], default='fine-tune', help='train mode')
+    # Sub-options for pre-training
+    parser.add_argument(
+        '--pretrain_type', type=str, choices=['full', 'domain-adaptive'], 
+        default='domain-adaptive', help='Choose between full pre-training (from scratch) or domain-adaptive pretraining (continued training)'
+    )
+    # Sub-options for fine-tuning
+    parser.add_argument(
+        '--finetune_type', type=str, choices=['cross-entropy', 'contrastive'], 
+        default='cross-entropy', help='Choose between using cross-entropy or contrastive learning with cross-entropy for fine-tuning'
+    )
+    
+    parser.add_argument('--do_train', action='store_true', help='Whether to run training.')
+    parser.add_argument('--do_eval', action='store_true', help='Whether to run eval on the eval set.')
+    
+    parser.add_argument('--batch_size', type=int, default=16, help='Batch size for training.')
+    parser.add_argument('--label_type', type=str, default="model_type", help='label_type')
+    parser.add_argument('--top_k', type=int, default=2, help='if label_type is task, then use multi-label classification')
+    
+    return parser.parse_args()
+
+def set_seed(seed=0):
+    random.seed(seed)
+    os.environ['PYHTONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+
+    
+def pre_train(args, dataset):
+    train_dataset = Dataset.from_json(dataset + '/train_dataset.json')
+    test_dataset = Dataset.from_json(dataset + '/test_dataset.json')
+
+    tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
+
+    def tokenize_function(examples):
+        tokenized = tokenizer(examples["layers"], padding=False, truncation=False)
+        max_length = tokenizer.model_max_length
+        trim = min(args.trim, max_length // 2)
+        
+        input_ids_list = []
+        attention_mask_list = []
+
+        for input_ids, attention_mask in zip(tokenized["input_ids"], tokenized["attention_mask"]):
+        # Trim if sequence length exceeds max_length
+            if len(input_ids) > max_length:
+                input_ids = input_ids[:trim] + input_ids[-(max_length - trim):]
+                attention_mask = attention_mask[:trim] + attention_mask[-(max_length - trim):]
+
+            # Pad to max_length
+            input_ids += [tokenizer.pad_token_id] * (max_length - len(input_ids))
+            attention_mask += [0] * (max_length - len(attention_mask))
+
+            input_ids_list.append(input_ids)
+            attention_mask_list.append(attention_mask)
+
+        return {"input_ids": input_ids_list, "attention_mask": attention_mask_list}
+    
+    train_dataset = train_dataset.map(tokenize_function, batched=True, remove_columns=["layers"])
+    test_dataset = test_dataset.map(tokenize_function, batched=True, remove_columns=["layers"])
+
+    model = RobertaForMaskedLM.from_pretrained('roberta-base')
+    data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm_probability=0.15)
+    training_args = TrainingArguments(
+        output_dir=args.output_dir + '_' + args.model_name,
+        eval_strategy="epoch",
+        save_strategy="epoch",
+        learning_rate=5e-5,
+        per_device_train_batch_size=8,
+        num_train_epochs=10,  
+        weight_decay=0.01,
+        save_total_limit=5,
+        load_best_model_at_end=True,
+        greater_is_better=False,
+    )
+
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        data_collator=data_collator,
+        train_dataset=train_dataset,
+        eval_dataset=test_dataset,
+        tokenizer=tokenizer,
+    )
+    trainer.train()
+
+    best_model_path = training_args.output_dir  # The best model is saved here
+    model.save_pretrained(best_model_path)
+    tokenizer.save_pretrained(best_model_path)
+    
+
+def fine_tune(args, model, tokenizer, train_dataset, eval_dataset, output_dir):
+    
+    training_args = TrainingArguments(
+        output_dir=output_dir,
+        eval_strategy="epoch",
+        save_strategy="epoch",
+        save_total_limit=3,  # Keep only the last 3 checkpoints
+        num_train_epochs=args.epoch,
+        per_device_train_batch_size=args.batch_size,
+        learning_rate=args.lr,
+        weight_decay=0.01,
+        load_best_model_at_end=True,  # Loads the best checkpoint based on evaluation metric
+        metric_for_best_model="accuracy",  # Change to "loss" if using loss as metric
+        greater_is_better=True,  # Set to False if using loss
+    )
+
+    def compute_metrics(eval_pred):
+        """
+        Computes evaluation metrics, handling both multi-class and multi-label classification,
+        and optionally calculates top-k accuracy for multi-label.
+
+        Args:
+            eval_pred: A tuple (logits, labels) where logits are model outputs and labels are true labels.
+            top_k: If provided, calculates top-k accuracy for multi-label.
+        """
+
+        logits, labels = eval_pred
+
+        if args.label_type == 'task':
+            # Multi-label classification (sigmoid and threshold)
+            if args.top_k is not None:
+                # Multi-label with top-k predictions
+                predictions = top_k_predictions(logits, args.top_k)
+            else:
+                # Standard multi-label (sigmoid and threshold)
+                predictions = (np.sigmoid(logits) > 0.5).astype(int)
+
+            return eval_metrics(labels, predictions, args.top_k)
+        else:
+            # Multi-class classification (argmax)
+            predictions = np.argmax(logits, axis=-1)
+            return eval_metrics(labels, predictions)
+    
+    if args.finetune_type == 'contrastive':
+        loss_fn = contrastive_loss(device, args.loss_fn, args.tau, args.lambd, args.label_type)
+        trainer = ContrastiveCrossEntropyTrainer(
+            model=model,
+            args=training_args,
+            train_dataset=train_dataset,
+            eval_dataset=eval_dataset,
+            compute_metrics=compute_metrics,
+            loss_fn=loss_fn
+        )
+    else:
+        trainer = Trainer(
+            model=model,
+            args=training_args,
+            train_dataset=train_dataset,
+            eval_dataset=eval_dataset,
+            compute_metrics=compute_metrics,
+        )
+
+    trainer.train()
+    
+    predictions = trainer.predict(eval_dataset)
+    logits = predictions.predictions
+    labels = predictions.label_ids
+    predicted_labels = compute_metrics((logits, labels))[1]
+
+    train_losses = [log['loss'] for log in trainer.state.log_history if 'loss' in log]
+    eval_losses = [log['eval_loss'] for log in trainer.state.log_history if 'eval_loss' in log]
+
+    preds = [eval_dataset.index_to_label[idx] for idx in predicted_labels]
+    targets = [eval_dataset.index_to_label[idx] for idx in labels]
+    
+    eval_results = eval_metrics(labels, predicted_labels, args.top_k)
+
+    return train_losses, eval_losses, eval_results, preds, targets
+
+# maybe do CV run?
+def CV_run():
+    ############################
+    # hyperparameters
+    train_batch_size = 256
+    eval_batch_size = 32
+    
+    # label_type = "model_type"
+    # label_type = "task"
+    # label_type = "arch"
+    ############################
+    args = parse_arg()
+    if args.label_type == "task":
+        vec_path = 'Naming_anomaly_detection/DARA/transformer/data/data_cleaned.json'
+        logger.info(f"Using multi-label classification, top_k: {args.top_k}")
+    else:
+        vec_path = 'Naming_anomaly_detection/DARA/transformer/data/data.json'
+    # vec_path = 'data_cleaned.json'
+    
+    tokenizer = AutoTokenizer.from_pretrained(MODELS[args.model_name])
+    full_dataset = transformer_dataset(dict_path=vec_path, label_type=args.label_type, tokenizer=tokenizer, trim=args.trim)
+
+    id2label = full_dataset.get_label_mapping()
+    label2id = full_dataset.get_index_mapping()
+    # index_to_label = full_dataset.get_label_mapping()
+    num_labels = full_dataset.get_num_classes()
+    # model = AutoModelForSequenceClassification.from_pretrained(MODELS[args.model_name], num_labels=num_labels)
+    print(f"Length of full_dataset: {len(full_dataset)}")
+    logger.info(f"Number of classes: {num_labels}")
+    logger.info(f"label type: {args.label_type}")
+
+    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    
+    # Variables to store cumulative results
+    cumulative_train_losses, cumulative_eval_losses = [], []
+    cumulative_eval_metrics = defaultdict(list)
+
+
+    fold = 0  # Counter for current fold
+
+    all_fold_preds = []
+    all_fold_targets = []
+    
+    if args.train_mode == 'pre-train':
+        print(f"Train mode: {args.train_mode}")
+        print(f"Pre-train type: {args.pretrain_type}")
+    elif args.train_mode == 'fine-tune':
+        print(f"Train mode: {args.train_mode}")
+        print(f"Fine-tune type: {args.finetune_type}")
+        
+    print(f"lr: {args.lr}")
+    print(f"batch size: {args.batch_size}")
+    train_type = args.finetune_type if args.train_mode == 'fine-tune' else args.pretrain_type
+    output_dir = f"{args.model_name}_{args.train_mode}_{train_type}_{args.label_type}_{args.lr}_{args.batch_size}"
+    for train_index, eval_index in kf.split(full_dataset):
+        fold += 1
+        logger.info(f"Starting fold {fold}")
+
+        # Create datasets for the current fold
+        train_dataset = torch.utils.data.Subset(full_dataset, train_index)
+        eval_dataset = torch.utils.data.Subset(full_dataset, eval_index)
+        # Access the original dataset (the one that supports map function)
+        train_dataset = train_dataset.dataset
+        eval_dataset = eval_dataset.dataset
+
+        # # Initialize DataLoaders for the current fold
+        # train_loader = DataLoader(train_subset, batch_size=train_batch_size, shuffle=True, num_workers=0, pin_memory=True)
+        # eval_loader = DataLoader(eval_subset, batch_size=eval_batch_size, num_workers=0, pin_memory=True)
+
+        if fold != 1:
+            continue    #for quick prototype
+
+        # Initialize the model for the current fold
+        if args.train_mode == 'pre-train':
+            if args.pretrain_type == 'full':
+                logger.info("Starting full pre-training (training from scratch)")
+                
+                tokenizer = ByteLevelBPETokenizer(lowercase=True)
+                tokenizer.train(
+                    files=["training_corpus.txt"],
+                    vocab_size=300,         # Set slightly above your distinct tokens (173) for flexibility
+                    min_frequency=1,        # Ensure even tokens with minimal occurrences are included
+                    show_progress=True,
+                    special_tokens=[
+                        "<s>",
+                        "<pad>",
+                        "</s>",
+                        "<unk>",
+                        "<mask>",
+                    ]
+                )
+                
+            else:
+                # TODO: add tokens and resize token embeddings
+                # model.resize_token_embeddings(len(tokenizer))
+                logger.info("Starting domain-adaptive pre-training (continued pre-training)")
+            pre_train() 
+        elif args.train_mode == 'fine-tune':
+            if args.label_type == 'task':   # multi label classification
+                model = AutoModelForSequenceClassification.from_pretrained(
+                        MODELS[args.model_name], 
+                        problem_type="multi_label_classification",
+                        num_labels=num_labels, 
+                        id2label=id2label,
+                        label2id=label2id
+                    )
+            else:   # single label classification (multi-class)
+                model = AutoModelForSequenceClassification.from_pretrained(
+                        MODELS[args.model_name], 
+                        num_labels=num_labels,
+                        id2label=id2label,
+                        label2id=label2id
+                    )
+                
+            if args.finetune_type == 'cross-entropy':   # Cross-entropy loss
+                logger.info("Starting fine-tuning with cross-entropy loss")
+            else:   # Contrastive learning with cross-entropy loss
+                logger.info("Starting fine-tuning with combined contrastive learning & cross-entropy loss")
+            train_losses, eval_losses, eval_results, preds, targets = fine_tune(args, model, tokenizer, train_dataset, eval_dataset, output_dir)
+        
+        logger.info(f'Fold {fold}, Final Eval Metrics: {", ".join([f"{k}: {v[-1]:.2f}" for k, v in eval_results.items()])}')
+            
+        all_fold_preds.extend(preds)
+        all_fold_targets.extend(targets)
+        cumulative_train_losses.append(train_losses)
+        cumulative_eval_losses.append(eval_losses)
+        for key, value in eval_results.items():
+            cumulative_eval_metrics[key].append(value)
+    
+    average_train_loss = [sum(losses) / len(losses) for losses in zip(*cumulative_train_losses)]
+    average_eval_loss = [sum(losses) / len(losses) for losses in zip(*cumulative_eval_losses)]
+    average_eval_accuracy = [sum(accs) / len(accs) for accs in zip(*cumulative_eval_metrics['accuracy'])]
+    logger.info(f"Average Eval Accuracy across all folds: {average_eval_accuracy[-1]:.2f}%")
+    
+    root_dir = 'Naming_anomaly_detection/DARA/transformer'
+    plot_loss(average_train_loss, average_eval_loss, args.epochs, args.lr, args.batch_size, args.label_type, eval_interval=args.epoch, root_dir=root_dir) 
+    plot_accuracy(average_eval_accuracy, args.epochs, args.lr, args.batch_size, args.label_type, root_dir)
+    logger.success("5-Fold Cross Validation completed")
+    print(f"top_k: {args.top_k}")
+    for k, v in cumulative_eval_metrics.items():
+        last_element = [sublist[-1] for sublist in v]
+        mean = np.mean(last_element)
+        std = np.std(last_element)
+        print(f"{k}: {mean:.2f} (± {std:.2f})")
+        
+    np.save(f'{root_dir}/results/preds_final_{output_dir}.npy', all_fold_preds)
+    np.save(f'{root_dir}/results/targets_final_{output_dir}.npy', all_fold_targets)
+    with open(f'{root_dir}/results/{args.label_type}_index_to_label_final.json', 'w') as f:
+        json.dump(id2label, f)
+
+if __name__ == '__main__':
+    set_seed(0)
+    CV_run()
+
+# TODO:
+'''
+1. change latency_by_one.py for just extracting vectors
+2. train 6 different models
+3. look into gnn
+
+(add, softmax)
+
+'''
