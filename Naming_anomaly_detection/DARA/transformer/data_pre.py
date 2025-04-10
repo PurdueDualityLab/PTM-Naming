@@ -67,14 +67,15 @@ def data_processing(data_path="eval_peatmoss_data_path_final_6000/aptm", ann=Fal
             data[model_name]['model_type'], data[model_name]['arch'], data[model_name]['task'] = get_model_arch_db(model_name)
         lines.append(" ".join(layers))
     distinct_layers = sorted(list(distinct_layers))
-    # with open("Naming_anomaly_detection/CL/data/vocabs.txt", "w") as f:
-    #     f.write("\n".join(distinct_layers))
-    # # Training corpus for pretraining tokenizer
-    # with open("Naming_anomaly_detection/CL/data/training_corpus.txt", "w") as f:
-    #     for line in lines:
-    #         f.write(line + "\n")
+    with open("Naming_anomaly_detection/DARA/transformer/data/vocabs.txt", "w") as f:
+        f.write("\n".join(distinct_layers))
+    # Training corpus for pretraining tokenizer
+    with open("Naming_anomaly_detection/DARA/transformer/data/training_corpus.txt", "w") as f:
+        for line in lines:
+            f.write(line + "\n")
+    exit()
     # Write the processed data to a file
-    with open("Naming_anomaly_detection/CL/data/data.json", "w") as f:
+    with open("Naming_anomaly_detection/DARA/transformer/data/data.json", "w") as f:
         json.dump(data, f)
         
 def get_task_list():    
@@ -166,7 +167,7 @@ def get_model_arch(model_name):
 
 def data_cleaning():
     '''Remove the None architecture models from the data.json file'''
-    with open("Naming_anomaly_detection/CL/data/data.json", "r") as f:
+    with open("Naming_anomaly_detection/DARA/transformer/data/data.json", "r") as f:
         data = json.load(f)
     failed_repos = {}
     # with open ("Naming_anomaly_detection/data_files/json_files/failed_repos.json", "r") as f:
@@ -183,7 +184,7 @@ def data_cleaning():
     
     # with open ("Naming_anomaly_detection/data_files/json_files/failed_repos.json", "w") as f:
     #     json.dump(failed_repos, f)
-    with open("Naming_anomaly_detection/CL/data/data_cleaned.json", "w") as f:
+    with open("Naming_anomaly_detection/DARA/transformer/data/data_cleaned.json", "w") as f:
         json.dump(data, f)
 
 task_list = get_task_list()

@@ -1,19 +1,52 @@
 from transformers import Trainer, TrainingArguments
 import torch
-import torch.nn.functional as F
+from loss import contrastive_loss
+from transformers.modeling_outputs import SequenceClassifierOutput
 
-class ContrastiveCrossEntropyTrainer(Trainer):
-    def __init__(self, model, args, train_dataset, eval_dataset, compute_metrics, loss_fn, **kwargs):
-        super().__init__(model=model, args=args, train_dataset=train_dataset, eval_dataset=eval_dataset, compute_metrics=compute_metrics)#, **kwargs)
-        self.loss_fn = loss_fn
+# class CustomCLTrainer(Trainer):
+#     def __init__(self, model, args, train_dataset, eval_dataset, compute_metrics, loss_fn=None, **kwargs):
+#         super().__init__(model=model,
+#             args=args,
+#             train_dataset=train_dataset,
+#             eval_dataset=eval_dataset,
+#             compute_metrics=compute_metrics, 
+#             **kwargs)
+
+#         self.loss_fn = loss_fn
+
         
-    def compute_loss(self, model, inputs, return_outputs=False):
+#     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+#         labels = inputs.pop("labels")
+#         outputs = model(**inputs, output_hidden_states=True)
+#         embeddings = outputs.hidden_states[-1][:, 0, :] # Shape: (batch_size, hidden_size), equivalent to hidden representation of <s> / <CLS> token
+#         logits = outputs.logits
+#         loss = self.loss_fn(embeddings, logits, labels)
+#         outputs.hidden_states = None
+
+#         clean_outputs = SequenceClassifierOutput(logits=outputs.logits)
+
+#         return (loss, clean_outputs) if return_outputs else loss
+class CustomCLTrainer(Trainer):
+    def __init__(self, model, args, train_dataset, eval_dataset, compute_metrics, loss_fn=None, **kwargs):
+        super().__init__(
+            model=model,
+            args=args,
+            train_dataset=train_dataset,
+            eval_dataset=eval_dataset,
+            compute_metrics=compute_metrics, 
+            **kwargs
+        )
+        self.loss_fn = loss_fn
+
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         labels = inputs.pop("labels")
         outputs = model(**inputs, output_hidden_states=True)
+        
+        cls_embedding = outputs.hidden_states[-1][:, 0, :]
 
-        embeddings = outputs.hidden_states[-1][:, 0, :]  # Shape: (batch_size, hidden_size), equivalent to hidden representation of <s> / <CLS> token
         logits = outputs.logits
+        loss = self.loss_fn(cls_embedding, logits, labels)
+        outputs.hidden_states = None
 
-        loss = self.loss_fn(embeddings, logits, labels)
-
-        return (loss, outputs) if return_outputs else loss
+        clean_outputs = SequenceClassifierOutput(logits=logits)
+        return (loss, clean_outputs) if return_outputs else loss
