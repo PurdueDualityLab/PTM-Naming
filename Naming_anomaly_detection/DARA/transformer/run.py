@@ -126,6 +126,7 @@ def pre_train(args, tokenizer, train_dataset, eval_dataset):
         save_total_limit=5,
         load_best_model_at_end=True,
         greater_is_better=False,
+        bf16=True
     )
 
     trainer = Trainer(
@@ -167,7 +168,8 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
         learning_rate=args.lr,
         weight_decay=0.01,
         dataloader_drop_last=False,
-        gradient_accumulation_steps = gradient_accumulation_steps
+        gradient_accumulation_steps = gradient_accumulation_steps,
+        bf16=True
     )
 
     def compute_metrics(eval_pred):
