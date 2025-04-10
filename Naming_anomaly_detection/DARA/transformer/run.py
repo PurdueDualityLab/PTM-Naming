@@ -26,6 +26,7 @@ from transformers import (
     TrainingArguments,
     AutoConfig, 
     AutoModel, 
+    AutoModelForMaskedLM,
     AutoModelForSequenceClassification,
     AutoTokenizer,
     EarlyStoppingCallback
@@ -108,7 +109,9 @@ def set_seed(seed=0):
 
     
 def pre_train(args, tokenizer, train_dataset, eval_dataset):
-    model = RobertaForMaskedLM.from_pretrained('roberta-base')
+    model = AutoModelForMaskedLM.from_pretrained(MODELS[args.model_name])
+    # model = RobertaForMaskedLM.from_pretrained('roberta-base', config=config)
+    # model.resize_token_embeddings(len(tokenizer))
     data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm_probability=0.15)
     training_args = TrainingArguments(
         output_dir=args.output_dir + '_' + args.model_name,
@@ -153,15 +156,17 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
         output_dir=output_dir,
         # output_dir=None,
         eval_strategy="epoch",
-        save_strategy="no",
+        save_strategy="epoch",
         logging_strategy="epoch",
         num_train_epochs=args.epoch,
         per_device_train_batch_size=args.batch_size,
         per_device_eval_batch_size=args.eval_batch_size,
+        load_best_model_at_end=True,
+        metric_for_best_model="eval_loss",
+        greater_is_better=False,
         learning_rate=args.lr,
         weight_decay=0.01,
         dataloader_drop_last=False,
-        metric_for_best_model="eval_loss",
         gradient_accumulation_steps = gradient_accumulation_steps
     )
 
@@ -410,9 +415,6 @@ def CV_run():
         cumulative_eval_losses.append(eval_losses)
         for key, value in eval_results.items():
             cumulative_eval_metrics[key].append(value)
-        # if args.model_name == 'longformer': # only running first fold
-        #     break
-    # print(cumulative_eval_metrics['accuracy'])
 
     average_train_loss = [sum(losses) / len(losses) for losses in zip(*cumulative_train_losses)]
     average_eval_loss = [sum(losses) / len(losses) for losses in zip(*cumulative_eval_losses)]
