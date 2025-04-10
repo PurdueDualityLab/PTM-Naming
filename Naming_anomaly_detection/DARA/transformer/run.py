@@ -37,7 +37,7 @@ from loss import contrastive_loss
 from cl_trainer import CustomCLTrainer
 
 load_dotenv()
-os.environ['HF_HOME'] = os.getenv("HF_HOME")
+# os.environ['HF_HOME'] = os.getenv("HF_HOME")
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 # Check for GPU availability
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
