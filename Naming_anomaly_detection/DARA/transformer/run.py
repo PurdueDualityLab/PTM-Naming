@@ -150,8 +150,8 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
         gradient_accumulation_steps = 1
 
     training_args = TrainingArguments(
-        # output_dir=output_dir,
-        output_dir=None,
+        output_dir=output_dir,
+        # output_dir=None,
         eval_strategy="epoch",
         save_strategy="no",
         logging_strategy="epoch",
@@ -176,14 +176,9 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
         """
 
         logits, labels = eval_pred
-        print(f"Type of eval_pred: {type(eval_pred)}")
-        print(f"Type of logits: {type(logits)}")
-        print(f"Type of labels: {type(labels)}")
-        print(f"Shape of logits: {logits.shape}")
-        print(f"Shape of labels: {labels.shape}")
 
         if args.label_type == 'task':
-            # Multi-label classification (sigmoid and threshold)
+            # Multi-label classification
             predictions_1 = top_k_predictions(logits, 1)
             predictions_2 = top_k_predictions(logits, 2)
             predictions_3 = top_k_predictions(logits, 3)
@@ -191,12 +186,8 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
             eval_2 = eval_metrics(labels, predictions_2, 2)
             eval_3 = eval_metrics(labels, predictions_3, 3)
             combined_results = {**eval_1, **eval_2, **eval_3}
+            
             return combined_results
-            # if args.top_k is not None:
-                # Multi-label with top-k predictions
-            # else:
-            #     # Standard multi-label (sigmoid and threshold)
-            #     predictions = (np.sigmoid(logits) > 0.5).astype(int)
         else:
             # Multi-class classification (argmax)
             predictions = np.argmax(logits, axis=-1)
@@ -236,13 +227,13 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
     
     logits = predictions.predictions
     labels = predictions.label_ids
-    # if args.label_type == 'task':
-    #     if args.top_k is not None:
-    #         predicted_labels = top_k_predictions(logits, args.top_k)
-    #     else:
-    #         predicted_labels = (np.sigmoid(logits) > 0.5).astype(int)
-    # else:
-    #     predicted_labels = np.argmax(logits, axis=-1)
+
+    if args.label_type == 'task':
+        preds = top_k_predictions(logits, 1)  # or 3, depending on your default k
+        targets = labels
+    else:
+        preds = np.argmax(logits, axis=-1)
+        targets = labels
 
     eval_results = defaultdict(list)
     train_losses = []
@@ -257,8 +248,8 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
                 if k.startswith('eval_'):
                     eval_results[k[5:]].append(v)
 
-    preds = []
-    targets = []
+    # preds = []
+    # targets = []
 
     # for pred_idx, target_idx in zip(predicted_labels, labels):
     #     if isinstance(pred_idx, np.ndarray):
@@ -276,9 +267,8 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
     #     else:
     #         # Single-label target
     #         targets.append(index_to_label.get(target_idx))
-    # preds = [eval_dataset.index_to_label[idx] for idx in predicted_labels]
-    # targets = [eval_dataset.index_to_label[idx] for idx in labels]
-    
+    # print(preds)
+    # print(targets)
     # eval_results = eval_metrics(labels, predicted_labels, None if args.label_type != 'task' else args.top_k)
     print(f"Eval results: {eval_results}")
     return train_losses, eval_losses, eval_results, preds, targets
@@ -355,10 +345,6 @@ def CV_run():
         train_dataset = torch.utils.data.Subset(full_dataset, train_index)
         eval_dataset = torch.utils.data.Subset(full_dataset, eval_index)
 
-        # # Initialize DataLoaders for the current fold
-        # train_loader = DataLoader(train_subset, batch_size=train_batch_size, shuffle=True, num_workers=0, pin_memory=True)
-        # eval_loader = DataLoader(eval_subset, batch_size=eval_batch_size, num_workers=0, pin_memory=True)
-
         # if fold > 1:
         #     continue    #for quick prototype
 
@@ -426,12 +412,19 @@ def CV_run():
             cumulative_eval_metrics[key].append(value)
         # if args.model_name == 'longformer': # only running first fold
         #     break
-    print(cumulative_eval_metrics['accuracy'])
+    # print(cumulative_eval_metrics['accuracy'])
 
     average_train_loss = [sum(losses) / len(losses) for losses in zip(*cumulative_train_losses)]
     average_eval_loss = [sum(losses) / len(losses) for losses in zip(*cumulative_eval_losses)]
     # average_eval_accuracy = [sum(accs) / len(accs) for accs in zip(*cumulative_eval_metrics['accuracy'])]
     # logger.info(f"Average Eval Accuracy across all folds: {average_eval_accuracy[-1]:.2f}%")
+    logger.success("5-Fold Cross Validation completed")
+    for k, v in cumulative_eval_metrics.items():
+        last_element = [sublist[-1] for sublist in v]
+        mean = np.mean(last_element)
+        std = np.std(last_element)
+        print(f"{k}: {mean:.4f} (± {std:.4f})")
+        
     if args.train_mode == 'fine-tune':
         root_dir = f'Naming_anomaly_detection/DARA/transformer/{args.model_name}_{args.finetune_type}'
     else:
@@ -441,20 +434,14 @@ def CV_run():
     results_dir = os.path.join(root_dir, 'results')
     if not os.path.exists(results_dir):
         os.makedirs(results_dir, exist_ok=True)
-    logger.success("5-Fold Cross Validation completed")
-    for k, v in cumulative_eval_metrics.items():
-        last_element = [sublist[-1] for sublist in v]
-        mean = np.mean(last_element)
-        std = np.std(last_element)
-        print(f"{k}: {mean:.4f} (± {std:.4f})")
-        
+
+    np.save(f'{root_dir}/results/preds_final_{output_dir}.npy', all_fold_preds)
+    np.save(f'{root_dir}/results/targets_final_{output_dir}.npy', all_fold_targets)
+    with open(f'{root_dir}/results/{args.label_type}_index_to_label_final.json', 'w') as f:
+        json.dump(id2label, f)
     plot_loss(average_train_loss, average_eval_loss, args.epoch, args.lr, args.batch_size, args.label_type, eval_interval=1, root_dir=root_dir) 
     # plot_accuracy(average_eval_accuracy, args.epoch, args.lr, args.batch_size, args.label_type, root_dir)
         
-    # np.save(f'{root_dir}/results/preds_final_{output_dir}.npy', all_fold_preds)
-    # np.save(f'{root_dir}/results/targets_final_{output_dir}.npy', all_fold_targets)
-    with open(f'{root_dir}/results/{args.label_type}_index_to_label_final.json', 'w') as f:
-        json.dump(id2label, f)
 
 if __name__ == '__main__':
     set_seed(0)
