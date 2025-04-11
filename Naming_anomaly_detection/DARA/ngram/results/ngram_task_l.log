@@ -1,0 +1,337 @@
+2025-04-11 12:03:03.928 | INFO     | __main__:<module>:26 - Using device: cuda
+2025-04-11 12:03:07.247 | INFO     | __main__:CV_run:342 - Number of classes: 22
+2025-04-11 12:03:07.248 | INFO     | __main__:CV_run:343 - Input shape: torch.Size([1, 1089])
+2025-04-11 12:03:07.248 | INFO     | __main__:CV_run:344 - label type: task
+2025-04-11 12:03:07.339 | INFO     | __main__:CV_run:359 - Starting fold 1
+2025-04-11 12:03:33.312 | INFO     | __main__:train_and_evaluate:95 - Epoch 1, Loss: 0.3818
+2025-04-11 12:03:33.356 | INFO     | __main__:train_and_evaluate:95 - Epoch 2, Loss: 0.2198
+2025-04-11 12:03:33.399 | INFO     | __main__:train_and_evaluate:95 - Epoch 3, Loss: 0.1605
+2025-04-11 12:03:33.442 | INFO     | __main__:train_and_evaluate:95 - Epoch 4, Loss: 0.1472
+2025-04-11 12:03:33.484 | INFO     | __main__:train_and_evaluate:95 - Epoch 5, Loss: 0.1299
+2025-04-11 12:03:33.526 | INFO     | __main__:train_and_evaluate:95 - Epoch 6, Loss: 0.1201
+2025-04-11 12:03:33.569 | INFO     | __main__:train_and_evaluate:95 - Epoch 7, Loss: 0.1130
+2025-04-11 12:03:33.612 | INFO     | __main__:train_and_evaluate:95 - Epoch 8, Loss: 0.1060
+2025-04-11 12:03:33.654 | INFO     | __main__:train_and_evaluate:95 - Epoch 9, Loss: 0.1054
+2025-04-11 12:03:33.696 | INFO     | __main__:train_and_evaluate:95 - Epoch 10, Loss: 0.1045
+2025-04-11 12:03:33.727 | INFO     | __main__:eval:55 - Eval Loss: 0.1008
+2025-04-11 12:03:33.845 | INFO     | __main__:train_and_evaluate:105 - Epoch 10, Eval Metrics: top_1_macro_recall: 0.47, top_1_macro_precision: 0.53, top_1_macro_f1: 0.46, top_1_accuracy: 0.58, top_1_micro_recall: 0.51, top_1_micro_precision: 0.58, top_1_micro_f1: 0.54, top_2_macro_recall: 0.68, top_2_macro_precision: 0.41, top_2_macro_f1: 0.49, top_2_accuracy: 0.76, top_2_micro_recall: 0.70, top_2_micro_precision: 0.40, top_2_micro_f1: 0.51, top_3_macro_recall: 0.80, top_3_macro_precision: 0.40, top_3_macro_f1: 0.50, top_3_accuracy: 0.87, top_3_micro_recall: 0.84, top_3_micro_precision: 0.32, top_3_micro_f1: 0.46
+2025-04-11 12:03:33.888 | INFO     | __main__:train_and_evaluate:95 - Epoch 11, Loss: 0.0987
+2025-04-11 12:03:33.930 | INFO     | __main__:train_and_evaluate:95 - Epoch 12, Loss: 0.1023
+2025-04-11 12:03:33.973 | INFO     | __main__:train_and_evaluate:95 - Epoch 13, Loss: 0.0963
+2025-04-11 12:03:34.015 | INFO     | __main__:train_and_evaluate:95 - Epoch 14, Loss: 0.0985
+2025-04-11 12:03:34.058 | INFO     | __main__:train_and_evaluate:95 - Epoch 15, Loss: 0.0939
+2025-04-11 12:03:34.100 | INFO     | __main__:train_and_evaluate:95 - Epoch 16, Loss: 0.0919
+2025-04-11 12:03:34.143 | INFO     | __main__:train_and_evaluate:95 - Epoch 17, Loss: 0.0879
+2025-04-11 12:03:34.185 | INFO     | __main__:train_and_evaluate:95 - Epoch 18, Loss: 0.0867
+2025-04-11 12:03:34.228 | INFO     | __main__:train_and_evaluate:95 - Epoch 19, Loss: 0.0869
+2025-04-11 12:03:34.270 | INFO     | __main__:train_and_evaluate:95 - Epoch 20, Loss: 0.0884
+2025-04-11 12:03:34.287 | INFO     | __main__:eval:55 - Eval Loss: 0.0903
+2025-04-11 12:03:34.366 | INFO     | __main__:train_and_evaluate:105 - Epoch 20, Eval Metrics: top_1_macro_recall: 0.51, top_1_macro_precision: 0.54, top_1_macro_f1: 0.50, top_1_accuracy: 0.61, top_1_micro_recall: 0.54, top_1_micro_precision: 0.61, top_1_micro_f1: 0.58, top_2_macro_recall: 0.75, top_2_macro_precision: 0.54, top_2_macro_f1: 0.60, top_2_accuracy: 0.80, top_2_micro_recall: 0.74, top_2_micro_precision: 0.42, top_2_micro_f1: 0.53, top_3_macro_recall: 0.83, top_3_macro_precision: 0.38, top_3_macro_f1: 0.48, top_3_accuracy: 0.89, top_3_micro_recall: 0.86, top_3_micro_precision: 0.33, top_3_micro_f1: 0.47
+2025-04-11 12:03:34.409 | INFO     | __main__:train_and_evaluate:95 - Epoch 21, Loss: 0.0881
+2025-04-11 12:03:34.452 | INFO     | __main__:train_and_evaluate:95 - Epoch 22, Loss: 0.0831
+2025-04-11 12:03:34.494 | INFO     | __main__:train_and_evaluate:95 - Epoch 23, Loss: 0.0809
+2025-04-11 12:03:34.537 | INFO     | __main__:train_and_evaluate:95 - Epoch 24, Loss: 0.0839
+2025-04-11 12:03:34.579 | INFO     | __main__:train_and_evaluate:95 - Epoch 25, Loss: 0.0787
+2025-04-11 12:03:34.622 | INFO     | __main__:train_and_evaluate:95 - Epoch 26, Loss: 0.0780
+2025-04-11 12:03:34.664 | INFO     | __main__:train_and_evaluate:95 - Epoch 27, Loss: 0.0769
+2025-04-11 12:03:34.713 | INFO     | __main__:train_and_evaluate:95 - Epoch 28, Loss: 0.0799
+2025-04-11 12:03:34.756 | INFO     | __main__:train_and_evaluate:95 - Epoch 29, Loss: 0.0762
+2025-04-11 12:03:34.799 | INFO     | __main__:train_and_evaluate:95 - Epoch 30, Loss: 0.0768
+2025-04-11 12:03:34.816 | INFO     | __main__:eval:55 - Eval Loss: 0.0832
+2025-04-11 12:03:34.895 | INFO     | __main__:train_and_evaluate:105 - Epoch 30, Eval Metrics: top_1_macro_recall: 0.54, top_1_macro_precision: 0.59, top_1_macro_f1: 0.54, top_1_accuracy: 0.69, top_1_micro_recall: 0.61, top_1_micro_precision: 0.69, top_1_micro_f1: 0.65, top_2_macro_recall: 0.78, top_2_macro_precision: 0.55, top_2_macro_f1: 0.62, top_2_accuracy: 0.82, top_2_micro_recall: 0.78, top_2_micro_precision: 0.44, top_2_micro_f1: 0.56, top_3_macro_recall: 0.86, top_3_macro_precision: 0.39, top_3_macro_f1: 0.50, top_3_accuracy: 0.91, top_3_micro_recall: 0.88, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:34.938 | INFO     | __main__:train_and_evaluate:95 - Epoch 31, Loss: 0.0707
+2025-04-11 12:03:34.980 | INFO     | __main__:train_and_evaluate:95 - Epoch 32, Loss: 0.0769
+2025-04-11 12:03:35.022 | INFO     | __main__:train_and_evaluate:95 - Epoch 33, Loss: 0.0744
+2025-04-11 12:03:35.098 | INFO     | __main__:train_and_evaluate:95 - Epoch 34, Loss: 0.0710
+2025-04-11 12:03:35.141 | INFO     | __main__:train_and_evaluate:95 - Epoch 35, Loss: 0.0733
+2025-04-11 12:03:35.183 | INFO     | __main__:train_and_evaluate:95 - Epoch 36, Loss: 0.0711
+2025-04-11 12:03:35.226 | INFO     | __main__:train_and_evaluate:95 - Epoch 37, Loss: 0.0706
+2025-04-11 12:03:35.269 | INFO     | __main__:train_and_evaluate:95 - Epoch 38, Loss: 0.0751
+2025-04-11 12:03:35.311 | INFO     | __main__:train_and_evaluate:95 - Epoch 39, Loss: 0.0716
+2025-04-11 12:03:35.353 | INFO     | __main__:train_and_evaluate:95 - Epoch 40, Loss: 0.0727
+2025-04-11 12:03:35.370 | INFO     | __main__:eval:55 - Eval Loss: 0.0801
+2025-04-11 12:03:35.449 | INFO     | __main__:train_and_evaluate:105 - Epoch 40, Eval Metrics: top_1_macro_recall: 0.55, top_1_macro_precision: 0.58, top_1_macro_f1: 0.55, top_1_accuracy: 0.70, top_1_micro_recall: 0.62, top_1_micro_precision: 0.70, top_1_micro_f1: 0.65, top_2_macro_recall: 0.76, top_2_macro_precision: 0.50, top_2_macro_f1: 0.58, top_2_accuracy: 0.83, top_2_micro_recall: 0.80, top_2_micro_precision: 0.45, top_2_micro_f1: 0.58, top_3_macro_recall: 0.86, top_3_macro_precision: 0.39, top_3_macro_f1: 0.50, top_3_accuracy: 0.90, top_3_micro_recall: 0.88, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:35.492 | INFO     | __main__:train_and_evaluate:95 - Epoch 41, Loss: 0.0714
+2025-04-11 12:03:35.534 | INFO     | __main__:train_and_evaluate:95 - Epoch 42, Loss: 0.0708
+2025-04-11 12:03:35.576 | INFO     | __main__:train_and_evaluate:95 - Epoch 43, Loss: 0.0703
+2025-04-11 12:03:35.619 | INFO     | __main__:train_and_evaluate:95 - Epoch 44, Loss: 0.0718
+2025-04-11 12:03:35.661 | INFO     | __main__:train_and_evaluate:95 - Epoch 45, Loss: 0.0704
+2025-04-11 12:03:35.704 | INFO     | __main__:train_and_evaluate:95 - Epoch 46, Loss: 0.0697
+2025-04-11 12:03:35.746 | INFO     | __main__:train_and_evaluate:95 - Epoch 47, Loss: 0.0716
+2025-04-11 12:03:35.789 | INFO     | __main__:train_and_evaluate:95 - Epoch 48, Loss: 0.0729
+2025-04-11 12:03:35.831 | INFO     | __main__:train_and_evaluate:95 - Epoch 49, Loss: 0.0672
+2025-04-11 12:03:35.874 | INFO     | __main__:train_and_evaluate:95 - Epoch 50, Loss: 0.0700
+2025-04-11 12:03:35.890 | INFO     | __main__:eval:55 - Eval Loss: 0.0796
+2025-04-11 12:03:35.969 | INFO     | __main__:train_and_evaluate:105 - Epoch 50, Eval Metrics: top_1_macro_recall: 0.55, top_1_macro_precision: 0.58, top_1_macro_f1: 0.55, top_1_accuracy: 0.70, top_1_micro_recall: 0.62, top_1_micro_precision: 0.70, top_1_micro_f1: 0.66, top_2_macro_recall: 0.79, top_2_macro_precision: 0.54, top_2_macro_f1: 0.61, top_2_accuracy: 0.81, top_2_micro_recall: 0.78, top_2_micro_precision: 0.44, top_2_micro_f1: 0.56, top_3_macro_recall: 0.86, top_3_macro_precision: 0.42, top_3_macro_f1: 0.51, top_3_accuracy: 0.90, top_3_micro_recall: 0.88, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:35.970 | INFO     | __main__:CV_run:390 - Fold 1, Final Eval Metrics: top_1_macro_recall: 0.55, top_1_macro_precision: 0.58, top_1_macro_f1: 0.55, top_1_accuracy: 0.70, top_1_micro_recall: 0.62, top_1_micro_precision: 0.70, top_1_micro_f1: 0.66, top_2_macro_recall: 0.79, top_2_macro_precision: 0.54, top_2_macro_f1: 0.61, top_2_accuracy: 0.81, top_2_micro_recall: 0.78, top_2_micro_precision: 0.44, top_2_micro_f1: 0.56, top_3_macro_recall: 0.86, top_3_macro_precision: 0.42, top_3_macro_f1: 0.51, top_3_accuracy: 0.90, top_3_micro_recall: 0.88, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:35.970 | INFO     | __main__:CV_run:359 - Starting fold 2
+2025-04-11 12:03:36.018 | INFO     | __main__:train_and_evaluate:95 - Epoch 1, Loss: 0.3743
+2025-04-11 12:03:36.061 | INFO     | __main__:train_and_evaluate:95 - Epoch 2, Loss: 0.2019
+2025-04-11 12:03:36.103 | INFO     | __main__:train_and_evaluate:95 - Epoch 3, Loss: 0.1672
+2025-04-11 12:03:36.146 | INFO     | __main__:train_and_evaluate:95 - Epoch 4, Loss: 0.1427
+2025-04-11 12:03:36.188 | INFO     | __main__:train_and_evaluate:95 - Epoch 5, Loss: 0.1273
+2025-04-11 12:03:36.230 | INFO     | __main__:train_and_evaluate:95 - Epoch 6, Loss: 0.1194
+2025-04-11 12:03:36.272 | INFO     | __main__:train_and_evaluate:95 - Epoch 7, Loss: 0.1166
+2025-04-11 12:03:36.315 | INFO     | __main__:train_and_evaluate:95 - Epoch 8, Loss: 0.1093
+2025-04-11 12:03:36.358 | INFO     | __main__:train_and_evaluate:95 - Epoch 9, Loss: 0.1056
+2025-04-11 12:03:36.401 | INFO     | __main__:train_and_evaluate:95 - Epoch 10, Loss: 0.1025
+2025-04-11 12:03:36.418 | INFO     | __main__:eval:55 - Eval Loss: 0.0975
+2025-04-11 12:03:36.496 | INFO     | __main__:train_and_evaluate:105 - Epoch 10, Eval Metrics: top_1_macro_recall: 0.42, top_1_macro_precision: 0.50, top_1_macro_f1: 0.41, top_1_accuracy: 0.55, top_1_micro_recall: 0.48, top_1_micro_precision: 0.55, top_1_micro_f1: 0.51, top_2_macro_recall: 0.63, top_2_macro_precision: 0.48, top_2_macro_f1: 0.50, top_2_accuracy: 0.74, top_2_micro_recall: 0.68, top_2_micro_precision: 0.39, top_2_micro_f1: 0.50, top_3_macro_recall: 0.76, top_3_macro_precision: 0.40, top_3_macro_f1: 0.49, top_3_accuracy: 0.85, top_3_micro_recall: 0.82, top_3_micro_precision: 0.31, top_3_micro_f1: 0.45
+2025-04-11 12:03:36.540 | INFO     | __main__:train_and_evaluate:95 - Epoch 11, Loss: 0.1015
+2025-04-11 12:03:36.582 | INFO     | __main__:train_and_evaluate:95 - Epoch 12, Loss: 0.0962
+2025-04-11 12:03:36.625 | INFO     | __main__:train_and_evaluate:95 - Epoch 13, Loss: 0.0933
+2025-04-11 12:03:36.667 | INFO     | __main__:train_and_evaluate:95 - Epoch 14, Loss: 0.0951
+2025-04-11 12:03:36.709 | INFO     | __main__:train_and_evaluate:95 - Epoch 15, Loss: 0.0905
+2025-04-11 12:03:36.751 | INFO     | __main__:train_and_evaluate:95 - Epoch 16, Loss: 0.0914
+2025-04-11 12:03:36.793 | INFO     | __main__:train_and_evaluate:95 - Epoch 17, Loss: 0.0860
+2025-04-11 12:03:36.836 | INFO     | __main__:train_and_evaluate:95 - Epoch 18, Loss: 0.0879
+2025-04-11 12:03:36.878 | INFO     | __main__:train_and_evaluate:95 - Epoch 19, Loss: 0.0872
+2025-04-11 12:03:36.921 | INFO     | __main__:train_and_evaluate:95 - Epoch 20, Loss: 0.0904
+2025-04-11 12:03:36.938 | INFO     | __main__:eval:55 - Eval Loss: 0.0823
+2025-04-11 12:03:37.017 | INFO     | __main__:train_and_evaluate:105 - Epoch 20, Eval Metrics: top_1_macro_recall: 0.53, top_1_macro_precision: 0.57, top_1_macro_f1: 0.53, top_1_accuracy: 0.66, top_1_micro_recall: 0.58, top_1_micro_precision: 0.66, top_1_micro_f1: 0.62, top_2_macro_recall: 0.73, top_2_macro_precision: 0.54, top_2_macro_f1: 0.60, top_2_accuracy: 0.81, top_2_micro_recall: 0.76, top_2_micro_precision: 0.44, top_2_micro_f1: 0.56, top_3_macro_recall: 0.86, top_3_macro_precision: 0.44, top_3_macro_f1: 0.56, top_3_accuracy: 0.89, top_3_micro_recall: 0.86, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:37.060 | INFO     | __main__:train_and_evaluate:95 - Epoch 21, Loss: 0.0844
+2025-04-11 12:03:37.102 | INFO     | __main__:train_and_evaluate:95 - Epoch 22, Loss: 0.0808
+2025-04-11 12:03:37.147 | INFO     | __main__:train_and_evaluate:95 - Epoch 23, Loss: 0.0847
+2025-04-11 12:03:37.191 | INFO     | __main__:train_and_evaluate:95 - Epoch 24, Loss: 0.0828
+2025-04-11 12:03:37.234 | INFO     | __main__:train_and_evaluate:95 - Epoch 25, Loss: 0.0832
+2025-04-11 12:03:37.276 | INFO     | __main__:train_and_evaluate:95 - Epoch 26, Loss: 0.0822
+2025-04-11 12:03:37.319 | INFO     | __main__:train_and_evaluate:95 - Epoch 27, Loss: 0.0811
+2025-04-11 12:03:37.362 | INFO     | __main__:train_and_evaluate:95 - Epoch 28, Loss: 0.0809
+2025-04-11 12:03:37.404 | INFO     | __main__:train_and_evaluate:95 - Epoch 29, Loss: 0.0784
+2025-04-11 12:03:37.446 | INFO     | __main__:train_and_evaluate:95 - Epoch 30, Loss: 0.0770
+2025-04-11 12:03:37.463 | INFO     | __main__:eval:55 - Eval Loss: 0.0726
+2025-04-11 12:03:37.542 | INFO     | __main__:train_and_evaluate:105 - Epoch 30, Eval Metrics: top_1_macro_recall: 0.55, top_1_macro_precision: 0.58, top_1_macro_f1: 0.54, top_1_accuracy: 0.67, top_1_micro_recall: 0.58, top_1_micro_precision: 0.67, top_1_micro_f1: 0.62, top_2_macro_recall: 0.76, top_2_macro_precision: 0.54, top_2_macro_f1: 0.61, top_2_accuracy: 0.82, top_2_micro_recall: 0.78, top_2_micro_precision: 0.45, top_2_micro_f1: 0.57, top_3_macro_recall: 0.86, top_3_macro_precision: 0.46, top_3_macro_f1: 0.56, top_3_accuracy: 0.91, top_3_micro_recall: 0.89, top_3_micro_precision: 0.34, top_3_micro_f1: 0.49
+2025-04-11 12:03:37.585 | INFO     | __main__:train_and_evaluate:95 - Epoch 31, Loss: 0.0743
+2025-04-11 12:03:37.628 | INFO     | __main__:train_and_evaluate:95 - Epoch 32, Loss: 0.0727
+2025-04-11 12:03:37.670 | INFO     | __main__:train_and_evaluate:95 - Epoch 33, Loss: 0.0778
+2025-04-11 12:03:37.712 | INFO     | __main__:train_and_evaluate:95 - Epoch 34, Loss: 0.0718
+2025-04-11 12:03:37.754 | INFO     | __main__:train_and_evaluate:95 - Epoch 35, Loss: 0.0718
+2025-04-11 12:03:37.797 | INFO     | __main__:train_and_evaluate:95 - Epoch 36, Loss: 0.0740
+2025-04-11 12:03:37.839 | INFO     | __main__:train_and_evaluate:95 - Epoch 37, Loss: 0.0720
+2025-04-11 12:03:37.882 | INFO     | __main__:train_and_evaluate:95 - Epoch 38, Loss: 0.0729
+2025-04-11 12:03:37.924 | INFO     | __main__:train_and_evaluate:95 - Epoch 39, Loss: 0.0742
+2025-04-11 12:03:37.967 | INFO     | __main__:train_and_evaluate:95 - Epoch 40, Loss: 0.0715
+2025-04-11 12:03:37.984 | INFO     | __main__:eval:55 - Eval Loss: 0.0695
+2025-04-11 12:03:38.062 | INFO     | __main__:train_and_evaluate:105 - Epoch 40, Eval Metrics: top_1_macro_recall: 0.55, top_1_macro_precision: 0.54, top_1_macro_f1: 0.54, top_1_accuracy: 0.69, top_1_micro_recall: 0.60, top_1_micro_precision: 0.69, top_1_micro_f1: 0.65, top_2_macro_recall: 0.77, top_2_macro_precision: 0.55, top_2_macro_f1: 0.62, top_2_accuracy: 0.84, top_2_micro_recall: 0.80, top_2_micro_precision: 0.46, top_2_micro_f1: 0.59, top_3_macro_recall: 0.87, top_3_macro_precision: 0.44, top_3_macro_f1: 0.56, top_3_accuracy: 0.92, top_3_micro_recall: 0.90, top_3_micro_precision: 0.35, top_3_micro_f1: 0.50
+2025-04-11 12:03:38.105 | INFO     | __main__:train_and_evaluate:95 - Epoch 41, Loss: 0.0705
+2025-04-11 12:03:38.147 | INFO     | __main__:train_and_evaluate:95 - Epoch 42, Loss: 0.0716
+2025-04-11 12:03:38.190 | INFO     | __main__:train_and_evaluate:95 - Epoch 43, Loss: 0.0719
+2025-04-11 12:03:38.232 | INFO     | __main__:train_and_evaluate:95 - Epoch 44, Loss: 0.0689
+2025-04-11 12:03:38.275 | INFO     | __main__:train_and_evaluate:95 - Epoch 45, Loss: 0.0682
+2025-04-11 12:03:38.317 | INFO     | __main__:train_and_evaluate:95 - Epoch 46, Loss: 0.0693
+2025-04-11 12:03:38.360 | INFO     | __main__:train_and_evaluate:95 - Epoch 47, Loss: 0.0689
+2025-04-11 12:03:38.403 | INFO     | __main__:train_and_evaluate:95 - Epoch 48, Loss: 0.0740
+2025-04-11 12:03:38.445 | INFO     | __main__:train_and_evaluate:95 - Epoch 49, Loss: 0.0721
+2025-04-11 12:03:38.488 | INFO     | __main__:train_and_evaluate:95 - Epoch 50, Loss: 0.0726
+2025-04-11 12:03:38.505 | INFO     | __main__:eval:55 - Eval Loss: 0.0684
+2025-04-11 12:03:38.584 | INFO     | __main__:train_and_evaluate:105 - Epoch 50, Eval Metrics: top_1_macro_recall: 0.57, top_1_macro_precision: 0.61, top_1_macro_f1: 0.57, top_1_accuracy: 0.73, top_1_micro_recall: 0.64, top_1_micro_precision: 0.73, top_1_micro_f1: 0.68, top_2_macro_recall: 0.78, top_2_macro_precision: 0.57, top_2_macro_f1: 0.65, top_2_accuracy: 0.83, top_2_micro_recall: 0.80, top_2_micro_precision: 0.46, top_2_micro_f1: 0.59, top_3_macro_recall: 0.87, top_3_macro_precision: 0.45, top_3_macro_f1: 0.56, top_3_accuracy: 0.90, top_3_micro_recall: 0.89, top_3_micro_precision: 0.34, top_3_micro_f1: 0.49
+2025-04-11 12:03:38.584 | INFO     | __main__:CV_run:390 - Fold 2, Final Eval Metrics: top_1_macro_recall: 0.57, top_1_macro_precision: 0.61, top_1_macro_f1: 0.57, top_1_accuracy: 0.73, top_1_micro_recall: 0.64, top_1_micro_precision: 0.73, top_1_micro_f1: 0.68, top_2_macro_recall: 0.78, top_2_macro_precision: 0.57, top_2_macro_f1: 0.65, top_2_accuracy: 0.83, top_2_micro_recall: 0.80, top_2_micro_precision: 0.46, top_2_micro_f1: 0.59, top_3_macro_recall: 0.87, top_3_macro_precision: 0.45, top_3_macro_f1: 0.56, top_3_accuracy: 0.90, top_3_micro_recall: 0.89, top_3_micro_precision: 0.34, top_3_micro_f1: 0.49
+2025-04-11 12:03:38.585 | INFO     | __main__:CV_run:359 - Starting fold 3
+2025-04-11 12:03:38.632 | INFO     | __main__:train_and_evaluate:95 - Epoch 1, Loss: 0.3729
+2025-04-11 12:03:38.675 | INFO     | __main__:train_and_evaluate:95 - Epoch 2, Loss: 0.1946
+2025-04-11 12:03:38.717 | INFO     | __main__:train_and_evaluate:95 - Epoch 3, Loss: 0.1522
+2025-04-11 12:03:38.760 | INFO     | __main__:train_and_evaluate:95 - Epoch 4, Loss: 0.1346
+2025-04-11 12:03:38.802 | INFO     | __main__:train_and_evaluate:95 - Epoch 5, Loss: 0.1247
+2025-04-11 12:03:38.844 | INFO     | __main__:train_and_evaluate:95 - Epoch 6, Loss: 0.1139
+2025-04-11 12:03:38.886 | INFO     | __main__:train_and_evaluate:95 - Epoch 7, Loss: 0.1100
+2025-04-11 12:03:38.928 | INFO     | __main__:train_and_evaluate:95 - Epoch 8, Loss: 0.1012
+2025-04-11 12:03:38.970 | INFO     | __main__:train_and_evaluate:95 - Epoch 9, Loss: 0.1012
+2025-04-11 12:03:39.013 | INFO     | __main__:train_and_evaluate:95 - Epoch 10, Loss: 0.0969
+2025-04-11 12:03:39.030 | INFO     | __main__:eval:55 - Eval Loss: 0.0974
+2025-04-11 12:03:39.108 | INFO     | __main__:train_and_evaluate:105 - Epoch 10, Eval Metrics: top_1_macro_recall: 0.47, top_1_macro_precision: 0.56, top_1_macro_f1: 0.45, top_1_accuracy: 0.58, top_1_micro_recall: 0.51, top_1_micro_precision: 0.58, top_1_micro_f1: 0.54, top_2_macro_recall: 0.67, top_2_macro_precision: 0.47, top_2_macro_f1: 0.51, top_2_accuracy: 0.76, top_2_micro_recall: 0.70, top_2_micro_precision: 0.40, top_2_micro_f1: 0.51, top_3_macro_recall: 0.75, top_3_macro_precision: 0.37, top_3_macro_f1: 0.46, top_3_accuracy: 0.86, top_3_micro_recall: 0.82, top_3_micro_precision: 0.31, top_3_micro_f1: 0.45
+2025-04-11 12:03:39.152 | INFO     | __main__:train_and_evaluate:95 - Epoch 11, Loss: 0.0961
+2025-04-11 12:03:39.194 | INFO     | __main__:train_and_evaluate:95 - Epoch 12, Loss: 0.0937
+2025-04-11 12:03:39.237 | INFO     | __main__:train_and_evaluate:95 - Epoch 13, Loss: 0.0930
+2025-04-11 12:03:39.279 | INFO     | __main__:train_and_evaluate:95 - Epoch 14, Loss: 0.0875
+2025-04-11 12:03:39.322 | INFO     | __main__:train_and_evaluate:95 - Epoch 15, Loss: 0.0889
+2025-04-11 12:03:39.364 | INFO     | __main__:train_and_evaluate:95 - Epoch 16, Loss: 0.0882
+2025-04-11 12:03:39.406 | INFO     | __main__:train_and_evaluate:95 - Epoch 17, Loss: 0.0888
+2025-04-11 12:03:39.450 | INFO     | __main__:train_and_evaluate:95 - Epoch 18, Loss: 0.0877
+2025-04-11 12:03:39.494 | INFO     | __main__:train_and_evaluate:95 - Epoch 19, Loss: 0.0847
+2025-04-11 12:03:39.536 | INFO     | __main__:train_and_evaluate:95 - Epoch 20, Loss: 0.0849
+2025-04-11 12:03:39.553 | INFO     | __main__:eval:55 - Eval Loss: 0.0844
+2025-04-11 12:03:39.632 | INFO     | __main__:train_and_evaluate:105 - Epoch 20, Eval Metrics: top_1_macro_recall: 0.52, top_1_macro_precision: 0.56, top_1_macro_f1: 0.52, top_1_accuracy: 0.65, top_1_micro_recall: 0.57, top_1_micro_precision: 0.65, top_1_micro_f1: 0.61, top_2_macro_recall: 0.72, top_2_macro_precision: 0.49, top_2_macro_f1: 0.56, top_2_accuracy: 0.80, top_2_micro_recall: 0.75, top_2_micro_precision: 0.43, top_2_micro_f1: 0.54, top_3_macro_recall: 0.82, top_3_macro_precision: 0.39, top_3_macro_f1: 0.49, top_3_accuracy: 0.89, top_3_micro_recall: 0.86, top_3_micro_precision: 0.32, top_3_micro_f1: 0.47
+2025-04-11 12:03:39.674 | INFO     | __main__:train_and_evaluate:95 - Epoch 21, Loss: 0.0849
+2025-04-11 12:03:39.717 | INFO     | __main__:train_and_evaluate:95 - Epoch 22, Loss: 0.0820
+2025-04-11 12:03:39.759 | INFO     | __main__:train_and_evaluate:95 - Epoch 23, Loss: 0.0788
+2025-04-11 12:03:39.802 | INFO     | __main__:train_and_evaluate:95 - Epoch 24, Loss: 0.0811
+2025-04-11 12:03:39.844 | INFO     | __main__:train_and_evaluate:95 - Epoch 25, Loss: 0.0781
+2025-04-11 12:03:39.886 | INFO     | __main__:train_and_evaluate:95 - Epoch 26, Loss: 0.0790
+2025-04-11 12:03:39.929 | INFO     | __main__:train_and_evaluate:95 - Epoch 27, Loss: 0.0765
+2025-04-11 12:03:39.971 | INFO     | __main__:train_and_evaluate:95 - Epoch 28, Loss: 0.0817
+2025-04-11 12:03:40.014 | INFO     | __main__:train_and_evaluate:95 - Epoch 29, Loss: 0.0752
+2025-04-11 12:03:40.056 | INFO     | __main__:train_and_evaluate:95 - Epoch 30, Loss: 0.0729
+2025-04-11 12:03:40.073 | INFO     | __main__:eval:55 - Eval Loss: 0.0747
+2025-04-11 12:03:40.153 | INFO     | __main__:train_and_evaluate:105 - Epoch 30, Eval Metrics: top_1_macro_recall: 0.54, top_1_macro_precision: 0.60, top_1_macro_f1: 0.55, top_1_accuracy: 0.69, top_1_micro_recall: 0.61, top_1_micro_precision: 0.69, top_1_micro_f1: 0.65, top_2_macro_recall: 0.75, top_2_macro_precision: 0.52, top_2_macro_f1: 0.59, top_2_accuracy: 0.82, top_2_micro_recall: 0.78, top_2_micro_precision: 0.44, top_2_micro_f1: 0.56, top_3_macro_recall: 0.85, top_3_macro_precision: 0.45, top_3_macro_f1: 0.54, top_3_accuracy: 0.88, top_3_micro_recall: 0.87, top_3_micro_precision: 0.33, top_3_micro_f1: 0.47
+2025-04-11 12:03:40.195 | INFO     | __main__:train_and_evaluate:95 - Epoch 31, Loss: 0.0731
+2025-04-11 12:03:40.238 | INFO     | __main__:train_and_evaluate:95 - Epoch 32, Loss: 0.0729
+2025-04-11 12:03:40.280 | INFO     | __main__:train_and_evaluate:95 - Epoch 33, Loss: 0.0712
+2025-04-11 12:03:40.322 | INFO     | __main__:train_and_evaluate:95 - Epoch 34, Loss: 0.0710
+2025-04-11 12:03:40.365 | INFO     | __main__:train_and_evaluate:95 - Epoch 35, Loss: 0.0696
+2025-04-11 12:03:40.407 | INFO     | __main__:train_and_evaluate:95 - Epoch 36, Loss: 0.0696
+2025-04-11 12:03:40.449 | INFO     | __main__:train_and_evaluate:95 - Epoch 37, Loss: 0.0701
+2025-04-11 12:03:40.492 | INFO     | __main__:train_and_evaluate:95 - Epoch 38, Loss: 0.0680
+2025-04-11 12:03:40.534 | INFO     | __main__:train_and_evaluate:95 - Epoch 39, Loss: 0.0729
+2025-04-11 12:03:40.577 | INFO     | __main__:train_and_evaluate:95 - Epoch 40, Loss: 0.0696
+2025-04-11 12:03:40.594 | INFO     | __main__:eval:55 - Eval Loss: 0.0724
+2025-04-11 12:03:40.673 | INFO     | __main__:train_and_evaluate:105 - Epoch 40, Eval Metrics: top_1_macro_recall: 0.55, top_1_macro_precision: 0.60, top_1_macro_f1: 0.56, top_1_accuracy: 0.72, top_1_micro_recall: 0.64, top_1_micro_precision: 0.72, top_1_micro_f1: 0.68, top_2_macro_recall: 0.76, top_2_macro_precision: 0.52, top_2_macro_f1: 0.60, top_2_accuracy: 0.81, top_2_micro_recall: 0.80, top_2_micro_precision: 0.45, top_2_micro_f1: 0.58, top_3_macro_recall: 0.86, top_3_macro_precision: 0.44, top_3_macro_f1: 0.54, top_3_accuracy: 0.89, top_3_micro_recall: 0.88, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:40.716 | INFO     | __main__:train_and_evaluate:95 - Epoch 41, Loss: 0.0664
+2025-04-11 12:03:40.759 | INFO     | __main__:train_and_evaluate:95 - Epoch 42, Loss: 0.0690
+2025-04-11 12:03:40.801 | INFO     | __main__:train_and_evaluate:95 - Epoch 43, Loss: 0.0675
+2025-04-11 12:03:40.843 | INFO     | __main__:train_and_evaluate:95 - Epoch 44, Loss: 0.0699
+2025-04-11 12:03:40.886 | INFO     | __main__:train_and_evaluate:95 - Epoch 45, Loss: 0.0698
+2025-04-11 12:03:40.928 | INFO     | __main__:train_and_evaluate:95 - Epoch 46, Loss: 0.0677
+2025-04-11 12:03:40.971 | INFO     | __main__:train_and_evaluate:95 - Epoch 47, Loss: 0.0655
+2025-04-11 12:03:41.014 | INFO     | __main__:train_and_evaluate:95 - Epoch 48, Loss: 0.0670
+2025-04-11 12:03:41.056 | INFO     | __main__:train_and_evaluate:95 - Epoch 49, Loss: 0.0692
+2025-04-11 12:03:41.099 | INFO     | __main__:train_and_evaluate:95 - Epoch 50, Loss: 0.0680
+2025-04-11 12:03:41.116 | INFO     | __main__:eval:55 - Eval Loss: 0.0723
+2025-04-11 12:03:41.195 | INFO     | __main__:train_and_evaluate:105 - Epoch 50, Eval Metrics: top_1_macro_recall: 0.57, top_1_macro_precision: 0.59, top_1_macro_f1: 0.58, top_1_accuracy: 0.73, top_1_micro_recall: 0.65, top_1_micro_precision: 0.73, top_1_micro_f1: 0.69, top_2_macro_recall: 0.77, top_2_macro_precision: 0.51, top_2_macro_f1: 0.59, top_2_accuracy: 0.81, top_2_micro_recall: 0.80, top_2_micro_precision: 0.45, top_2_micro_f1: 0.57, top_3_macro_recall: 0.86, top_3_macro_precision: 0.43, top_3_macro_f1: 0.53, top_3_accuracy: 0.88, top_3_micro_recall: 0.88, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:41.195 | INFO     | __main__:CV_run:390 - Fold 3, Final Eval Metrics: top_1_macro_recall: 0.57, top_1_macro_precision: 0.59, top_1_macro_f1: 0.58, top_1_accuracy: 0.73, top_1_micro_recall: 0.65, top_1_micro_precision: 0.73, top_1_micro_f1: 0.69, top_2_macro_recall: 0.77, top_2_macro_precision: 0.51, top_2_macro_f1: 0.59, top_2_accuracy: 0.81, top_2_micro_recall: 0.80, top_2_micro_precision: 0.45, top_2_micro_f1: 0.57, top_3_macro_recall: 0.86, top_3_macro_precision: 0.43, top_3_macro_f1: 0.53, top_3_accuracy: 0.88, top_3_micro_recall: 0.88, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:41.196 | INFO     | __main__:CV_run:359 - Starting fold 4
+2025-04-11 12:03:41.244 | INFO     | __main__:train_and_evaluate:95 - Epoch 1, Loss: 0.3741
+2025-04-11 12:03:41.287 | INFO     | __main__:train_and_evaluate:95 - Epoch 2, Loss: 0.1960
+2025-04-11 12:03:41.329 | INFO     | __main__:train_and_evaluate:95 - Epoch 3, Loss: 0.1646
+2025-04-11 12:03:41.372 | INFO     | __main__:train_and_evaluate:95 - Epoch 4, Loss: 0.1410
+2025-04-11 12:03:41.414 | INFO     | __main__:train_and_evaluate:95 - Epoch 5, Loss: 0.1297
+2025-04-11 12:03:41.457 | INFO     | __main__:train_and_evaluate:95 - Epoch 6, Loss: 0.1173
+2025-04-11 12:03:41.499 | INFO     | __main__:train_and_evaluate:95 - Epoch 7, Loss: 0.1154
+2025-04-11 12:03:41.542 | INFO     | __main__:train_and_evaluate:95 - Epoch 8, Loss: 0.1045
+2025-04-11 12:03:41.584 | INFO     | __main__:train_and_evaluate:95 - Epoch 9, Loss: 0.1048
+2025-04-11 12:03:41.627 | INFO     | __main__:train_and_evaluate:95 - Epoch 10, Loss: 0.0987
+2025-04-11 12:03:41.644 | INFO     | __main__:eval:55 - Eval Loss: 0.0924
+2025-04-11 12:03:41.723 | INFO     | __main__:train_and_evaluate:105 - Epoch 10, Eval Metrics: top_1_macro_recall: 0.48, top_1_macro_precision: 0.51, top_1_macro_f1: 0.47, top_1_accuracy: 0.59, top_1_micro_recall: 0.52, top_1_micro_precision: 0.59, top_1_micro_f1: 0.56, top_2_macro_recall: 0.69, top_2_macro_precision: 0.52, top_2_macro_f1: 0.54, top_2_accuracy: 0.79, top_2_micro_recall: 0.74, top_2_micro_precision: 0.42, top_2_micro_f1: 0.53, top_3_macro_recall: 0.82, top_3_macro_precision: 0.43, top_3_macro_f1: 0.53, top_3_accuracy: 0.89, top_3_micro_recall: 0.86, top_3_micro_precision: 0.32, top_3_micro_f1: 0.47
+2025-04-11 12:03:41.766 | INFO     | __main__:train_and_evaluate:95 - Epoch 11, Loss: 0.0933
+2025-04-11 12:03:41.808 | INFO     | __main__:train_and_evaluate:95 - Epoch 12, Loss: 0.0953
+2025-04-11 12:03:41.851 | INFO     | __main__:train_and_evaluate:95 - Epoch 13, Loss: 0.0917
+2025-04-11 12:03:41.893 | INFO     | __main__:train_and_evaluate:95 - Epoch 14, Loss: 0.0944
+2025-04-11 12:03:41.936 | INFO     | __main__:train_and_evaluate:95 - Epoch 15, Loss: 0.0912
+2025-04-11 12:03:41.978 | INFO     | __main__:train_and_evaluate:95 - Epoch 16, Loss: 0.0935
+2025-04-11 12:03:42.021 | INFO     | __main__:train_and_evaluate:95 - Epoch 17, Loss: 0.0888
+2025-04-11 12:03:42.063 | INFO     | __main__:train_and_evaluate:95 - Epoch 18, Loss: 0.0889
+2025-04-11 12:03:42.106 | INFO     | __main__:train_and_evaluate:95 - Epoch 19, Loss: 0.0876
+2025-04-11 12:03:42.148 | INFO     | __main__:train_and_evaluate:95 - Epoch 20, Loss: 0.0839
+2025-04-11 12:03:42.165 | INFO     | __main__:eval:55 - Eval Loss: 0.0796
+2025-04-11 12:03:42.244 | INFO     | __main__:train_and_evaluate:105 - Epoch 20, Eval Metrics: top_1_macro_recall: 0.53, top_1_macro_precision: 0.59, top_1_macro_f1: 0.53, top_1_accuracy: 0.68, top_1_micro_recall: 0.60, top_1_micro_precision: 0.68, top_1_micro_f1: 0.64, top_2_macro_recall: 0.72, top_2_macro_precision: 0.52, top_2_macro_f1: 0.58, top_2_accuracy: 0.82, top_2_micro_recall: 0.77, top_2_micro_precision: 0.44, top_2_micro_f1: 0.56, top_3_macro_recall: 0.83, top_3_macro_precision: 0.43, top_3_macro_f1: 0.53, top_3_accuracy: 0.89, top_3_micro_recall: 0.86, top_3_micro_precision: 0.33, top_3_micro_f1: 0.47
+2025-04-11 12:03:42.287 | INFO     | __main__:train_and_evaluate:95 - Epoch 21, Loss: 0.0846
+2025-04-11 12:03:42.329 | INFO     | __main__:train_and_evaluate:95 - Epoch 22, Loss: 0.0831
+2025-04-11 12:03:42.372 | INFO     | __main__:train_and_evaluate:95 - Epoch 23, Loss: 0.0799
+2025-04-11 12:03:42.414 | INFO     | __main__:train_and_evaluate:95 - Epoch 24, Loss: 0.0792
+2025-04-11 12:03:42.460 | INFO     | __main__:train_and_evaluate:95 - Epoch 25, Loss: 0.0793
+2025-04-11 12:03:42.503 | INFO     | __main__:train_and_evaluate:95 - Epoch 26, Loss: 0.0806
+2025-04-11 12:03:42.545 | INFO     | __main__:train_and_evaluate:95 - Epoch 27, Loss: 0.0792
+2025-04-11 12:03:42.588 | INFO     | __main__:train_and_evaluate:95 - Epoch 28, Loss: 0.0781
+2025-04-11 12:03:42.630 | INFO     | __main__:train_and_evaluate:95 - Epoch 29, Loss: 0.0787
+2025-04-11 12:03:42.673 | INFO     | __main__:train_and_evaluate:95 - Epoch 30, Loss: 0.0787
+2025-04-11 12:03:42.690 | INFO     | __main__:eval:55 - Eval Loss: 0.0721
+2025-04-11 12:03:42.769 | INFO     | __main__:train_and_evaluate:105 - Epoch 30, Eval Metrics: top_1_macro_recall: 0.55, top_1_macro_precision: 0.58, top_1_macro_f1: 0.54, top_1_accuracy: 0.69, top_1_micro_recall: 0.61, top_1_micro_precision: 0.69, top_1_micro_f1: 0.65, top_2_macro_recall: 0.73, top_2_macro_precision: 0.53, top_2_macro_f1: 0.58, top_2_accuracy: 0.84, top_2_micro_recall: 0.78, top_2_micro_precision: 0.44, top_2_micro_f1: 0.57, top_3_macro_recall: 0.84, top_3_macro_precision: 0.42, top_3_macro_f1: 0.52, top_3_accuracy: 0.90, top_3_micro_recall: 0.87, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:42.812 | INFO     | __main__:train_and_evaluate:95 - Epoch 31, Loss: 0.0737
+2025-04-11 12:03:42.854 | INFO     | __main__:train_and_evaluate:95 - Epoch 32, Loss: 0.0754
+2025-04-11 12:03:42.897 | INFO     | __main__:train_and_evaluate:95 - Epoch 33, Loss: 0.0731
+2025-04-11 12:03:42.940 | INFO     | __main__:train_and_evaluate:95 - Epoch 34, Loss: 0.0745
+2025-04-11 12:03:42.982 | INFO     | __main__:train_and_evaluate:95 - Epoch 35, Loss: 0.0719
+2025-04-11 12:03:43.025 | INFO     | __main__:train_and_evaluate:95 - Epoch 36, Loss: 0.0718
+2025-04-11 12:03:43.067 | INFO     | __main__:train_and_evaluate:95 - Epoch 37, Loss: 0.0730
+2025-04-11 12:03:43.109 | INFO     | __main__:train_and_evaluate:95 - Epoch 38, Loss: 0.0743
+2025-04-11 12:03:43.151 | INFO     | __main__:train_and_evaluate:95 - Epoch 39, Loss: 0.0688
+2025-04-11 12:03:43.194 | INFO     | __main__:train_and_evaluate:95 - Epoch 40, Loss: 0.0713
+2025-04-11 12:03:43.211 | INFO     | __main__:eval:55 - Eval Loss: 0.0696
+2025-04-11 12:03:43.290 | INFO     | __main__:train_and_evaluate:105 - Epoch 40, Eval Metrics: top_1_macro_recall: 0.56, top_1_macro_precision: 0.59, top_1_macro_f1: 0.56, top_1_accuracy: 0.72, top_1_micro_recall: 0.64, top_1_micro_precision: 0.72, top_1_micro_f1: 0.68, top_2_macro_recall: 0.74, top_2_macro_precision: 0.54, top_2_macro_f1: 0.60, top_2_accuracy: 0.82, top_2_micro_recall: 0.79, top_2_micro_precision: 0.44, top_2_micro_f1: 0.57, top_3_macro_recall: 0.85, top_3_macro_precision: 0.42, top_3_macro_f1: 0.53, top_3_accuracy: 0.90, top_3_micro_recall: 0.88, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:43.333 | INFO     | __main__:train_and_evaluate:95 - Epoch 41, Loss: 0.0716
+2025-04-11 12:03:43.375 | INFO     | __main__:train_and_evaluate:95 - Epoch 42, Loss: 0.0687
+2025-04-11 12:03:43.418 | INFO     | __main__:train_and_evaluate:95 - Epoch 43, Loss: 0.0700
+2025-04-11 12:03:43.460 | INFO     | __main__:train_and_evaluate:95 - Epoch 44, Loss: 0.0705
+2025-04-11 12:03:43.503 | INFO     | __main__:train_and_evaluate:95 - Epoch 45, Loss: 0.0684
+2025-04-11 12:03:43.545 | INFO     | __main__:train_and_evaluate:95 - Epoch 46, Loss: 0.0728
+2025-04-11 12:03:43.588 | INFO     | __main__:train_and_evaluate:95 - Epoch 47, Loss: 0.0678
+2025-04-11 12:03:43.631 | INFO     | __main__:train_and_evaluate:95 - Epoch 48, Loss: 0.0720
+2025-04-11 12:03:43.674 | INFO     | __main__:train_and_evaluate:95 - Epoch 49, Loss: 0.0677
+2025-04-11 12:03:43.717 | INFO     | __main__:train_and_evaluate:95 - Epoch 50, Loss: 0.0716
+2025-04-11 12:03:43.733 | INFO     | __main__:eval:55 - Eval Loss: 0.0681
+2025-04-11 12:03:43.812 | INFO     | __main__:train_and_evaluate:105 - Epoch 50, Eval Metrics: top_1_macro_recall: 0.56, top_1_macro_precision: 0.58, top_1_macro_f1: 0.56, top_1_accuracy: 0.72, top_1_micro_recall: 0.63, top_1_micro_precision: 0.72, top_1_micro_f1: 0.67, top_2_macro_recall: 0.76, top_2_macro_precision: 0.53, top_2_macro_f1: 0.60, top_2_accuracy: 0.83, top_2_micro_recall: 0.80, top_2_micro_precision: 0.45, top_2_micro_f1: 0.57, top_3_macro_recall: 0.85, top_3_macro_precision: 0.42, top_3_macro_f1: 0.52, top_3_accuracy: 0.91, top_3_micro_recall: 0.88, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:43.813 | INFO     | __main__:CV_run:390 - Fold 4, Final Eval Metrics: top_1_macro_recall: 0.56, top_1_macro_precision: 0.58, top_1_macro_f1: 0.56, top_1_accuracy: 0.72, top_1_micro_recall: 0.63, top_1_micro_precision: 0.72, top_1_micro_f1: 0.67, top_2_macro_recall: 0.76, top_2_macro_precision: 0.53, top_2_macro_f1: 0.60, top_2_accuracy: 0.83, top_2_micro_recall: 0.80, top_2_micro_precision: 0.45, top_2_micro_f1: 0.57, top_3_macro_recall: 0.85, top_3_macro_precision: 0.42, top_3_macro_f1: 0.52, top_3_accuracy: 0.91, top_3_micro_recall: 0.88, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:43.813 | INFO     | __main__:CV_run:359 - Starting fold 5
+2025-04-11 12:03:43.861 | INFO     | __main__:train_and_evaluate:95 - Epoch 1, Loss: 0.3691
+2025-04-11 12:03:43.903 | INFO     | __main__:train_and_evaluate:95 - Epoch 2, Loss: 0.2004
+2025-04-11 12:03:43.946 | INFO     | __main__:train_and_evaluate:95 - Epoch 3, Loss: 0.1665
+2025-04-11 12:03:43.988 | INFO     | __main__:train_and_evaluate:95 - Epoch 4, Loss: 0.1383
+2025-04-11 12:03:44.031 | INFO     | __main__:train_and_evaluate:95 - Epoch 5, Loss: 0.1242
+2025-04-11 12:03:44.073 | INFO     | __main__:train_and_evaluate:95 - Epoch 6, Loss: 0.1168
+2025-04-11 12:03:44.116 | INFO     | __main__:train_and_evaluate:95 - Epoch 7, Loss: 0.1111
+2025-04-11 12:03:44.159 | INFO     | __main__:train_and_evaluate:95 - Epoch 8, Loss: 0.1063
+2025-04-11 12:03:44.201 | INFO     | __main__:train_and_evaluate:95 - Epoch 9, Loss: 0.1022
+2025-04-11 12:03:44.243 | INFO     | __main__:train_and_evaluate:95 - Epoch 10, Loss: 0.0984
+2025-04-11 12:03:44.261 | INFO     | __main__:eval:55 - Eval Loss: 0.0954
+2025-04-11 12:03:44.339 | INFO     | __main__:train_and_evaluate:105 - Epoch 10, Eval Metrics: top_1_macro_recall: 0.48, top_1_macro_precision: 0.50, top_1_macro_f1: 0.47, top_1_accuracy: 0.58, top_1_micro_recall: 0.51, top_1_micro_precision: 0.58, top_1_micro_f1: 0.55, top_2_macro_recall: 0.66, top_2_macro_precision: 0.38, top_2_macro_f1: 0.45, top_2_accuracy: 0.79, top_2_micro_recall: 0.72, top_2_micro_precision: 0.41, top_2_micro_f1: 0.52, top_3_macro_recall: 0.76, top_3_macro_precision: 0.35, top_3_macro_f1: 0.44, top_3_accuracy: 0.88, top_3_micro_recall: 0.84, top_3_micro_precision: 0.32, top_3_micro_f1: 0.46
+2025-04-11 12:03:44.382 | INFO     | __main__:train_and_evaluate:95 - Epoch 11, Loss: 0.0961
+2025-04-11 12:03:44.425 | INFO     | __main__:train_and_evaluate:95 - Epoch 12, Loss: 0.0956
+2025-04-11 12:03:44.467 | INFO     | __main__:train_and_evaluate:95 - Epoch 13, Loss: 0.0929
+2025-04-11 12:03:44.510 | INFO     | __main__:train_and_evaluate:95 - Epoch 14, Loss: 0.0895
+2025-04-11 12:03:44.552 | INFO     | __main__:train_and_evaluate:95 - Epoch 15, Loss: 0.0904
+2025-04-11 12:03:44.595 | INFO     | __main__:train_and_evaluate:95 - Epoch 16, Loss: 0.0903
+2025-04-11 12:03:44.637 | INFO     | __main__:train_and_evaluate:95 - Epoch 17, Loss: 0.0882
+2025-04-11 12:03:44.680 | INFO     | __main__:train_and_evaluate:95 - Epoch 18, Loss: 0.0852
+2025-04-11 12:03:44.722 | INFO     | __main__:train_and_evaluate:95 - Epoch 19, Loss: 0.0882
+2025-04-11 12:03:44.764 | INFO     | __main__:train_and_evaluate:95 - Epoch 20, Loss: 0.0849
+2025-04-11 12:03:44.781 | INFO     | __main__:eval:55 - Eval Loss: 0.0812
+2025-04-11 12:03:44.860 | INFO     | __main__:train_and_evaluate:105 - Epoch 20, Eval Metrics: top_1_macro_recall: 0.52, top_1_macro_precision: 0.55, top_1_macro_f1: 0.51, top_1_accuracy: 0.66, top_1_micro_recall: 0.58, top_1_micro_precision: 0.66, top_1_micro_f1: 0.61, top_2_macro_recall: 0.73, top_2_macro_precision: 0.51, top_2_macro_f1: 0.57, top_2_accuracy: 0.83, top_2_micro_recall: 0.79, top_2_micro_precision: 0.45, top_2_micro_f1: 0.57, top_3_macro_recall: 0.79, top_3_macro_precision: 0.41, top_3_macro_f1: 0.50, top_3_accuracy: 0.91, top_3_micro_recall: 0.87, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:44.903 | INFO     | __main__:train_and_evaluate:95 - Epoch 21, Loss: 0.0839
+2025-04-11 12:03:44.946 | INFO     | __main__:train_and_evaluate:95 - Epoch 22, Loss: 0.0848
+2025-04-11 12:03:44.988 | INFO     | __main__:train_and_evaluate:95 - Epoch 23, Loss: 0.0832
+2025-04-11 12:03:45.030 | INFO     | __main__:train_and_evaluate:95 - Epoch 24, Loss: 0.0832
+2025-04-11 12:03:45.072 | INFO     | __main__:train_and_evaluate:95 - Epoch 25, Loss: 0.0784
+2025-04-11 12:03:45.115 | INFO     | __main__:train_and_evaluate:95 - Epoch 26, Loss: 0.0793
+2025-04-11 12:03:45.157 | INFO     | __main__:train_and_evaluate:95 - Epoch 27, Loss: 0.0795
+2025-04-11 12:03:45.200 | INFO     | __main__:train_and_evaluate:95 - Epoch 28, Loss: 0.0775
+2025-04-11 12:03:45.242 | INFO     | __main__:train_and_evaluate:95 - Epoch 29, Loss: 0.0800
+2025-04-11 12:03:45.289 | INFO     | __main__:train_and_evaluate:95 - Epoch 30, Loss: 0.0786
+2025-04-11 12:03:45.306 | INFO     | __main__:eval:55 - Eval Loss: 0.0739
+2025-04-11 12:03:45.385 | INFO     | __main__:train_and_evaluate:105 - Epoch 30, Eval Metrics: top_1_macro_recall: 0.54, top_1_macro_precision: 0.61, top_1_macro_f1: 0.54, top_1_accuracy: 0.68, top_1_micro_recall: 0.60, top_1_micro_precision: 0.68, top_1_micro_f1: 0.64, top_2_macro_recall: 0.75, top_2_macro_precision: 0.52, top_2_macro_f1: 0.59, top_2_accuracy: 0.80, top_2_micro_recall: 0.77, top_2_micro_precision: 0.44, top_2_micro_f1: 0.56, top_3_macro_recall: 0.81, top_3_macro_precision: 0.43, top_3_macro_f1: 0.52, top_3_accuracy: 0.89, top_3_micro_recall: 0.87, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:45.427 | INFO     | __main__:train_and_evaluate:95 - Epoch 31, Loss: 0.0743
+2025-04-11 12:03:45.471 | INFO     | __main__:train_and_evaluate:95 - Epoch 32, Loss: 0.0757
+2025-04-11 12:03:45.514 | INFO     | __main__:train_and_evaluate:95 - Epoch 33, Loss: 0.0749
+2025-04-11 12:03:45.556 | INFO     | __main__:train_and_evaluate:95 - Epoch 34, Loss: 0.0727
+2025-04-11 12:03:45.599 | INFO     | __main__:train_and_evaluate:95 - Epoch 35, Loss: 0.0720
+2025-04-11 12:03:45.641 | INFO     | __main__:train_and_evaluate:95 - Epoch 36, Loss: 0.0697
+2025-04-11 12:03:45.684 | INFO     | __main__:train_and_evaluate:95 - Epoch 37, Loss: 0.0716
+2025-04-11 12:03:45.726 | INFO     | __main__:train_and_evaluate:95 - Epoch 38, Loss: 0.0749
+2025-04-11 12:03:45.769 | INFO     | __main__:train_and_evaluate:95 - Epoch 39, Loss: 0.0699
+2025-04-11 12:03:45.812 | INFO     | __main__:train_and_evaluate:95 - Epoch 40, Loss: 0.0703
+2025-04-11 12:03:45.829 | INFO     | __main__:eval:55 - Eval Loss: 0.0682
+2025-04-11 12:03:45.908 | INFO     | __main__:train_and_evaluate:105 - Epoch 40, Eval Metrics: top_1_macro_recall: 0.55, top_1_macro_precision: 0.60, top_1_macro_f1: 0.55, top_1_accuracy: 0.71, top_1_micro_recall: 0.63, top_1_micro_precision: 0.71, top_1_micro_f1: 0.67, top_2_macro_recall: 0.76, top_2_macro_precision: 0.52, top_2_macro_f1: 0.60, top_2_accuracy: 0.82, top_2_micro_recall: 0.79, top_2_micro_precision: 0.45, top_2_micro_f1: 0.57, top_3_macro_recall: 0.83, top_3_macro_precision: 0.43, top_3_macro_f1: 0.52, top_3_accuracy: 0.89, top_3_micro_recall: 0.88, top_3_micro_precision: 0.33, top_3_micro_f1: 0.48
+2025-04-11 12:03:45.951 | INFO     | __main__:train_and_evaluate:95 - Epoch 41, Loss: 0.0710
+2025-04-11 12:03:45.993 | INFO     | __main__:train_and_evaluate:95 - Epoch 42, Loss: 0.0729
+2025-04-11 12:03:46.036 | INFO     | __main__:train_and_evaluate:95 - Epoch 43, Loss: 0.0724
+2025-04-11 12:03:46.078 | INFO     | __main__:train_and_evaluate:95 - Epoch 44, Loss: 0.0700
+2025-04-11 12:03:46.121 | INFO     | __main__:train_and_evaluate:95 - Epoch 45, Loss: 0.0684
+2025-04-11 12:03:46.163 | INFO     | __main__:train_and_evaluate:95 - Epoch 46, Loss: 0.0686
+2025-04-11 12:03:46.206 | INFO     | __main__:train_and_evaluate:95 - Epoch 47, Loss: 0.0721
+2025-04-11 12:03:46.249 | INFO     | __main__:train_and_evaluate:95 - Epoch 48, Loss: 0.0727
+2025-04-11 12:03:46.292 | INFO     | __main__:train_and_evaluate:95 - Epoch 49, Loss: 0.0681
+2025-04-11 12:03:46.334 | INFO     | __main__:train_and_evaluate:95 - Epoch 50, Loss: 0.0697
+2025-04-11 12:03:46.351 | INFO     | __main__:eval:55 - Eval Loss: 0.0671
+2025-04-11 12:03:46.431 | INFO     | __main__:train_and_evaluate:105 - Epoch 50, Eval Metrics: top_1_macro_recall: 0.56, top_1_macro_precision: 0.60, top_1_macro_f1: 0.57, top_1_accuracy: 0.73, top_1_micro_recall: 0.64, top_1_micro_precision: 0.73, top_1_micro_f1: 0.68, top_2_macro_recall: 0.76, top_2_macro_precision: 0.52, top_2_macro_f1: 0.60, top_2_accuracy: 0.82, top_2_micro_recall: 0.78, top_2_micro_precision: 0.45, top_2_micro_f1: 0.57, top_3_macro_recall: 0.83, top_3_macro_precision: 0.43, top_3_macro_f1: 0.52, top_3_accuracy: 0.91, top_3_micro_recall: 0.89, top_3_micro_precision: 0.34, top_3_micro_f1: 0.49
+2025-04-11 12:03:46.431 | INFO     | __main__:CV_run:390 - Fold 5, Final Eval Metrics: top_1_macro_recall: 0.56, top_1_macro_precision: 0.60, top_1_macro_f1: 0.57, top_1_accuracy: 0.73, top_1_micro_recall: 0.64, top_1_micro_precision: 0.73, top_1_micro_f1: 0.68, top_2_macro_recall: 0.76, top_2_macro_precision: 0.52, top_2_macro_f1: 0.60, top_2_accuracy: 0.82, top_2_micro_recall: 0.78, top_2_micro_precision: 0.45, top_2_micro_f1: 0.57, top_3_macro_recall: 0.83, top_3_macro_precision: 0.43, top_3_macro_f1: 0.52, top_3_accuracy: 0.91, top_3_micro_recall: 0.89, top_3_micro_precision: 0.34, top_3_micro_f1: 0.49
+2025-04-11 12:03:46.431 | SUCCESS  | __main__:CV_run:412 - 5-Fold Cross Validation completed
+top_k: 1
+top_1_macro_recall: 0.5616 (± 0.0052)
+top_1_macro_precision: 0.5919 (± 0.0122)
+top_1_macro_f1: 0.5646 (± 0.0072)
+top_1_accuracy: 0.7231 (± 0.0117)
+top_1_micro_recall: 0.6366 (± 0.0089)
+top_1_micro_precision: 0.7231 (± 0.0117)
+top_1_micro_f1: 0.6771 (± 0.0099)
+top_2_macro_recall: 0.7708 (± 0.0125)
+top_2_macro_precision: 0.5359 (± 0.0222)
+top_2_macro_f1: 0.6096 (± 0.0205)
+top_2_accuracy: 0.8209 (± 0.0083)
+top_2_micro_recall: 0.7918 (± 0.0080)
+top_2_micro_precision: 0.4496 (± 0.0064)
+top_2_micro_f1: 0.5736 (± 0.0072)
+top_3_macro_recall: 0.8529 (± 0.0125)
+top_3_macro_precision: 0.4287 (± 0.0119)
+top_3_macro_f1: 0.5295 (± 0.0154)
+top_3_accuracy: 0.9004 (± 0.0090)
+top_3_micro_recall: 0.8856 (± 0.0059)
+top_3_micro_precision: 0.3353 (± 0.0042)
+top_3_micro_f1: 0.4864 (± 0.0053)

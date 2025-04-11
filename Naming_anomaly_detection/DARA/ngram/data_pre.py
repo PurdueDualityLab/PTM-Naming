@@ -19,8 +19,8 @@ load_dotenv(".env")
 # Set arg values
 def arg_parser():
     parser = argparse.ArgumentParser(description="Process the data for the PTM-Naming project")
-    # parser.add_argument("--data_path", type=str, default="/depot/davisjam/data/mingyu/PTM-Naming/eval_peatmoss_data_path_final_6000/vector", help="Path to the data folder")
-    parser.add_argument("--data_path", type=str, default="/depot/davisjam/data/mingyu/PTM-Naming/selected_peatmoss_vec_data_path/vector", help="Path to the data folder")
+    parser.add_argument("--data_path", type=str, default="/depot/davisjam/data/mingyu/PTM-Naming/eval_peatmoss_data_path_final_6000/vector", help="Path to the data folder")
+    # parser.add_argument("--data_path", type=str, default="/depot/davisjam/data/mingyu/PTM-Naming/selected_peatmoss_vec_data_path/vector", help="Path to the data folder")
     parser.add_argument("--ann", type=bool, default=False, help="Whether the data is ANN or vectors")
     args = parser.parse_args()
     return args
@@ -42,25 +42,10 @@ def data_processing(data_path="/depot/davisjam/data/mingyu/PTM-Naming/selected_p
         repo_name = model['repo_name'] + '.json'
         json_files.append(os.path.join(data_path, repo_name))
             
-    # for root, _, files in os.walk(data_path):
-    #     for file in files:
-    #         if file.endswith(".json"):
-    #             json_files.append(os.path.join(root, file))
-    
-    # with open("eval_peatmoss_data_path_final_6000/params.json", "r") as f:
-    #     peatmoss_data = json.load(f)
-    # for model, params in peatmoss_data.items():
-    #     if params == -1:
-    #         continue
-    #     json_files.append(os.path.join(data_path, model + '.json'))
-        
-
-    # open all folders under data_path and read the json files
-    # Collect all json files first to provide a progress bar
-    # for root, dirs, files in os.walk(data_path):
-    #     for file in files:
-    #         if file.endswith(".json"):
-    #             json_files.append(os.path.join(root, file))
+    for root, _, files in os.walk(data_path):
+        for file in files:
+            if file.endswith(".json"):
+                json_files.append(os.path.join(root, file))
 
     # First pass to collect all unique keys and their maximum lengths
     for json_file in tqdm(json_files, desc="Collecting keys"):
@@ -99,7 +84,7 @@ def data_processing(data_path="/depot/davisjam/data/mingyu/PTM-Naming/selected_p
             data[model_name] = processed_vecs
             data[model_name]['model_type'], data[model_name]['arch'], data[model_name]['task'] = get_model_arch_db(model_name)
     # Write the processed data to a file
-    with open("data_test.json", "w") as f:
+    with open("Naming_anomaly_detection/DARA/ngram/data/final_data.json", "w") as f:
         json.dump(data, f)
         
 def get_task_list():    
@@ -208,7 +193,7 @@ def get_model_arch(model_name):
 
 def data_cleaning():
     '''Remove the None architecture models from the data.json file'''
-    with open("data_test.json", "r") as f:
+    with open("Naming_anomaly_detection/DARA/ngram/data/final_data.json", "r") as f:
         data = json.load(f)
     failed_repos = {}
     for model in list(data.keys()):
@@ -224,7 +209,7 @@ def data_cleaning():
             failed_repos[model] = "Unspecified task"
             print(f"{model} has unspecified task")
     
-    with open("data_test_cleaned.json", "w") as f:
+    with open("Naming_anomaly_detection/DARA/ngram/data/final_data_cleaned.json", "w") as f:
         json.dump(data, f)
 
 task_list = get_task_list()

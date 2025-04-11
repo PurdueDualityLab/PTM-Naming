@@ -14,6 +14,7 @@ class DARA_dataset(Dataset):
         self.mlb.fit([item[1] for item in self.data])
         self.label_to_index = {label: idx for idx, label in enumerate(self.mlb.classes_)}
         self.index_to_label = {idx: label for label, idx in self.label_to_index.items()}
+        
         if label_type == 'task':
             self.convert_labels_to_binary()
         else:
@@ -27,10 +28,13 @@ class DARA_dataset(Dataset):
     def processing(self) -> list:
         data = []
         for model_name in self.model_names:
-            l_tensor = torch.tensor(self.model_dict[model_name]['l'], dtype=torch.float).unsqueeze(0)
-            p_tensor = (1 * torch.tensor(self.model_dict[model_name]['p'], dtype=torch.float)).unsqueeze(0)
-            vec = torch.cat((l_tensor, p_tensor), dim=1)
-            # vec = torch.tensor(self.model_dict[model_name]['l'], dtype=torch.float).unsqueeze(0)
+            # using both l and p
+            # l_tensor = torch.tensor(self.model_dict[model_name]['l'], dtype=torch.float).unsqueeze(0)
+            # p_tensor = (1 * torch.tensor(self.model_dict[model_name]['p'], dtype=torch.float)).unsqueeze(0)
+            # vec = torch.cat((l_tensor, p_tensor), dim=1)
+            
+            # using only l
+            vec = torch.tensor(self.model_dict[model_name]['l'], dtype=torch.float).unsqueeze(0)
             label = self.model_dict[model_name][self.label_type]
             if not isinstance(label, list):
                 label = [label]  # Ensure labels are always lists

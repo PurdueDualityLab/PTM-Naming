@@ -20,10 +20,10 @@ class MLP_classifier(nn.Module):
         # logger.debug(x.shape)
         # logger.debug(self.input_size)
         x = F.relu(self.fc1(x))  # Activation function for hidden layer
+        x = self.dropout(x)      # Apply dropout
         x = F.relu(self.fc2(x))  # Activation function for hidden layer
         x = self.dropout(x)      # Apply dropout
         x = F.relu(self.fc3(x))  # Activation function for hidden layer
-        x = self.dropout(x)      # Apply dropout
         x = self.fc4(x)          # No activation function is applied to the output layer
         x = x.view(-1, self.output_size)
         # logger.debug(f"output shape: {x.shape}")

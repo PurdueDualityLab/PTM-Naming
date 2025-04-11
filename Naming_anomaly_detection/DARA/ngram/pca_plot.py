@@ -1,6 +1,6 @@
 import numpy as np
 # import plotly.express as px
-import pandas as pd
+# import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
 from sklearn.manifold import TSNE
@@ -52,7 +52,7 @@ def plot_reduced_data_with_lines(dataset, label_type='category', method='PCA', c
     plt.ylabel('Component 2')
     plt.title(f'{method} projection of the data, connected by {label_type}')
     plt.legend()
-    plt.savefig(f"{method}_projection_{label_type}.png")
+    plt.savefig(f"Naming_anomaly_detection/DARA/ngram/results/{method}_projection_{label_type}.png")
 
 '''
 def plot_reduced_data(dataset, label_type='category', method='PCA', components=2):
@@ -126,11 +126,15 @@ def plot_reduced_data(dataset, label_type='category', method='PCA', components=2
         'darkred', 'darkblue', 'darkgreen', 'darkorange', 'darkviolet', 'sienna', 'lightpink', 'lightgray', 'lime', 'skyblue',
         'gold', 'teal', 'coral', 'navy', 'magenta', 'yellowgreen', 'lavender', 'maroon', 'aqua', 'chocolate',
         'steelblue', 'fuchsia', 'crimson', 'forestgreen', 'indigo', 'darkturquoise', 'goldenrod', 'mediumseagreen', 'tomato', 'slateblue',
-        'darkkhaki', 'palevioletred', 'cadetblue', 'olive', 'salmon', 'deeppink', 'peru', 'midnightblue', 'limegreen', 'dimgray',
+        'darkkhaki', 'palevioletred', 'cadetblue', 'salmon', 'deeppink', 'peru', 'midnightblue', 'limegreen', 'dimgray',
         'hotpink', 'indianred', 'mediumorchid', 'royalblue', 'darkslategray', 'darkcyan', 'firebrick', 'seagreen', 'darkgoldenrod', 'mediumvioletred',
         'darkslateblue', 'saddlebrown', 'palegreen', 'orchid', 'darkolivegreen', 'rosybrown', 'cornflowerblue', 'tan', 'lightseagreen', 'turquoise',
-        'springgreen', 'plum', 'dodgerblue', 'olivedrab', 'paleturquoise', 'mediumaquamarine', 'lawngreen', 'lightcoral'
+        'springgreen', 'plum', 'dodgerblue', 'olivedrab', 'paleturquoise', 'mediumaquamarine', 'lawngreen', 'lightcoral', 'mediumslateblue', 'yellow',
+        'chartreuse', 'darkmagenta', 'chartreuse', 'deepskyblue', 'mediumspringgreen', 'yellowgreen', 'lightgoldenrodyellow', 'midnightblue', 'peachpuff',
+        'blueviolet', 'aquamarine', 'burlywood', 'seashell', 'snow', 'gainsboro', 'floralwhite', 'aliceblue', 'darkorchid', 'limeyellow',
+        'lightyellow', 'saddlebrown', 'tan', 'wheat', 'mistyrose', 'lavenderblush', 'mintcream', 'beige', 'blanchedalmond', 'papayawhip', 'khaki'
     ]
+
     if len(set(all_labels_text)) > len(color_list):
         print("Warning: Not enough colors specified for the number of categories. Consider adding more colors.")
 
@@ -166,15 +170,16 @@ def plot_reduced_data(dataset, label_type='category', method='PCA', components=2
     # This eliminates the dual legend issue by not calling plt.legend() after plotting the lines.
     # Instead, you could explicitly define a legend for either lines or scatter points if needed, but avoid redundancy.
 
-    plt.savefig(f"{method}_projection_{label_type}.pdf")
+    plt.savefig(f"Naming_anomaly_detection/DARA/ngram/results/{method}_projection_{label_type}.pdf")
 
 # Example usage with your data
 if __name__ == "__main__":
     # Load your dataset
-    vec_path = './data_cleaned.json'
+    # vec_path = './data_cleaned.json'
+    vec_path = 'Naming_anomaly_detection/DARA/ngram/data/data_cleaned.json'
     full_dataset = DARA_dataset(dict_path=vec_path, label_type="model_type")  # or "model_type" or "task"
     plot_reduced_data(full_dataset, label_type="model_type", method='PCA', components=2)
-    plot_reduced_data(full_dataset, label_type="model_type", method='TSNE', components=2)
+    # plot_reduced_data(full_dataset, label_type="model_type", method='TSNE', components=2)
 
     # full_dataset = DARA_dataset(dict_path=vec_path, label_type="arch")  # or "model_type" or "task"
     # plot_reduced_data(full_dataset, label_type="arch", method='PCA', components=2)
