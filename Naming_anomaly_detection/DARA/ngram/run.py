@@ -2,7 +2,7 @@ import random
 import os
 import json
 import numpy as np
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, multilabel_confusion_matrix
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -25,16 +25,22 @@ from loguru import logger  # Ensure logger is imported if used for logging
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logger.info(f"Using device: {device}")
 num_classes = None
-
+os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 # torch.random.manual_seed(42)  # Set random seed for reproducibility
-def set_seed(seed=42):
+def set_seed(seed=0):
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+    
+def seed_worker(worker_id):
+    worker_seed = torch.initial_seed() % 2**32
+    np.random.seed(worker_seed)
+    random.seed(worker_seed)
 
 
 def eval(model, eval_loader, criterion, device="cuda", multi_label=False, top_k=None):
@@ -57,14 +63,18 @@ def eval(model, eval_loader, criterion, device="cuda", multi_label=False, top_k=
     all_preds_scores = np.array(all_preds_scores)
     all_targets = np.array(all_targets)
 
-    if multi_label and top_k is not None:
-        all_preds = top_k_predictions(all_preds_scores, top_k)
-    elif multi_label:
-        all_preds = (torch.sigmoid(torch.tensor(all_preds_scores)) > 0.5).int().numpy()
+    if multi_label:
+        all_preds = top_k_predictions(all_preds_scores, 1)
+        metrics_1 = eval_metrics(all_targets, all_preds, 1)
+        preds_2 = top_k_predictions(all_preds_scores, 2)
+        metrics_2 = eval_metrics(all_targets, preds_2, 2)
+        preds_3 = top_k_predictions(all_preds_scores, 3)
+        metrics_3 = eval_metrics(all_targets, preds_3, 3)
+        metrics = {**metrics_1, **metrics_2, **metrics_3}
     else:
         all_preds = np.argmax(all_preds_scores, axis=1)
+        metrics = eval_metrics(all_targets, all_preds)
     
-    metrics = eval_metrics(all_targets, all_preds, top_k)
     
     return eval_loss, metrics, all_preds, all_targets
 
@@ -133,64 +143,76 @@ def evaluate_and_save_results(model, eval_loader, index_to_label, device="cuda",
 
     print(f"Saved incorrect predictions to {filepath}")
 
-def plot_confusion_matrix(preds, targets, index_to_label, label_type):
+def plot_confusion_matrix(preds, targets, index_to_label, label_type, root_dir, top_k=1):
     with open(f'Naming_anomaly_detection/data_files/json_files/{label_type}_label_to_domain.json', 'r') as f:
-        label_to_domain = json.load(f)
+        domain_to_label = json.load(f)
     if label_type == "arch":
-        # Randomly select 30 values for each key in label_to_domain
-        selected_labels = {}
-        for domain, labels in label_to_domain.items():
-            if len(labels) > 30:
-                selected_labels[domain] = sorted(random.sample(labels, 30))
-            else:
-                selected_labels[domain] = sorted(labels)
+        # Randomly select up to 30 labels for each domain
+        selected_labels_per_domain = {}
+        all_possible_labels_in_data = set(index_to_label.values())
+        for domain, labels in domain_to_label.items():
+            valid_labels_in_domain = sorted(list(set(labels) & all_possible_labels_in_data))
+            if valid_labels_in_domain:
+                selected_labels_per_domain[domain] = random.sample(valid_labels_in_domain, min(len(valid_labels_in_domain), 30))
 
-        # Reassign label_to_domain to only include the selected labels
-        label_to_domain = selected_labels
-        selected_labels_set = {label for labels in selected_labels.values() for label in labels}
-        
-        # Create a new mapping from label to index and index to label
+        for domain, labels in selected_labels_per_domain.items():
+            domain_to_label[domain] = sorted(labels)
+
+        selected_labels_set = {label for labels in selected_labels_per_domain.values() for label in labels}
+
+        # Create new mappings based on selected labels
         label_to_index = {label: idx for idx, label in index_to_label.items() if label in selected_labels_set}
         index_to_label = {idx: label for idx, label in index_to_label.items() if label in selected_labels_set}
-        
-        # Filter preds and targets to only include the selected labels
-        filtered_preds = []
-        filtered_targets = []
-        for pred, target in zip(preds, targets):
-            if str(pred) in label_to_index.values() and str(target) in label_to_index.values():
-                filtered_preds.append(str(pred))
-                filtered_targets.append(str(target))
 
-        preds = np.array(filtered_preds)
-        targets = np.array(filtered_targets)
-        
-        # Filter out the labels that are not in the filtered targets
-        index_to_label = {idx: label for idx, label in index_to_label.items() if idx in set(filtered_targets)}
-        label_to_index = {label: idx for idx, label in index_to_label.items()}
-        # label_to_domain = {domain: [label for label in laberls if label in label_to_index] for domain, labels in label_to_domain.items()}
-            
-    # labels_ordered = [index_to_label[str(i)] for i in range(len(index_to_label))]
-    # Order labels based on domain
+        filtered_preds_indices = []
+        filtered_targets_indices = []
+        indices_to_keep = []
+
+        for i in range(len(preds)):
+            pred = preds[i]
+            target = targets[i]
+            if pred in index_to_label and index_to_label[pred] in selected_labels_set and \
+            target in index_to_label and index_to_label[target] in selected_labels_set:
+                indices_to_keep.append(i)
+
+        filtered_preds_indices = [preds[i] for i in indices_to_keep]
+        filtered_targets_indices = [targets[i] for i in indices_to_keep]
+
+        preds = np.array(filtered_preds_indices)
+        targets = np.array(filtered_targets_indices)
+
+    # Order labels based on domain (using the selected labels)
     labels_ordered = []
-    for domain, models in label_to_domain.items():
-        labels_ordered.extend(models)
-    # Ensure all labels are included
-    labels_ordered = [label for label in labels_ordered if label in index_to_label.values()]
-    # # Create a mapping from label to index
-    # label_to_index = {label: index for index, label in index_to_label.items()}
-    # print(label_to_index)
-    label_to_domain = {domain: [label for label in labels if label in labels_ordered] for domain, labels in label_to_domain.items()}
+    for domain, labels in domain_to_label.items():
+        labels_ordered.extend(labels)
+        
+    # Ensure uniqueness and maintain order as much as possible
+    # labels_ordered = sorted(list(set(labels_ordered)))
     # print(labels_ordered)
-    
-    targets = [index_to_label[target] for target in targets]
-    preds = [index_to_label[pred] for pred in preds]
 
-    # Calculate the confusion matrix 
-    cm = confusion_matrix(targets, preds, labels=labels_ordered)
+    # Convert predictions and targets (which are still indices) to the selected label names
+    final_targets = [index_to_label.get(target) for target in targets]
+    final_preds = [index_to_label.get(pred) for pred in preds]
 
-    # Normalize the confusion matrix by row (i.e., by the number of samples in each true class)
-    cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    # Remove None values if any predictions or targets were not in the selected labels
+    final_targets = [t for t in final_targets if t is not None]
+    final_preds = [p for p in final_preds if p is not None]
+
+    # Calculate the confusion matrix
+    cm = confusion_matrix(final_targets, final_preds, labels=labels_ordered)
+
+    # Normalize the confusion matrix by row
+    cm_normalized = np.zeros_like(cm, dtype=float)
+    row_sums = cm.sum(axis=1, keepdims=True)
+    non_zero_rows = row_sums > 0
+    cm_normalized[non_zero_rows[:, 0]] = cm[non_zero_rows[:, 0]].astype('float') / row_sums[non_zero_rows[:, 0]]
     
+    # Normalize the confusion matrix by row, handling zero sums
+    # cm_normalized = np.zeros_like(cm, dtype=float)
+    # row_sums = cm.sum(axis=1, keepdims=True)
+    # non_zero_rows = row_sums > 0
+    # # Use boolean indexing along the first dimension (rows)
+    # cm_normalized[non_zero_rows[:, 0]] = cm[non_zero_rows[:, 0]].astype('float') / row_sums[non_zero_rows[:, 0]]
     plt.figure(figsize=(10, 7))  # Adjust size as needed
     # Plot the heatmap without annotations but with grid lines
     ax = sns.heatmap(cm_normalized, annot=False, cmap='Blues', xticklabels=labels_ordered, yticklabels=labels_ordered, linewidths=.5)
@@ -213,7 +235,7 @@ def plot_confusion_matrix(preds, targets, index_to_label, label_type):
     # Add domain labels below the x-axis
     domain_positions = {}
     current_position = 0
-    for domain, models in label_to_domain.items():
+    for domain, models in domain_to_label.items():
         domain_positions[domain] = (current_position, current_position + len(models) - 1)
         current_position += len(models)
 
@@ -228,26 +250,9 @@ def plot_confusion_matrix(preds, targets, index_to_label, label_type):
             ax.axvline(x=end+1, color='gray', linestyle='--', linewidth=0.5)
             ax.axhline(y=end+1, color='gray', linestyle='--', linewidth=0.5)
     plt.tight_layout()
-    plt.savefig(f"confusion_matrix_percentage_{label_type}_final.pdf", dpi=300)
-    # cm = confusion_matrix(targets, preds)
-    # cm_percentage = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis] * 100  # Convert counts to percentages
-    
-    # labels = [index_to_label[i] for i in range(len(index_to_label))]
-    
-    # fig, ax = plt.subplots(figsize=(15, 15))  # Increased figure size
-    # disp = ConfusionMatrixDisplay(confusion_matrix=cm_percentage, display_labels=labels)
-    # disp.plot(cmap='Blues', ax=ax, xticks_rotation='vertical', values_format='.1f')  # Rotate x-axis labels, format percentages
-    
-    # plt.xticks(fontsize=9)  # Adjust fontsize as needed
-    # plt.yticks(fontsize=9)  # Adjust fontsize as needed
-    # plt.title(f'Confusion Matrix for {label_type}', fontsize=12)
-    # plt.xlabel('Predicted label', fontsize=10)
-    # plt.ylabel('True label', fontsize=10)
-    # colorbar = ax.images[0].colorbar
-    # colorbar.set_label('% of True Labels', fontsize=10)
-    # colorbar.ax.yaxis.set_label_position('left')
-    
-    # plt.tight_layout()  # Adjust layout to not cut off labels
+    if label_type == 'task':
+        label_type = f'task_{top_k}'
+    plt.savefig(f"{root_dir}/results/confusion_matrix_{label_type}_final.pdf", dpi=300)
 
 # outdated
 def run():
@@ -318,8 +323,8 @@ def CV_run():
     eval_batch_size = 32
     eval_interval=10
     # label_type = "model_type" # 50 epochs, lr=1e-3, batch_size=256 macro_recall: 0.97 (± 0.02) macro_precision: 0.98 (± 0.01) macro_f1: 0.97 (± 0.02) accuracy: 0.99 (± 0.01)
-    label_type = "task"
-    # label_type = "arch" # 50 epochs, lr=1e-3, batch_size=256 macro_recall: 0.56 (± 0.05) macro_precision: 0.51 (± 0.06) macro_f1: 0.50 (± 0.06) accuracy: 0.57 (± 0.05)
+    # label_type = "task"
+    label_type = "arch" # 50 epochs, lr=1e-3, batch_size=256 macro_recall: 0.62 (± 0.01) macro_precision: 0.58 (± 0.01) macro_f1: 0.58 (± 0.01) accuracy: 0.64 (± 0.01)
     ############################
     top_k = None
     if label_type == "task":
@@ -363,9 +368,12 @@ def CV_run():
         train_subset = torch.utils.data.Subset(full_dataset, train_index)
         eval_subset = torch.utils.data.Subset(full_dataset, eval_index)
 
+        g = torch.Generator()
+        g.manual_seed(42+fold)
+
         # Initialize DataLoaders for the current fold
-        train_loader = DataLoader(train_subset, batch_size=train_batch_size, shuffle=True, num_workers=0, pin_memory=True)
-        eval_loader = DataLoader(eval_subset, batch_size=eval_batch_size, num_workers=0, pin_memory=True)
+        train_loader = DataLoader(train_subset, batch_size=train_batch_size, shuffle=True, num_workers=0, pin_memory=True, worker_init_fn=seed_worker, generator=g)
+        eval_loader = DataLoader(eval_subset, batch_size=eval_batch_size, num_workers=0, pin_memory=True, worker_init_fn=seed_worker, generator=g)
         # Initialize the model for the current fold
         model = MLP_classifier(input_size=input_shape[1], output_size=num_classes).to(device)
         optimizer = optim.Adam(model.parameters(), lr=lr)
@@ -407,37 +415,39 @@ def CV_run():
     # After all folds are completed, calculate and log the average performance across all folds
     average_train_loss = [sum(losses) / len(losses) for losses in zip(*cumulative_train_losses)]
     average_eval_loss = [sum(losses) / len(losses) for losses in zip(*cumulative_eval_losses)]
-    average_eval_accuracy = [sum(accs) / len(accs) for accs in zip(*cumulative_eval_metrics['accuracy'])]
-    logger.info(f"Average Eval Accuracy across all folds: {average_eval_accuracy[-1]:.2f}%")
+    # average_eval_accuracy = [sum(accs) / len(accs) for accs in zip(*cumulative_eval_metrics['accuracy'])]
+    # logger.info(f"Average Eval Accuracy across all folds: {average_eval_accuracy[-1]:.2f}%")
 
-    # Call plotting functions for the averages
-    root_dir = 'Naming_anomaly_detection/DARA/ngram'
-    plot_loss(average_train_loss, average_eval_loss, epochs, lr, train_batch_size, label_type, eval_interval, root_dir)
-    plot_accuracy(average_eval_accuracy, epochs, lr, eval_batch_size, label_type, root_dir)
     logger.success("5-Fold Cross Validation completed")
     print(f"top_k: {top_k}")
     for k, v in cumulative_eval_metrics.items():
         last_element = [sublist[-1] for sublist in v]
         mean = np.mean(last_element)
         std = np.std(last_element)
-        print(f"{k}: {mean:.2f} (± {std:.2f})")
+        print(f"{k}: {mean:.4f} (± {std:.4f})")
+    # Call plotting functions for the averages
+    root_dir = 'Naming_anomaly_detection/DARA/ngram'
+    plot_loss(average_train_loss, average_eval_loss, epochs, lr, train_batch_size, label_type, eval_interval, root_dir, top_k)
+    # plot_accuracy(average_eval_accuracy, epochs, lr, eval_batch_size, label_type, root_dir, top_k)
         
     '''
+    '''
     # Save the inputs to confusion matrix
-    np.save(f'{label_type}_all_fold_preds_final.npy', all_fold_preds)
-    np.save(f'{label_type}_all_fold_targets_final.npy', all_fold_targets)
+    np.save(f'{root_dir}/results/{label_type}_all_fold_preds_final.npy', all_fold_preds)
+    np.save(f'{root_dir}/results/{label_type}_all_fold_targets_final.npy', all_fold_targets)
 
     # Save index_to_label and label_type
-    with open(f'{label_type}_index_to_label_final.json', 'w') as f:
+    with open(f'{root_dir}/results/{label_type}_index_to_label_final.json', 'w') as f:
         json.dump(index_to_label, f)
     
-    with open(f'{label_type}_label_type_final.json', 'w') as f:
+    with open(f'{root_dir}/results/{label_type}_label_type_final.json', 'w') as f:
         json.dump(label_type, f)
-
     # # Plotting the confusion matrix for all folds
-    plot_confusion_matrix(all_fold_preds, all_fold_targets, index_to_label, label_type)
-    '''
+    if label_type != 'task':
+        plot_confusion_matrix(all_fold_preds, all_fold_targets, index_to_label, label_type, root_dir, top_k)
+    
 if __name__ == "__main__":
     # Set random seed
     set_seed(0)
+    torch.use_deterministic_algorithms(True)
     CV_run()

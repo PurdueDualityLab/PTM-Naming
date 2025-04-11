@@ -105,8 +105,9 @@ def set_seed(seed=0):
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
-
+    torch.backends.cudnn.benchmark = False
     
 def pre_train(args, tokenizer, train_dataset, eval_dataset):
     model = AutoModelForMaskedLM.from_pretrained(MODELS[args.model_name])
@@ -282,7 +283,6 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
     print(f"Eval results: {eval_results}")
     return train_losses, eval_losses, eval_results, preds, targets
 
-# maybe do CV run?
 def CV_run():
     ############################
     # hyperparameters
@@ -382,7 +382,6 @@ def CV_run():
                 logger.info("Starting domain-adaptive pre-training (continued pre-training)")
             best_model_path = pre_train(args, tokenizer, train_dataset, eval_dataset)
             model = AutoModelForSequenceClassification.from_pretrained(best_model_path, num_labels=num_labels)
-            args.epoch = 20
         if args.train_mode == 'fine-tune':
             if args.label_type == 'task':   # multi label classification
                 model = AutoModelForSequenceClassification.from_pretrained(
