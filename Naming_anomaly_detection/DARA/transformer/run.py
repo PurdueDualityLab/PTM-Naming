@@ -154,8 +154,10 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
         gradient_accumulation_steps = 1
 
     training_args = TrainingArguments(
+        torch_compile=True,
+        torch_compile_backend="inductor",
+        torch_compile_mode="default",
         output_dir=output_dir,
-        # output_dir=None,
         eval_strategy="epoch",
         save_strategy="epoch",
         logging_strategy="epoch",
@@ -168,8 +170,11 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
         learning_rate=args.lr,
         weight_decay=0.01,
         dataloader_drop_last=False,
-        gradient_accumulation_steps = gradient_accumulation_steps,
-        bf16=True
+        gradient_accumulation_steps=16,
+        bf16=True,
+        dataloader_pin_memory=True,
+        dataloader_num_workers=8,
+        # gradient_accumulation_steps = gradient_accumulation_steps,
     )
 
     def compute_metrics(eval_pred):
