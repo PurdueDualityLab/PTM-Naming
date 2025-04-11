@@ -154,9 +154,6 @@ def fine_tune(args, model, index_to_label, train_dataset, eval_dataset, output_d
         gradient_accumulation_steps = 1
 
     training_args = TrainingArguments(
-        torch_compile=True,
-        torch_compile_backend="inductor",
-        torch_compile_mode="default",
         output_dir=output_dir,
         eval_strategy="epoch",
         save_strategy="epoch",
