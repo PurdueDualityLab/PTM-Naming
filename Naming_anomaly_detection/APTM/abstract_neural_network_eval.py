@@ -14,7 +14,7 @@ from typing import List, Tuple, Union, Optional, Any
 import torch
 from loguru import logger
 import transformers
-from transformers import AutoModel
+from transformers import AutoModel, AutoConfig
 
 from APTM.aptm_generator import AbstractNNGenerator
 from APTM.aptm_layer import AbstractNNLayer
@@ -49,6 +49,7 @@ class AbstractNN():
         device: Optional[str] = None,
         device_map: Optional[str] = "auto",
         trust_remote_code: bool = False,
+        eval_return_params: bool = False,
         **kwargs,
     ) -> 'AbstractNN':
         """
@@ -65,58 +66,84 @@ class AbstractNN():
         model = None
         err_msg = ""
         loading_start_time = time.time()
+        # try:    # this can be improved by loading AutoConfig
+        #     model = AutoModel.from_pretrained(
+        #         hf_repo_name,
+        #         trust_remote_code=trust_remote_code,
+        #         **kwargs
+        #     )
+        # except Exception as emsg: # pylint: disable=broad-except
+        #     err_msg = str(emsg)
+        # if model is None:
+        #     try:
+        #         model = AutoModel.from_pretrained(
+        #             hf_repo_name,
+        #             from_tf=True,
+        #             trust_remote_code=trust_remote_code,
+        #             **kwargs
+        #         )
+        #     except Exception as emsg: # pylint: disable=broad-except
+        #         err_msg = str(emsg)
+        # if model is None:
+        #     raise RuntimeError(f"Failed to load model from {hf_repo_name}: {err_msg}")
+
+        # correct_arch = model.config.architectures[0] if model.config.architectures else None
+        config = AutoConfig.from_pretrained(hf_repo_name)
+        correct_arch = config.architectures[0] if config.architectures else None
+        if correct_arch == "LLaMAForCausalLM":
+            correct_arch = "LlamaForCausalLM"
+        # if correct_arch and correct_arch != type(model).__name__:
+        #     if verbose:
+        #         logger.info(f"Reloading model as: {correct_arch}")
         try:
-            model = AutoModel.from_pretrained(
+            model_class = getattr(transformers, correct_arch, None)
+            model = model_class.from_pretrained(
                 hf_repo_name,
                 trust_remote_code=trust_remote_code,
+                device_map=device_map,
+                torch_dtype="auto",
                 **kwargs
             )
+            if verbose:
+                logger.info(f"Successfully loaded model as: {correct_arch}")
         except Exception as emsg: # pylint: disable=broad-except
             err_msg = str(emsg)
+            logger.error(f"Failed to load model as: {correct_arch}, {emsg}")
         if model is None:
             try:
-                model = AutoModel.from_pretrained(
+                model = model_class.from_pretrained(
                     hf_repo_name,
                     from_tf=True,
                     trust_remote_code=trust_remote_code,
+                    device_map=device_map,
+                    torch_dtype="auto"
                     **kwargs
                 )
             except Exception as emsg: # pylint: disable=broad-except
                 err_msg = str(emsg)
         if model is None:
-            raise RuntimeError(f"Failed to load model from {hf_repo_name}: {err_msg}")
-
-        correct_arch = model.config.architectures[0] if model.config.architectures else None
-        if correct_arch == "LLaMAForCausalLM":
-            correct_arch = "LlamaForCausalLM"
-        if correct_arch and correct_arch != type(model).__name__:
-            if verbose:
-                logger.info(f"Reloading model as: {correct_arch}")
-            try:
-                model_class = getattr(transformers, correct_arch, None)
-                model = model_class.from_pretrained(
+            try:    # this can be improved by loading AutoConfig
+                model = AutoModel.from_pretrained(
                     hf_repo_name,
                     trust_remote_code=trust_remote_code,
-                    device_map=device_map,
                     **kwargs
                 )
-                if verbose:
-                    logger.info(f"Successfully loaded model as: {correct_arch}")
             except Exception as emsg: # pylint: disable=broad-except
                 err_msg = str(emsg)
-                logger.error(f"Failed to load model as: {correct_arch}, {emsg}")
             if model is None:
                 try:
-                    model = model_class.from_pretrained(
+                    model = AutoModel.from_pretrained(
                         hf_repo_name,
                         from_tf=True,
                         trust_remote_code=trust_remote_code,
-                        device_map=device_map,
                         **kwargs
                     )
                 except Exception as emsg: # pylint: disable=broad-except
                     err_msg = str(emsg)
-        
+            if model is None:
+                raise RuntimeError(f"Failed to load model from {hf_repo_name}: {err_msg}")
+        if model is None:
+            raise ValueError(f"Failed to load the model: {err_msg}")
         model = model.to(device)
         T_loading = time.time() - loading_start_time
         
@@ -124,9 +151,8 @@ class AbstractNN():
         calculate_total_params_start_time = time.time()
         total_params = sum(p.numel() for p in model.parameters())
         T_caculate_total_params = time.time() - calculate_total_params_start_time
-        
-        if model is None:
-            raise ValueError(f"Failed to load the model: {err_msg}")
+        if eval_return_params:
+            return T_loading, total_params
 
         if verbose:
             logger.success(f"Successfully load the model.")
@@ -180,7 +206,7 @@ class AbstractNN():
         
         if verbose:
             logger.success("Success.")
-        T_aptm = end_time - start_time - T_caculate_total_params
+        T_aptm = end_time - start_time
         T_latency = {"T_aptm": T_aptm, "T_loading": T_loading, "T_exclude": T_caculate_total_params}
         
         return ret_aptm, T_latency, total_params
