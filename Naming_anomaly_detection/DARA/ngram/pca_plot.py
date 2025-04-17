@@ -3,7 +3,9 @@ import numpy as np
 # import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA, SparsePCA, TruncatedSVD
+from sklearn.preprocessing import StandardScaler
 from sklearn.manifold import TSNE
+import umap
 from sklearn.preprocessing import LabelEncoder
 
 from matplotlib.colors import ListedColormap
@@ -110,11 +112,21 @@ def plot_reduced_data(dataset, label_type='category', method='PCA', components=2
         # For TSNE, you typically don't use SparsePCA directly because TSNE is not designed for sparse data.
         # However, you might reduce dimensionality first using SparsePCA if data is really high-dimensional and sparse.
         if is_sparse:
-            pre_reducer = SparsePCA(n_components=50, alpha=1)  # Reduce dimensionality before applying TSNE
+            scaler = StandardScaler()
+            all_data = scaler.fit_transform(all_data)
+            pre_reducer = PCA(n_components=50)  # Reduce dimensionality before applying TSNE
             all_data = pre_reducer.fit_transform(all_data)
-            reducer = TSNE(n_components=components, learning_rate='auto', init='random')
+            # reducer = TSNE(n_components=components, learning_rate='auto', init='random')
+            reducer = TSNE(n_components=components, perplexity=30, learning_rate='auto', init='random', random_state=42)
         else:
-            reducer = TSNE(n_components=components, learning_rate='auto', init='random')
+            reducer = TSNE(n_components=components, perplexity=30, learning_rate='auto', init='random', random_state=42)
+
+    elif method == 'UMAP':
+        scaler = StandardScaler()
+        all_data = scaler.fit_transform(all_data)
+        reducer = umap.UMAP(n_components=components, n_neighbors=15, min_dist=0.1)
+        noise = np.random.randn(*all_data.shape) * 1e-3  # Add small Gaussian noise
+        all_data += noise
     else:
         raise ValueError(f"Unsupported method: {method}")
     
@@ -141,7 +153,8 @@ def plot_reduced_data(dataset, label_type='category', method='PCA', components=2
     # Create a colormap from the list of colors
     cmap = ListedColormap(color_list[:len(set(all_labels_text))])
 
-    plt.figure(figsize=(8, 6))
+    # plt.figure(figsize=(8, 14))
+    plt.figure(figsize=(10, 12))
 
     # Use a colormap for scatter points
     # cmap = plt.get_cmap('viridis')
@@ -156,16 +169,32 @@ def plot_reduced_data(dataset, label_type='category', method='PCA', components=2
             
     # Then plot all points as scatter. This time we don't need individual labels since the lines already have them.
     scatter = plt.scatter(reduced_data[:, 0], reduced_data[:, 1], c=all_labels_text, cmap=cmap, alpha=0.6)
-
+    plt.legend(fontsize=12, ncol=4, bbox_to_anchor=(0.5, -0.1), loc='upper center', borderaxespad=0., frameon=False)
+    # plt.legend(
+    #     fontsize=12, 
+    #     ncol=3, 
+    #     bbox_to_anchor=(0.5, -0.1), 
+    #     loc='upper center', 
+    #     borderaxespad=0., 
+    #     frameon=False,
+    #     handlelength=2,  # Length of the legend markers
+    #     handleheight=1.2,  # Height of the legend markers
+    #     columnspacing=1.5,  # Space between columns
+    #     labelspacing=1.2,   # Space between rows
+    #     fancybox=True,     # Rounded corners for the legend
+    #     markerscale=1.5    # Scale the marker size (optional, if your plot uses markers)
+    # )
     # Adding colorbar
-    cbar = plt.colorbar(scatter, ticks=ticks)
-    cbar.set_ticklabels(label_names)
-    cbar.ax.tick_params(labelsize=4)
-
-    plt.xlabel('Component 1')
-    plt.ylabel('Component 2')
-    plt.title(f'{method} projection of the data based on {label_type}')
-
+    # cbar = plt.colorbar(scatter, ticks=ticks)
+    # cbar.set_ticklabels(label_names)
+    # cbar.ax.tick_params(labelsize=10)
+    # Font sizes
+    plt.xlabel('Component 1', fontsize=14)
+    plt.ylabel('Component 2', fontsize=14)
+    plt.title(f'{method} projection of the data based on {label_type}', fontsize=16)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.tight_layout()
     # Here's the fix: Create a custom legend for the lines only, as the colorbar already explains the scatter.
     # This eliminates the dual legend issue by not calling plt.legend() after plotting the lines.
     # Instead, you could explicitly define a legend for either lines or scatter points if needed, but avoid redundancy.
@@ -178,8 +207,9 @@ if __name__ == "__main__":
     # vec_path = './data_cleaned.json'
     vec_path = 'Naming_anomaly_detection/DARA/ngram/data/data_cleaned.json'
     full_dataset = DARA_dataset(dict_path=vec_path, label_type="model_type")  # or "model_type" or "task"
-    plot_reduced_data(full_dataset, label_type="model_type", method='PCA', components=2)
-    # plot_reduced_data(full_dataset, label_type="model_type", method='TSNE', components=2)
+    plot_reduced_data(full_dataset, label_type="model_type", method='PCA', components=2, is_sparse=False)
+    plot_reduced_data(full_dataset, label_type="model_type", method='TSNE', components=2)
+    plot_reduced_data(full_dataset, label_type="model_type", method='UMAP')
 
     # full_dataset = DARA_dataset(dict_path=vec_path, label_type="arch")  # or "model_type" or "task"
     # plot_reduced_data(full_dataset, label_type="arch", method='PCA', components=2)
