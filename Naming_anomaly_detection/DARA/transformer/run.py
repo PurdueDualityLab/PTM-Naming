@@ -80,7 +80,6 @@ def parse_arg():
     )
 
     parser.add_argument('--label_type', type=str, default="model_type", help='label_type')
-    parser.add_argument('--top_k', type=int, default=2, help='if label_type is task, then use multi-label classification')
 
     return parser.parse_args()
 
