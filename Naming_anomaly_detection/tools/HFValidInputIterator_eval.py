@@ -1,0 +1,390 @@
+"""
+This file contains dummy input generation for Hugging Face models.
+"""
+from loguru import logger
+import torch
+import pandas as pd
+import numpy as np
+from transformers import AutoModel
+from tools.HFAutoClassIterator_eval import HFAutoClassIterator
+import json
+import requests
+from PIL import Image
+
+class HFValidInputIterator():
+    """
+    This class is used to generate valid inputs for Hugging Face models.
+
+    Attributes:
+        model: The Hugging Face model.
+        hf_repo_name: The Hugging Face repository name.
+        func_storage: The storage for trial functions.
+        valid_autoclass_obj_list: The list of valid autoclass objects.
+        device: The device to use for inference.
+    """
+    def __init__(
+            self,
+            model,
+            hf_repo_name,
+            cache_dir,
+            device=None,
+            trust_remote_code=False
+        ):
+        self.model = model
+        self.hf_repo_name = hf_repo_name
+        self.func_storage = TrialFunctionStorage(device)
+        self.valid_autoclass_obj_list = \
+            HFAutoClassIterator(
+                hf_repo_name,
+                cache_dir=cache_dir,
+                trust_remote_code=trust_remote_code
+            ).get_valid_auto_class_objects()
+        self.err_type = ""
+        if isinstance(self.valid_autoclass_obj_list, dict):
+            logger.error(f"Cannot find a valid autoclass for {self.hf_repo_name}")
+            for autoclass_type, err in self.valid_autoclass_obj_list.items():
+                if "trust_remote_code" in str(err):
+                    self.err_type = "requires_remote_code"
+                elif "does not sppear to have a file named preprocessor_config.json" in str(err):
+                    self.err_type = "no_preprocessor_config"
+                logger.error(f"-> {autoclass_type}({err})")
+            return None
+
+        self.device = device if device is not None \
+            else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    def get_valid_input(self):
+        """
+        This function generates a valid input for the Hugging Face model.
+
+        Returns:
+            A valid input for the Hugging Face model.
+        """
+        err_report = {}
+        
+        for valid_autoclass_obj in self.valid_autoclass_obj_list:
+            trial_func_list = self.func_storage.auto_get_func(valid_autoclass_obj)
+            logger.info(f"Using {valid_autoclass_obj.__class__.__name__}")
+            for trial_func in trial_func_list:
+                logger.info(f"-> Trying Func {trial_func.__name__}")
+                try:
+                    trial_input = trial_func(valid_autoclass_obj)
+                except Exception as emsg: # pylint: disable=broad-except
+                    if valid_autoclass_obj.__class__.__name__ not in err_report:
+                        err_report[valid_autoclass_obj.__class__.__name__] = {}
+                    err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__]\
+                        = ("CannotObtainInput", emsg)
+                    # logger.warning(f"Cannot obtain input for {self.hf_repo_name} due to {emsg}")
+                    continue
+                if hasattr(self.model.config, "model_type") and self.model.config.model_type == "whisper":
+                    trial_input["decoder_input_ids"] = torch.tensor([[self.model.config.decoder_start_token_id]], dtype=torch.long).to(self.device)
+                # if "voice" in trial_func.__name__ and "Wav2Vec2" not in valid_autoclass_obj.__class__.__name__:    
+                #     trial_input["input_features"] = trial_input['input_features'].to(torch.float32)
+                #     trial_input["decoder_input_ids"] = torch.tensor([[self.model.config.decoder_start_token_id]], dtype=torch.long)
+                # logger.success(trial_input)
+                try:
+                    self.model(**trial_input)#.to(self.device))
+                    logger.success(f"Find an input for {self.hf_repo_name}")
+                    return trial_input
+                except Exception as emsg: # pylint: disable=broad-except
+                    if valid_autoclass_obj.__class__.__name__ not in err_report:
+                        err_report[valid_autoclass_obj.__class__.__name__] = {}
+                    err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__]\
+                        = ("InferenceError", emsg)
+                    try:
+                        if "voice" in trial_func.__name__ or "img" in trial_func.__name__ or "tts" in trial_func.__name__:
+                            _ = self.model.generate(**trial_input)#.to(self.device))
+                            logger.success(f"Find an input for {self.hf_repo_name}")
+                            return trial_input
+                    except Exception as emsg3:
+                        if valid_autoclass_obj.__class__.__name__ not in err_report:
+                            err_report[valid_autoclass_obj.__class__.__name__] = {}
+                        err_report[valid_autoclass_obj.__class__.__name__][trial_func.__name__]\
+                            = ("InferenceError", str(emsg3))
+
+        logger.error(f"Cannot find a valid input for {self.hf_repo_name} or Request Time Out")
+
+        for autoclass_type, trial_func_dict in err_report.items():
+            logger.error(f"Error report for {autoclass_type}:")
+            for trial_func, err in trial_func_dict.items():
+                logger.error(f"-> {trial_func}({err[0]}): {err[1]}")
+        return (err_report, "ErrMark")
+
+class TrialFunctionStorage():
+    """
+    This class is used to store trial functions for Hugging Face models.
+
+    Attributes:
+        None
+    """
+    def __init__(self, device):
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(0)
+        np.random.seed(0)
+        self.device = device
+
+    def auto_get_func(self, auto_class_obj):
+        """
+        This function retrieves the trial functions for the Hugging Face model.
+
+        Args:
+            auto_class_obj: The Hugging Face model.
+
+        Returns:
+            The list of trial functions for the Hugging Face model.
+        """
+        prefix_map = {
+            "Tokenizer": "t_",
+            "FeatureExtractor": "fe_",
+            "ImageProcessor": "ip_",
+            "Processor": "p_",
+        }
+        class_name = auto_class_obj.__class__.__name__
+        prefix = None
+        for key, value in prefix_map.items():
+            if key in class_name:
+                prefix = value
+                break
+
+        if prefix is None:
+            raise ValueError("Incorrect object type.")
+
+        # Dynamically retrieve methods with the matching prefix
+        return [getattr(self, method_name) for method_name in dir(self)\
+            if callable(getattr(self, method_name)) \
+            and method_name.startswith(prefix)]
+
+
+    # Trial Functions List
+
+    # AutoTokenizer
+
+    def t_10_txt(self, auto_class_obj):
+        return auto_class_obj("Test Input", return_tensors="pt")
+    def t_txt_10_tts(self, auto_class_obj):
+        return auto_class_obj(text="T", return_tensors="pt")['input_ids']
+    def t_10_txt_cuda(self, auto_class_obj):
+        encoding = auto_class_obj("Test Input", return_tensors="pt")
+        return encoding.to(self.device)
+    def t_txt_10_sequence_classification_cuda(self, auto_class_obj):
+        encoding = auto_class_obj("Test Input", return_tensors="pt").to(self.device)
+        labels = torch.tensor([1]).to(self.device)
+        return {"input_ids": encoding["input_ids"], "attention_mask": encoding["attention_mask"], "labels": labels}
+    def t_txt_10_labels(self, auto_class_obj):  #VisionEncoderDecoder
+        encoded_input = auto_class_obj("Test Input", return_tensors="pt")
+        return {"labels": encoded_input['input_ids']}
+    def t_txt_input_ids(self, auto_class_obj):
+        encoded_input = auto_class_obj("Test Input", return_tensors="pt")['input_ids']
+        return encoded_input
+    def t_txt_input_ids_cuda(self, auto_class_obj):
+        encoded_input = auto_class_obj("Test Input", return_tensors="pt")['input_ids'].to(self.device)
+        return encoded_input
+    def t_txt_input_ids_attention_mask_cuda(self, auto_class_obj):
+        encoded_input = auto_class_obj("Test Input", return_tensors="pt")
+        return {
+            "input_ids": encoded_input["input_ids"].to(self.device),
+            "attention_mask": encoded_input["attention_mask"].to(self.device),
+        }
+    def t_enc_txt_10(self, auto_class_obj):
+        return auto_class_obj.encode("Test Input", return_tensors="pt")
+    def t_enc_txt_10_cuda(self, auto_class_obj):
+        encoding = auto_class_obj("Test Input", return_tensors="pt")
+        return encoding.to(self.device)
+    def t_enc_txt_10_cuda(self, auto_class_obj):
+        encoding = auto_class_obj("Test Input", return_tensors="pt")
+        return encoding.input_ids.to(self.device)
+    def t_enc_dec_t5_10(self, auto_class_obj):
+        encoded_input = auto_class_obj("Test Input", return_tensors="pt")
+        decoder_input_ids = encoded_input['input_ids'].clone()
+        decoder_input_ids[:] = auto_class_obj.pad_token_id
+        return {"input_ids": encoded_input['input_ids'].to(self.device), "decoder_input_ids": decoder_input_ids.to(self.device)}
+    def t_txt_decoder_input_ids(self, auto_class_obj):
+        encoded_input = auto_class_obj("Test Input", return_tensors="pt")
+        return {"decoder_input_ids": encoded_input['input_ids']}
+    def t_img_1_3_224_224_pixel_values(self, auto_class_obj):
+        encoded_input = auto_class_obj(images=torch.rand(1, 3, 224, 224), do_rescale=False, return_tensors="pt")
+        return {"pixel_values": encoded_input['pixel_values']}
+    def t_qa_input_ids_attention_mask(self, auto_class_obj):
+        encoded_input = auto_class_obj("Test Input?", "Test Input", return_tensors="pt")
+        input_ids = encoded_input["input_ids"].to(self.device)
+        attention_mask = encoded_input["attention_mask"].to(self.device)
+        return {"input_ids": input_ids, "attention_mask": attention_mask}
+    def t_MC_input_ids_attention_mask(self, auto_class_obj):
+        encoded_input = auto_class_obj(["Test Input", "Test Input"], ["A","B"], return_tensors="pt").to(self.device)
+        labels = torch.tensor(0).unsqueeze(0).to(self.device)
+        return {
+            **{k: v.unsqueeze(0) for k, v in encoded_input.items()}, 
+            'labels': labels
+            }
+        
+    
+    #IndexError: index out of range in self
+    def t_z_clamp_input_ids(self, auto_class_obj):
+        encoded_input = auto_class_obj("Test Input", return_tensors="pt")
+        max_val = auto_class_obj.pad_token_id
+        input_ids = torch.clamp(encoded_input["input_ids"], min=0, max=max_val)
+        encoded_input["input_ids"] = input_ids
+        return encoded_input
+         
+    # TODO: add tokenizer for voice models
+
+    # AutoFeatureExtractor
+    def fe_voice_dummy(self, auto_class_obj):
+        with open("./Naming_anomaly_detection/tools/librispeech_asr_dummy.json", "r") as f:
+            ds = json.load(f)
+        inputs = auto_class_obj(raw_speech=ds["audio"]["array"], sampling_rate=16000, return_tensors='pt')
+        inputs["labels"] = auto_class_obj(text_target=ds['text'], return_tensors="pt").input_ids
+        return inputs
+    def fe_voice_dummy_cuda(self, auto_class_obj):
+        with open("./Naming_anomaly_detection/tools/librispeech_asr_dummy.json", "r") as f:
+            ds = json.load(f)
+        inputs = auto_class_obj(ds["audio"]["array"], sampling_rate=16000, return_tensors='pt')
+        inputs["labels"] = auto_class_obj(text_target=ds['text'], return_tensors="pt").input_ids
+        inputs.to("cuda", torch.float32)
+        return inputs
+    def fe_voice_dummy_cuda2(self, auto_class_obj):
+        with open("./Naming_anomaly_detection/tools/librispeech_asr_dummy.json", "r") as f:
+            ds = json.load(f)
+        inputs = auto_class_obj(raw_speech=ds["audio"]["array"], sampling_rate=16000, return_tensors='pt')
+        inputs.to("cuda", torch.float32)
+        return inputs
+        # return {'input_features': inputs['input_features']}
+    # def fe_voice_dummy2(self, auto_class_obj):
+    #     with open("./Naming_anomaly_detection/tools/librispeech_asr_dummy.json", "r") as f:
+    #         ds = json.load(f)
+    #     inputs = auto_class_obj(ds["audio"]["array"], sampling_rate=16000, return_tensors='pt')
+    #     return inputs
+    def fe_img_3_224_224(self, auto_class_obj):
+        return auto_class_obj(images=torch.rand(3, 224, 224), do_rescale=False, return_tensors="pt").to(self.device)
+    def fe_img_1_3_224_224(self, auto_class_obj):
+        return auto_class_obj(images=torch.rand(1, 3, 224, 224), do_rescale=False, return_tensors="pt").to(self.device)
+    def fe_img_1_3_224_224_pixel(self, auto_class_obj):
+        return auto_class_obj(images=torch.rand(1, 3, 224, 224), do_rescale=False, return_tensors="pt")["pixel_values"]
+    def fe_voice_auto(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(auto_class_obj.sampling_rate), sampling_rate=auto_class_obj.sampling_rate, return_tensors='pt').to(self.device)
+    def fe_voice_sr8k(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(8000), sampling_rate=8000, return_tensors='pt').to(self.device)
+    def fe_voice_sr16k(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(16000), sampling_rate=16000, return_tensors='pt') #You have to specify either decoder_input_ids or decoder_inputs_embeds
+    def fe_voice_sr44k(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(44100), sampling_rate=44100, return_tensors='pt').to(self.device)
+    def fe_voice_sr48k(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(48000), sampling_rate=48000, return_tensors='pt').to(self.device)
+    def fe_voice_auto_decoder_input_ids(self, auto_class_obj):
+        encoded_input = auto_class_obj(np.random.randn(48000), sampling_rate=auto_class_obj.sampling_rate, return_tensors='pt').to(self.device)
+        decoder_start_token_id = 1
+        return {**encoded_input, "decoder_input_ids": torch.tensor([[decoder_start_token_id]]).to(self.device)}
+    def fe_voice_sr96k(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(96000), sampling_rate=96000, return_tensors='pt').to(self.device)
+    def fe_voice_sr192k(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(192000), sampling_rate=192000, return_tensors='pt').to(self.device)
+
+    # AutoImageProcessor
+    def ip_img_1_1_vision_text(self, auto_class_obj):
+        url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+        image = Image.open(requests.get(url, stream=True).raw)
+        return auto_class_obj(images=image, text="Test Input", return_tensors="pt").to(self.device, torch.float16)
+    def ip_img_1_3_224_224(self, auto_class_obj):
+        return auto_class_obj(images=torch.rand(1, 3, 224, 224), do_rescale=False, return_tensors="pt").to(self.device)
+    def ip_img_480_640_3(self, auto_class_obj):
+        return auto_class_obj(images=torch.rand(480, 640, 3), return_tensors="pt").to(self.device)
+    def ip_img_1_3_224_224_pixel(self, auto_class_obj):
+        encoded_input = auto_class_obj(images=torch.rand(3, 224, 224), do_rescale=False, return_tensors="pt")
+        return {"pixel_values": encoded_input['pixel_values']}
+    # def ip_img_1_3_224_224_pixel_values(self, auto_class_obj):
+    #     return auto_class_obj(images=torch.rand(1, 3, 224, 224), do_rescale=False, return_tensors="pt")
+    
+    # AutoProcessor
+
+    def p_voice_dummy(self, auto_class_obj):
+        with open("./Naming_anomaly_detection/tools/librispeech_asr_dummy.json", "r") as f:
+            ds = json.load(f)
+        return auto_class_obj(audio=ds["audio"]["array"], sampling_rate=16000, return_tensors='pt')
+    def p_voice_dummy_cuda(self, auto_class_obj):
+        with open("./Naming_anomaly_detection/tools/librispeech_asr_dummy.json", "r") as f:
+            ds = json.load(f)
+        return auto_class_obj(audio=ds["audio"]["array"], sampling_rate=16000, return_tensors='pt').to(self.device)
+    def p_voice_inputs_cuda(self, auto_class_obj):   #speech2textforConditionalGeneration
+        with open("./Naming_anomaly_detection/tools/librispeech_asr_dummy.json", "r") as f:
+            ds = json.load(f)
+        encoded_input = auto_class_obj(audio=ds["audio"]["array"], sampling_rate=16000, return_tensors='pt')
+        return {'inputs': encoded_input['input_features'].to(self.device)}
+    def p_voice_inputs_sr48k_cuda(self, auto_class_obj):   #speech2textforConditionalGeneration
+        with open("./Naming_anomaly_detection/tools/librispeech_asr_dummy.json", "r") as f:
+            ds = json.load(f)
+        encoded_input = auto_class_obj(audio=ds["audio"]["array"], sampling_rate=48000, return_tensors='pt')
+        return {'inputs': encoded_input['input_features'].to(self.device)}
+    def p_voice_dummy_t5(self, auto_class_obj):
+        with open("./Naming_anomaly_detection/tools/librispeech_asr_dummy.json", "r") as f:
+            ds = json.load(f)
+        inputs = auto_class_obj(audio=ds["audio"]["array"], sampling_rate=16000, return_tensors='pt')
+        inputs["labels"] = auto_class_obj(text_target=ds["text"], return_tensors="pt").input_ids
+        return inputs
+    def p_txt_10(self, auto_class_obj):
+        return auto_class_obj("Test Input", return_tensors="pt").to(self.device)
+    def p_tts(self, auto_class_obj):
+        inputs = auto_class_obj(text="Test Input", return_tensors="pt")
+        speaker_embeddings = torch.zeros((1, 512))
+        return {"input_ids": inputs["input_ids"], "speaker_embeddings": speaker_embeddings}
+    def p_tts_cuda(self, auto_class_obj):
+        inputs = auto_class_obj(text="Test Input", return_tensors="pt").to(self.device)
+        speaker_embeddings = torch.zeros((1, 512)).to(self.device)
+        return {"input_ids": inputs["input_ids"], "speaker_embeddings": speaker_embeddings}
+    def p_txt_10_txt(self, auto_class_obj):
+        return auto_class_obj(text="Test Input", return_tensors="pt").to(self.device)
+    def p_img_1_1_vision_text(self, auto_class_obj):
+        return auto_class_obj(images=torch.rand(480, 640, 3), text="Test Input", return_tensors="pt").to(self.device, torch.float16)
+    def p_img_1_clip_vision_text(self, auto_class_obj):
+        return auto_class_obj(images=torch.rand(480, 640, 3), text="Test Input", return_tensors="pt").to(self.device)
+    def p_img_1_3_224_224(self, auto_class_obj):
+        return auto_class_obj(images=torch.rand(1, 3, 224, 224), return_tensors="pt").to(self.device)
+    def p_pd_df(self, auto_class_obj):
+        return auto_class_obj(pd.DataFrame(), return_tensors='pt').to(self.device)
+    def p_voice_sr8k(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(8000), sampling_rate=8000, return_tensors='pt').to(self.device)
+    def p_voice_sr16k(self, auto_class_obj):
+        return auto_class_obj(torch.randn(16000, dtype=torch.float16).numpy(), sampling_rate=16000, return_tensors='pt').to(self.device)
+    def p_voice_sr44k(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(44100), sampling_rate=44100, return_tensors='pt').to(self.device)
+    def p_voice_sr48k(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(48000), sampling_rate=48000, return_tensors='pt').to(self.device)
+    def p_voice_sr96k(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(96000), sampling_rate=96000, return_tensors='pt').to(self.device)
+    def p_voice_sr192k(self, auto_class_obj):
+        return auto_class_obj(np.random.randn(192000), sampling_rate=192000, return_tensors='pt').to(self.device)
+    def p_vision_encoder_decoder(self, auto_class_obj):
+        pixel_values = auto_class_obj(torch.rand(1, 3, 224, 224), return_tensors="pt").pixel_values
+        labels = auto_class_obj.tokenizer("Test Input", return_tensors="pt").input_ids
+        return {"pixel_values": pixel_values.to(self.device), "labels": labels.to(self.device)}
+    
+    
+
+if __name__ == "__main__":
+    repo_name = "beomi/KoRWKV-6B"
+    # repo_name = "microsoft/resnet-50"
+    model = AutoModel.from_pretrained(repo_name, cache_dir='/scratch/gilbreth/kim3118/.cache/huggingface')
+    # from APTM.abstract_neural_network import AbstractNN
+    # aptm = AbstractNN.from_huggingface(
+    #             repo_name,
+    #             cache_dir='/scratch/gilbreth/kim3118/.cache/huggingface'
+    #             # quantization_config=q_config,
+    #         )
+    # model = AutoModel.from_pretrained(
+    #             repo_name,
+    #             trust_remote_code=False
+    #         )
+    # print(model.__class__)
+    # model = WhisperForConditionalGeneration.from_pretrained(repo_name)
+    # print(model.__class__)
+    in_iter = HFValidInputIterator(model, repo_name, '/scratch/gilbreth/kim3118/.cache/huggingface')
+    # in_iter = HFValidInputIterator(
+    #     model,
+    #     repo_name,
+    #     cache_dir='/scratch/gilbreth/kim3118/.cache/huggingface',
+    #     device="auto",
+    #     trust_remote_code=False
+    # )
+    # print(in_iter.get_valid_input())
+    import torchview
+    graph = torchview.draw_graph(model, input_size=[(1, 2), (1, 2)])  # Adjust input size if needed
+    graph.visual_graph.view()

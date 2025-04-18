@@ -11,14 +11,13 @@ import time
 import json
 from typing import List, Tuple, Union, Optional, Any
 from loguru import logger
-from transformers import AutoModel, AutoModelForCausalLM, AutoModelForTextToSpectrogram, VisionEncoderDecoderModel, MistralForCausalLM, AutoModelForDocumentQuestionAnswering, SpeechT5ForSpeechToText, UniSpeechModel
+from transformers import AutoModel
 import torch
 from APTM.aptm_generator import AbstractNNGenerator
 from APTM.aptm_layer import AbstractNNLayer
 from APTM.old_pipelines.APTMToJSONConverter import read_aptmlayer_list_from_json, aptmlayer_list_to_json
 from tools.HFValidInputIterator import HFValidInputIterator
 from collections import Counter
-MODELS = [AutoModelForDocumentQuestionAnswering, AutoModelForCausalLM, AutoModelForTextToSpectrogram, SpeechT5ForSpeechToText, UniSpeechModel, VisionEncoderDecoderModel, MistralForCausalLM]
 
 class AbstractNN():
     """
@@ -33,13 +32,13 @@ class AbstractNN():
         self,
         aptmlayer_list: Optional[List[AbstractNNLayer]] = None,
         connection_info: Optional[List[Tuple[Union[int, str], List[Union[int, str]]]]] = None,
-        intermediate_output: Optional[List[Tuple[str, torch.Tensor]]] = None
+        # intermediate_output: Optional[List[Tuple[str, torch.Tensor]]] = None
     ) -> None:
         self.content = aptmlayer_list
         self.connection_info = connection_info
         self.layer_connection_vector, self.layer_with_parameter_vector, self.dim_vector = \
             self.vectorize()
-        self.intermediate_output = intermediate_output
+        # self.intermediate_output = intermediate_output
         
     @staticmethod
     def from_huggingface(
@@ -83,22 +82,7 @@ class AbstractNN():
                 )
             except Exception as emsg: # pylint: disable=broad-except
                 err_msg = str(emsg)
-        if model is None:
-            for model in MODELS:
-                try:
-                    model = model.from_pretrained(
-                        hf_repo_name,
-                        trust_remote_code=trust_remote_code,
-                        # device_map=device_map,
-                        **kwargs
-                    )
-                    break
-                except Exception as emsg: # pylint: disable=broad-except
-                    err_msg = str(emsg)
-            # logger.info(emsg)
-            # exit()
         
-
         if model is None:
             raise ValueError(f"Failed to load the model: {err_msg}")
 
@@ -133,7 +117,7 @@ class AbstractNN():
 
         start_time = time.time()
 
-        assert isinstance(tracing_input, torch.Tensor)
+        # assert isinstance(tracing_input, torch.Tensor)
         aptm_gen = AbstractNNGenerator(
             model = model,
             inputs = tracing_input, # type: ignore
@@ -153,7 +137,7 @@ class AbstractNN():
             logger.success(f"APTM generated. Time taken: {round(end_time - start_time, 4)}s")
             logger.info("Vectorizing...")
 
-        ret_aptm = AbstractNN(layer_list, conn_info, model.intermediate_features)
+        ret_aptm = AbstractNN(layer_list, conn_info)#, model.intermediate_features)
 
         if verbose:
             logger.success("Success.")

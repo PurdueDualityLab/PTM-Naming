@@ -5,11 +5,11 @@
 ## Overview
 
 
-- Survey study ($4.1):
+- Survey study ($5.1):
   - This part of our study was used to answer *RQ1-3* in the paper.
-- Repository mining ($4.2): 
+- Repository mining ($5.2): 
   - This part of our study was used to answer *RQ2, 4* in the paper.
-- DARA ($5.4.2):
+- DARA ($7.2):
   - This part of our study was used to answer *RQ4* in the paper.
 
 
@@ -17,7 +17,6 @@
 | Top-level folder            | Second-level folder      |
 |-----------------------------|--------------------------|
 | `Naming_anomaly_detection/` | APTM/                  |
-|                             | CL/                    |
 |                             | DARA/                  |
 |                             | data_files/            |
 |                             | tools/                 |
@@ -61,8 +60,6 @@ This folder includes scripts and data relevant to Figure 7, Figure 8, Figure 9, 
 
 - [APTMs](/Naming_anomaly_detection/APTM)
   - The APTM model and graph conversion pipeline.
-- [CL](/Naming_anomaly_detection/CL)
-  - The contrastive learning solution for detecting naming anomalies.
 - [DARA](/Naming_anomaly_detection/DARA)
   - The DNN Architecture Assessment pipeline.
 - [Data files](/Naming_anomaly_detection/data_files)

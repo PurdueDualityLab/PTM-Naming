@@ -1,0 +1,324 @@
+2025-04-11 12:59:45.243 | INFO     | __main__:<module>:27 - Using device: cuda
+2025-04-11 12:59:47.866 | INFO     | __main__:CV_run:269 - Number of classes: 81
+2025-04-11 12:59:47.867 | INFO     | __main__:CV_run:270 - Input shape: torch.Size([1, 4296])
+2025-04-11 12:59:47.867 | INFO     | __main__:CV_run:271 - label type: model_type
+2025-04-11 12:59:47.869 | INFO     | __main__:CV_run:286 - Starting fold 1
+2025-04-11 12:59:55.448 | INFO     | __main__:train_and_evaluate:107 - Epoch 1, Loss: 14.1273
+2025-04-11 12:59:56.314 | INFO     | __main__:train_and_evaluate:107 - Epoch 2, Loss: 3.8830
+2025-04-11 12:59:57.176 | INFO     | __main__:train_and_evaluate:107 - Epoch 3, Loss: 3.3142
+2025-04-11 12:59:58.058 | INFO     | __main__:train_and_evaluate:107 - Epoch 4, Loss: 2.6269
+2025-04-11 12:59:58.918 | INFO     | __main__:train_and_evaluate:107 - Epoch 5, Loss: 1.8662
+2025-04-11 12:59:59.776 | INFO     | __main__:train_and_evaluate:107 - Epoch 6, Loss: 1.3256
+2025-04-11 13:00:00.635 | INFO     | __main__:train_and_evaluate:107 - Epoch 7, Loss: 0.9592
+2025-04-11 13:00:01.495 | INFO     | __main__:train_and_evaluate:107 - Epoch 8, Loss: 0.6885
+2025-04-11 13:00:02.357 | INFO     | __main__:train_and_evaluate:107 - Epoch 9, Loss: 0.5241
+2025-04-11 13:00:03.219 | INFO     | __main__:train_and_evaluate:107 - Epoch 10, Loss: 0.4184
+2025-04-11 13:00:03.306 | INFO     | __main__:eval:67 - Eval Loss: 0.6779
+2025-04-11 13:00:03.321 | INFO     | __main__:train_and_evaluate:117 - Epoch 10, Eval Metrics: macro_recall: 0.82, macro_precision: 0.85, macro_f1: 0.82, accuracy: 0.88, micro_recall: 0.88, micro_precision: 0.88, micro_f1: 0.88
+2025-04-11 13:00:04.184 | INFO     | __main__:train_and_evaluate:107 - Epoch 11, Loss: 0.3176
+2025-04-11 13:00:05.064 | INFO     | __main__:train_and_evaluate:107 - Epoch 12, Loss: 0.2649
+2025-04-11 13:00:05.922 | INFO     | __main__:train_and_evaluate:107 - Epoch 13, Loss: 0.2271
+2025-04-11 13:00:06.798 | INFO     | __main__:train_and_evaluate:107 - Epoch 14, Loss: 0.1850
+2025-04-11 13:00:07.657 | INFO     | __main__:train_and_evaluate:107 - Epoch 15, Loss: 0.1739
+2025-04-11 13:00:08.518 | INFO     | __main__:train_and_evaluate:107 - Epoch 16, Loss: 0.1368
+2025-04-11 13:00:09.378 | INFO     | __main__:train_and_evaluate:107 - Epoch 17, Loss: 0.1323
+2025-04-11 13:00:10.236 | INFO     | __main__:train_and_evaluate:107 - Epoch 18, Loss: 0.1123
+2025-04-11 13:00:11.096 | INFO     | __main__:train_and_evaluate:107 - Epoch 19, Loss: 0.0878
+2025-04-11 13:00:11.954 | INFO     | __main__:train_and_evaluate:107 - Epoch 20, Loss: 0.0849
+2025-04-11 13:00:12.033 | INFO     | __main__:eval:67 - Eval Loss: 0.6077
+2025-04-11 13:00:12.047 | INFO     | __main__:train_and_evaluate:117 - Epoch 20, Eval Metrics: macro_recall: 0.87, macro_precision: 0.88, macro_f1: 0.87, accuracy: 0.91, micro_recall: 0.91, micro_precision: 0.91, micro_f1: 0.91
+2025-04-11 13:00:12.906 | INFO     | __main__:train_and_evaluate:107 - Epoch 21, Loss: 0.0934
+2025-04-11 13:00:13.785 | INFO     | __main__:train_and_evaluate:107 - Epoch 22, Loss: 0.0781
+2025-04-11 13:00:14.649 | INFO     | __main__:train_and_evaluate:107 - Epoch 23, Loss: 0.0867
+2025-04-11 13:00:15.509 | INFO     | __main__:train_and_evaluate:107 - Epoch 24, Loss: 0.0773
+2025-04-11 13:00:16.371 | INFO     | __main__:train_and_evaluate:107 - Epoch 25, Loss: 0.0885
+2025-04-11 13:00:17.232 | INFO     | __main__:train_and_evaluate:107 - Epoch 26, Loss: 0.0749
+2025-04-11 13:00:18.092 | INFO     | __main__:train_and_evaluate:107 - Epoch 27, Loss: 0.0607
+2025-04-11 13:00:18.954 | INFO     | __main__:train_and_evaluate:107 - Epoch 28, Loss: 0.0698
+2025-04-11 13:00:19.813 | INFO     | __main__:train_and_evaluate:107 - Epoch 29, Loss: 0.0623
+2025-04-11 13:00:20.672 | INFO     | __main__:train_and_evaluate:107 - Epoch 30, Loss: 0.0562
+2025-04-11 13:00:20.751 | INFO     | __main__:eval:67 - Eval Loss: 0.6809
+2025-04-11 13:00:20.765 | INFO     | __main__:train_and_evaluate:117 - Epoch 30, Eval Metrics: macro_recall: 0.85, macro_precision: 0.86, macro_f1: 0.84, accuracy: 0.90, micro_recall: 0.90, micro_precision: 0.90, micro_f1: 0.90
+2025-04-11 13:00:21.626 | INFO     | __main__:train_and_evaluate:107 - Epoch 31, Loss: 0.0592
+2025-04-11 13:00:22.486 | INFO     | __main__:train_and_evaluate:107 - Epoch 32, Loss: 0.0534
+2025-04-11 13:00:23.345 | INFO     | __main__:train_and_evaluate:107 - Epoch 33, Loss: 0.0421
+2025-04-11 13:00:24.205 | INFO     | __main__:train_and_evaluate:107 - Epoch 34, Loss: 0.0353
+2025-04-11 13:00:25.072 | INFO     | __main__:train_and_evaluate:107 - Epoch 35, Loss: 0.0396
+2025-04-11 13:00:25.947 | INFO     | __main__:train_and_evaluate:107 - Epoch 36, Loss: 0.0366
+2025-04-11 13:00:26.806 | INFO     | __main__:train_and_evaluate:107 - Epoch 37, Loss: 0.0339
+2025-04-11 13:00:27.664 | INFO     | __main__:train_and_evaluate:107 - Epoch 38, Loss: 0.0343
+2025-04-11 13:00:28.524 | INFO     | __main__:train_and_evaluate:107 - Epoch 39, Loss: 0.0382
+2025-04-11 13:00:29.383 | INFO     | __main__:train_and_evaluate:107 - Epoch 40, Loss: 0.0305
+2025-04-11 13:00:29.462 | INFO     | __main__:eval:67 - Eval Loss: 0.6731
+2025-04-11 13:00:29.474 | INFO     | __main__:train_and_evaluate:117 - Epoch 40, Eval Metrics: macro_recall: 0.86, macro_precision: 0.86, macro_f1: 0.85, accuracy: 0.91, micro_recall: 0.91, micro_precision: 0.91, micro_f1: 0.91
+2025-04-11 13:00:30.334 | INFO     | __main__:train_and_evaluate:107 - Epoch 41, Loss: 0.0316
+2025-04-11 13:00:31.192 | INFO     | __main__:train_and_evaluate:107 - Epoch 42, Loss: 0.0334
+2025-04-11 13:00:32.051 | INFO     | __main__:train_and_evaluate:107 - Epoch 43, Loss: 0.0269
+2025-04-11 13:00:32.909 | INFO     | __main__:train_and_evaluate:107 - Epoch 44, Loss: 0.0370
+2025-04-11 13:00:33.767 | INFO     | __main__:train_and_evaluate:107 - Epoch 45, Loss: 0.0286
+2025-04-11 13:00:34.627 | INFO     | __main__:train_and_evaluate:107 - Epoch 46, Loss: 0.0428
+2025-04-11 13:00:35.487 | INFO     | __main__:train_and_evaluate:107 - Epoch 47, Loss: 0.0254
+2025-04-11 13:00:36.347 | INFO     | __main__:train_and_evaluate:107 - Epoch 48, Loss: 0.0222
+2025-04-11 13:00:37.207 | INFO     | __main__:train_and_evaluate:107 - Epoch 49, Loss: 0.0222
+2025-04-11 13:00:38.068 | INFO     | __main__:train_and_evaluate:107 - Epoch 50, Loss: 0.0273
+2025-04-11 13:00:38.142 | INFO     | __main__:eval:67 - Eval Loss: 0.6885
+2025-04-11 13:00:38.155 | INFO     | __main__:train_and_evaluate:117 - Epoch 50, Eval Metrics: macro_recall: 0.86, macro_precision: 0.86, macro_f1: 0.85, accuracy: 0.91, micro_recall: 0.91, micro_precision: 0.91, micro_f1: 0.91
+2025-04-11 13:00:38.156 | INFO     | __main__:CV_run:320 - Fold 1, Final Eval Metrics: macro_recall: 0.86, macro_precision: 0.86, macro_f1: 0.85, accuracy: 0.91, micro_recall: 0.91, micro_precision: 0.91, micro_f1: 0.91
+2025-04-11 13:00:38.156 | INFO     | __main__:CV_run:286 - Starting fold 2
+2025-04-11 13:00:39.981 | INFO     | __main__:train_and_evaluate:107 - Epoch 1, Loss: 16.4759
+2025-04-11 13:00:40.864 | INFO     | __main__:train_and_evaluate:107 - Epoch 2, Loss: 3.7791
+2025-04-11 13:00:41.724 | INFO     | __main__:train_and_evaluate:107 - Epoch 3, Loss: 3.0123
+2025-04-11 13:00:42.584 | INFO     | __main__:train_and_evaluate:107 - Epoch 4, Loss: 2.2348
+2025-04-11 13:00:43.443 | INFO     | __main__:train_and_evaluate:107 - Epoch 5, Loss: 1.5493
+2025-04-11 13:00:44.302 | INFO     | __main__:train_and_evaluate:107 - Epoch 6, Loss: 1.1359
+2025-04-11 13:00:45.161 | INFO     | __main__:train_and_evaluate:107 - Epoch 7, Loss: 0.8110
+2025-04-11 13:00:46.019 | INFO     | __main__:train_and_evaluate:107 - Epoch 8, Loss: 0.6317
+2025-04-11 13:00:46.878 | INFO     | __main__:train_and_evaluate:107 - Epoch 9, Loss: 0.4695
+2025-04-11 13:00:47.737 | INFO     | __main__:train_and_evaluate:107 - Epoch 10, Loss: 0.3863
+2025-04-11 13:00:47.821 | INFO     | __main__:eval:67 - Eval Loss: 0.6189
+2025-04-11 13:00:47.833 | INFO     | __main__:train_and_evaluate:117 - Epoch 10, Eval Metrics: macro_recall: 0.80, macro_precision: 0.82, macro_f1: 0.80, accuracy: 0.89, micro_recall: 0.89, micro_precision: 0.89, micro_f1: 0.89
+2025-04-11 13:00:48.694 | INFO     | __main__:train_and_evaluate:107 - Epoch 11, Loss: 0.3111
+2025-04-11 13:00:49.553 | INFO     | __main__:train_and_evaluate:107 - Epoch 12, Loss: 0.2329
+2025-04-11 13:00:50.413 | INFO     | __main__:train_and_evaluate:107 - Epoch 13, Loss: 0.2147
+2025-04-11 13:00:51.272 | INFO     | __main__:train_and_evaluate:107 - Epoch 14, Loss: 0.1688
+2025-04-11 13:00:52.131 | INFO     | __main__:train_and_evaluate:107 - Epoch 15, Loss: 0.1516
+2025-04-11 13:00:52.988 | INFO     | __main__:train_and_evaluate:107 - Epoch 16, Loss: 0.1326
+2025-04-11 13:00:53.846 | INFO     | __main__:train_and_evaluate:107 - Epoch 17, Loss: 0.1246
+2025-04-11 13:00:54.705 | INFO     | __main__:train_and_evaluate:107 - Epoch 18, Loss: 0.1076
+2025-04-11 13:00:55.564 | INFO     | __main__:train_and_evaluate:107 - Epoch 19, Loss: 0.0984
+2025-04-11 13:00:56.423 | INFO     | __main__:train_and_evaluate:107 - Epoch 20, Loss: 0.0936
+2025-04-11 13:00:56.496 | INFO     | __main__:eval:67 - Eval Loss: 0.6497
+2025-04-11 13:00:56.510 | INFO     | __main__:train_and_evaluate:117 - Epoch 20, Eval Metrics: macro_recall: 0.87, macro_precision: 0.87, macro_f1: 0.86, accuracy: 0.91, micro_recall: 0.91, micro_precision: 0.91, micro_f1: 0.91
+2025-04-11 13:00:57.368 | INFO     | __main__:train_and_evaluate:107 - Epoch 21, Loss: 0.0832
+2025-04-11 13:00:58.226 | INFO     | __main__:train_and_evaluate:107 - Epoch 22, Loss: 0.0846
+2025-04-11 13:00:59.085 | INFO     | __main__:train_and_evaluate:107 - Epoch 23, Loss: 0.0932
+2025-04-11 13:00:59.955 | INFO     | __main__:train_and_evaluate:107 - Epoch 24, Loss: 0.0640
+2025-04-11 13:01:00.830 | INFO     | __main__:train_and_evaluate:107 - Epoch 25, Loss: 0.0603
+2025-04-11 13:01:01.690 | INFO     | __main__:train_and_evaluate:107 - Epoch 26, Loss: 0.0689
+2025-04-11 13:01:02.550 | INFO     | __main__:train_and_evaluate:107 - Epoch 27, Loss: 0.0597
+2025-04-11 13:01:03.409 | INFO     | __main__:train_and_evaluate:107 - Epoch 28, Loss: 0.0607
+2025-04-11 13:01:04.273 | INFO     | __main__:train_and_evaluate:107 - Epoch 29, Loss: 0.0760
+2025-04-11 13:01:05.133 | INFO     | __main__:train_and_evaluate:107 - Epoch 30, Loss: 0.0593
+2025-04-11 13:01:05.213 | INFO     | __main__:eval:67 - Eval Loss: 0.6519
+2025-04-11 13:01:05.225 | INFO     | __main__:train_and_evaluate:117 - Epoch 30, Eval Metrics: macro_recall: 0.88, macro_precision: 0.88, macro_f1: 0.87, accuracy: 0.92, micro_recall: 0.92, micro_precision: 0.92, micro_f1: 0.92
+2025-04-11 13:01:06.089 | INFO     | __main__:train_and_evaluate:107 - Epoch 31, Loss: 0.0484
+2025-04-11 13:01:06.951 | INFO     | __main__:train_and_evaluate:107 - Epoch 32, Loss: 0.0563
+2025-04-11 13:01:07.811 | INFO     | __main__:train_and_evaluate:107 - Epoch 33, Loss: 0.0444
+2025-04-11 13:01:08.672 | INFO     | __main__:train_and_evaluate:107 - Epoch 34, Loss: 0.0401
+2025-04-11 13:01:09.534 | INFO     | __main__:train_and_evaluate:107 - Epoch 35, Loss: 0.0398
+2025-04-11 13:01:10.393 | INFO     | __main__:train_and_evaluate:107 - Epoch 36, Loss: 0.0373
+2025-04-11 13:01:11.253 | INFO     | __main__:train_and_evaluate:107 - Epoch 37, Loss: 0.0327
+2025-04-11 13:01:12.115 | INFO     | __main__:train_and_evaluate:107 - Epoch 38, Loss: 0.0328
+2025-04-11 13:01:12.975 | INFO     | __main__:train_and_evaluate:107 - Epoch 39, Loss: 0.0396
+2025-04-11 13:01:13.836 | INFO     | __main__:train_and_evaluate:107 - Epoch 40, Loss: 0.0293
+2025-04-11 13:01:13.909 | INFO     | __main__:eval:67 - Eval Loss: 0.6676
+2025-04-11 13:01:13.923 | INFO     | __main__:train_and_evaluate:117 - Epoch 40, Eval Metrics: macro_recall: 0.88, macro_precision: 0.88, macro_f1: 0.87, accuracy: 0.92, micro_recall: 0.92, micro_precision: 0.92, micro_f1: 0.92
+2025-04-11 13:01:14.788 | INFO     | __main__:train_and_evaluate:107 - Epoch 41, Loss: 0.0318
+2025-04-11 13:01:15.650 | INFO     | __main__:train_and_evaluate:107 - Epoch 42, Loss: 0.0341
+2025-04-11 13:01:16.512 | INFO     | __main__:train_and_evaluate:107 - Epoch 43, Loss: 0.0307
+2025-04-11 13:01:17.375 | INFO     | __main__:train_and_evaluate:107 - Epoch 44, Loss: 0.0373
+2025-04-11 13:01:18.239 | INFO     | __main__:train_and_evaluate:107 - Epoch 45, Loss: 0.0283
+2025-04-11 13:01:19.100 | INFO     | __main__:train_and_evaluate:107 - Epoch 46, Loss: 0.0341
+2025-04-11 13:01:19.961 | INFO     | __main__:train_and_evaluate:107 - Epoch 47, Loss: 0.0227
+2025-04-11 13:01:20.821 | INFO     | __main__:train_and_evaluate:107 - Epoch 48, Loss: 0.0280
+2025-04-11 13:01:21.683 | INFO     | __main__:train_and_evaluate:107 - Epoch 49, Loss: 0.0265
+2025-04-11 13:01:22.544 | INFO     | __main__:train_and_evaluate:107 - Epoch 50, Loss: 0.0270
+2025-04-11 13:01:22.617 | INFO     | __main__:eval:67 - Eval Loss: 0.6873
+2025-04-11 13:01:22.629 | INFO     | __main__:train_and_evaluate:117 - Epoch 50, Eval Metrics: macro_recall: 0.88, macro_precision: 0.88, macro_f1: 0.87, accuracy: 0.92, micro_recall: 0.92, micro_precision: 0.92, micro_f1: 0.92
+2025-04-11 13:01:22.629 | INFO     | __main__:CV_run:320 - Fold 2, Final Eval Metrics: macro_recall: 0.88, macro_precision: 0.88, macro_f1: 0.87, accuracy: 0.92, micro_recall: 0.92, micro_precision: 0.92, micro_f1: 0.92
+2025-04-11 13:01:22.630 | INFO     | __main__:CV_run:286 - Starting fold 3
+2025-04-11 13:01:24.454 | INFO     | __main__:train_and_evaluate:107 - Epoch 1, Loss: 13.2445
+2025-04-11 13:01:25.325 | INFO     | __main__:train_and_evaluate:107 - Epoch 2, Loss: 3.9347
+2025-04-11 13:01:26.204 | INFO     | __main__:train_and_evaluate:107 - Epoch 3, Loss: 3.2223
+2025-04-11 13:01:27.063 | INFO     | __main__:train_and_evaluate:107 - Epoch 4, Loss: 2.5477
+2025-04-11 13:01:27.922 | INFO     | __main__:train_and_evaluate:107 - Epoch 5, Loss: 1.9627
+2025-04-11 13:01:28.782 | INFO     | __main__:train_and_evaluate:107 - Epoch 6, Loss: 1.4779
+2025-04-11 13:01:29.642 | INFO     | __main__:train_and_evaluate:107 - Epoch 7, Loss: 1.0987
+2025-04-11 13:01:30.501 | INFO     | __main__:train_and_evaluate:107 - Epoch 8, Loss: 0.8168
+2025-04-11 13:01:31.360 | INFO     | __main__:train_and_evaluate:107 - Epoch 9, Loss: 0.6311
+2025-04-11 13:01:32.218 | INFO     | __main__:train_and_evaluate:107 - Epoch 10, Loss: 0.5127
+2025-04-11 13:01:32.296 | INFO     | __main__:eval:67 - Eval Loss: 0.5297
+2025-04-11 13:01:32.308 | INFO     | __main__:train_and_evaluate:117 - Epoch 10, Eval Metrics: macro_recall: 0.84, macro_precision: 0.85, macro_f1: 0.83, accuracy: 0.89, micro_recall: 0.89, micro_precision: 0.89, micro_f1: 0.89
+2025-04-11 13:01:33.169 | INFO     | __main__:train_and_evaluate:107 - Epoch 11, Loss: 0.3960
+2025-04-11 13:01:34.025 | INFO     | __main__:train_and_evaluate:107 - Epoch 12, Loss: 0.3115
+2025-04-11 13:01:34.886 | INFO     | __main__:train_and_evaluate:107 - Epoch 13, Loss: 0.2702
+2025-04-11 13:01:35.747 | INFO     | __main__:train_and_evaluate:107 - Epoch 14, Loss: 0.2377
+2025-04-11 13:01:36.608 | INFO     | __main__:train_and_evaluate:107 - Epoch 15, Loss: 0.1954
+2025-04-11 13:01:37.468 | INFO     | __main__:train_and_evaluate:107 - Epoch 16, Loss: 0.1826
+2025-04-11 13:01:38.328 | INFO     | __main__:train_and_evaluate:107 - Epoch 17, Loss: 0.1548
+2025-04-11 13:01:39.190 | INFO     | __main__:train_and_evaluate:107 - Epoch 18, Loss: 0.1737
+2025-04-11 13:01:40.052 | INFO     | __main__:train_and_evaluate:107 - Epoch 19, Loss: 0.1206
+2025-04-11 13:01:40.911 | INFO     | __main__:train_and_evaluate:107 - Epoch 20, Loss: 0.1188
+2025-04-11 13:01:40.985 | INFO     | __main__:eval:67 - Eval Loss: 0.4961
+2025-04-11 13:01:40.998 | INFO     | __main__:train_and_evaluate:117 - Epoch 20, Eval Metrics: macro_recall: 0.88, macro_precision: 0.88, macro_f1: 0.87, accuracy: 0.92, micro_recall: 0.92, micro_precision: 0.92, micro_f1: 0.92
+2025-04-11 13:01:41.862 | INFO     | __main__:train_and_evaluate:107 - Epoch 21, Loss: 0.1045
+2025-04-11 13:01:42.723 | INFO     | __main__:train_and_evaluate:107 - Epoch 22, Loss: 0.0854
+2025-04-11 13:01:43.583 | INFO     | __main__:train_and_evaluate:107 - Epoch 23, Loss: 0.0972
+2025-04-11 13:01:44.446 | INFO     | __main__:train_and_evaluate:107 - Epoch 24, Loss: 0.1176
+2025-04-11 13:01:45.305 | INFO     | __main__:train_and_evaluate:107 - Epoch 25, Loss: 0.0798
+2025-04-11 13:01:46.165 | INFO     | __main__:train_and_evaluate:107 - Epoch 26, Loss: 0.0792
+2025-04-11 13:01:47.029 | INFO     | __main__:train_and_evaluate:107 - Epoch 27, Loss: 0.0879
+2025-04-11 13:01:47.914 | INFO     | __main__:train_and_evaluate:107 - Epoch 28, Loss: 0.0816
+2025-04-11 13:01:48.799 | INFO     | __main__:train_and_evaluate:107 - Epoch 29, Loss: 0.0713
+2025-04-11 13:01:49.669 | INFO     | __main__:train_and_evaluate:107 - Epoch 30, Loss: 0.0722
+2025-04-11 13:01:49.750 | INFO     | __main__:eval:67 - Eval Loss: 0.4353
+2025-04-11 13:01:49.764 | INFO     | __main__:train_and_evaluate:117 - Epoch 30, Eval Metrics: macro_recall: 0.90, macro_precision: 0.90, macro_f1: 0.89, accuracy: 0.93, micro_recall: 0.93, micro_precision: 0.93, micro_f1: 0.93
+2025-04-11 13:01:50.642 | INFO     | __main__:train_and_evaluate:107 - Epoch 31, Loss: 0.0669
+2025-04-11 13:01:51.516 | INFO     | __main__:train_and_evaluate:107 - Epoch 32, Loss: 0.0487
+2025-04-11 13:01:52.389 | INFO     | __main__:train_and_evaluate:107 - Epoch 33, Loss: 0.0468
+2025-04-11 13:01:53.256 | INFO     | __main__:train_and_evaluate:107 - Epoch 34, Loss: 0.0555
+2025-04-11 13:01:54.139 | INFO     | __main__:train_and_evaluate:107 - Epoch 35, Loss: 0.0527
+2025-04-11 13:01:55.001 | INFO     | __main__:train_and_evaluate:107 - Epoch 36, Loss: 0.0346
+2025-04-11 13:01:55.867 | INFO     | __main__:train_and_evaluate:107 - Epoch 37, Loss: 0.0344
+2025-04-11 13:01:56.752 | INFO     | __main__:train_and_evaluate:107 - Epoch 38, Loss: 0.0431
+2025-04-11 13:01:57.613 | INFO     | __main__:train_and_evaluate:107 - Epoch 39, Loss: 0.0323
+2025-04-11 13:01:58.473 | INFO     | __main__:train_and_evaluate:107 - Epoch 40, Loss: 0.0406
+2025-04-11 13:01:58.553 | INFO     | __main__:eval:67 - Eval Loss: 0.4765
+2025-04-11 13:01:58.566 | INFO     | __main__:train_and_evaluate:117 - Epoch 40, Eval Metrics: macro_recall: 0.90, macro_precision: 0.90, macro_f1: 0.90, accuracy: 0.93, micro_recall: 0.93, micro_precision: 0.93, micro_f1: 0.93
+2025-04-11 13:01:59.432 | INFO     | __main__:train_and_evaluate:107 - Epoch 41, Loss: 0.0411
+2025-04-11 13:02:00.316 | INFO     | __main__:train_and_evaluate:107 - Epoch 42, Loss: 0.0411
+2025-04-11 13:02:01.179 | INFO     | __main__:train_and_evaluate:107 - Epoch 43, Loss: 0.0467
+2025-04-11 13:02:02.042 | INFO     | __main__:train_and_evaluate:107 - Epoch 44, Loss: 0.0313
+2025-04-11 13:02:02.903 | INFO     | __main__:train_and_evaluate:107 - Epoch 45, Loss: 0.0302
+2025-04-11 13:02:03.766 | INFO     | __main__:train_and_evaluate:107 - Epoch 46, Loss: 0.0298
+2025-04-11 13:02:04.648 | INFO     | __main__:train_and_evaluate:107 - Epoch 47, Loss: 0.0313
+2025-04-11 13:02:05.516 | INFO     | __main__:train_and_evaluate:107 - Epoch 48, Loss: 0.0223
+2025-04-11 13:02:06.379 | INFO     | __main__:train_and_evaluate:107 - Epoch 49, Loss: 0.0233
+2025-04-11 13:02:07.245 | INFO     | __main__:train_and_evaluate:107 - Epoch 50, Loss: 0.0333
+2025-04-11 13:02:07.324 | INFO     | __main__:eval:67 - Eval Loss: 0.4905
+2025-04-11 13:02:07.337 | INFO     | __main__:train_and_evaluate:117 - Epoch 50, Eval Metrics: macro_recall: 0.91, macro_precision: 0.90, macro_f1: 0.90, accuracy: 0.94, micro_recall: 0.94, micro_precision: 0.94, micro_f1: 0.94
+2025-04-11 13:02:07.338 | INFO     | __main__:CV_run:320 - Fold 3, Final Eval Metrics: macro_recall: 0.91, macro_precision: 0.90, macro_f1: 0.90, accuracy: 0.94, micro_recall: 0.94, micro_precision: 0.94, micro_f1: 0.94
+2025-04-11 13:02:07.338 | INFO     | __main__:CV_run:286 - Starting fold 4
+2025-04-11 13:02:09.159 | INFO     | __main__:train_and_evaluate:107 - Epoch 1, Loss: 15.2422
+2025-04-11 13:02:10.025 | INFO     | __main__:train_and_evaluate:107 - Epoch 2, Loss: 3.7933
+2025-04-11 13:02:10.903 | INFO     | __main__:train_and_evaluate:107 - Epoch 3, Loss: 3.0252
+2025-04-11 13:02:11.763 | INFO     | __main__:train_and_evaluate:107 - Epoch 4, Loss: 2.2880
+2025-04-11 13:02:12.623 | INFO     | __main__:train_and_evaluate:107 - Epoch 5, Loss: 1.6471
+2025-04-11 13:02:13.485 | INFO     | __main__:train_and_evaluate:107 - Epoch 6, Loss: 1.1784
+2025-04-11 13:02:14.345 | INFO     | __main__:train_and_evaluate:107 - Epoch 7, Loss: 0.8690
+2025-04-11 13:02:15.205 | INFO     | __main__:train_and_evaluate:107 - Epoch 8, Loss: 0.6087
+2025-04-11 13:02:16.067 | INFO     | __main__:train_and_evaluate:107 - Epoch 9, Loss: 0.4685
+2025-04-11 13:02:16.931 | INFO     | __main__:train_and_evaluate:107 - Epoch 10, Loss: 0.3715
+2025-04-11 13:02:17.010 | INFO     | __main__:eval:67 - Eval Loss: 0.5191
+2025-04-11 13:02:17.023 | INFO     | __main__:train_and_evaluate:117 - Epoch 10, Eval Metrics: macro_recall: 0.84, macro_precision: 0.88, macro_f1: 0.85, accuracy: 0.89, micro_recall: 0.89, micro_precision: 0.89, micro_f1: 0.89
+2025-04-11 13:02:17.893 | INFO     | __main__:train_and_evaluate:107 - Epoch 11, Loss: 0.3004
+2025-04-11 13:02:18.770 | INFO     | __main__:train_and_evaluate:107 - Epoch 12, Loss: 0.2455
+2025-04-11 13:02:19.633 | INFO     | __main__:train_and_evaluate:107 - Epoch 13, Loss: 0.1955
+2025-04-11 13:02:20.496 | INFO     | __main__:train_and_evaluate:107 - Epoch 14, Loss: 0.1688
+2025-04-11 13:02:21.358 | INFO     | __main__:train_and_evaluate:107 - Epoch 15, Loss: 0.1543
+2025-04-11 13:02:22.223 | INFO     | __main__:train_and_evaluate:107 - Epoch 16, Loss: 0.1406
+2025-04-11 13:02:23.084 | INFO     | __main__:train_and_evaluate:107 - Epoch 17, Loss: 0.1221
+2025-04-11 13:02:23.946 | INFO     | __main__:train_and_evaluate:107 - Epoch 18, Loss: 0.0953
+2025-04-11 13:02:24.808 | INFO     | __main__:train_and_evaluate:107 - Epoch 19, Loss: 0.0874
+2025-04-11 13:02:25.671 | INFO     | __main__:train_and_evaluate:107 - Epoch 20, Loss: 0.0875
+2025-04-11 13:02:25.750 | INFO     | __main__:eval:67 - Eval Loss: 0.4926
+2025-04-11 13:02:25.763 | INFO     | __main__:train_and_evaluate:117 - Epoch 20, Eval Metrics: macro_recall: 0.89, macro_precision: 0.90, macro_f1: 0.89, accuracy: 0.92, micro_recall: 0.92, micro_precision: 0.92, micro_f1: 0.92
+2025-04-11 13:02:26.625 | INFO     | __main__:train_and_evaluate:107 - Epoch 21, Loss: 0.0875
+2025-04-11 13:02:27.486 | INFO     | __main__:train_and_evaluate:107 - Epoch 22, Loss: 0.0767
+2025-04-11 13:02:28.367 | INFO     | __main__:train_and_evaluate:107 - Epoch 23, Loss: 0.0915
+2025-04-11 13:02:29.234 | INFO     | __main__:train_and_evaluate:107 - Epoch 24, Loss: 0.0838
+2025-04-11 13:02:30.095 | INFO     | __main__:train_and_evaluate:107 - Epoch 25, Loss: 0.0585
+2025-04-11 13:02:30.960 | INFO     | __main__:train_and_evaluate:107 - Epoch 26, Loss: 0.0742
+2025-04-11 13:02:31.822 | INFO     | __main__:train_and_evaluate:107 - Epoch 27, Loss: 0.0703
+2025-04-11 13:02:32.683 | INFO     | __main__:train_and_evaluate:107 - Epoch 28, Loss: 0.0618
+2025-04-11 13:02:33.546 | INFO     | __main__:train_and_evaluate:107 - Epoch 29, Loss: 0.0654
+2025-04-11 13:02:34.410 | INFO     | __main__:train_and_evaluate:107 - Epoch 30, Loss: 0.0605
+2025-04-11 13:02:34.489 | INFO     | __main__:eval:67 - Eval Loss: 0.5550
+2025-04-11 13:02:34.502 | INFO     | __main__:train_and_evaluate:117 - Epoch 30, Eval Metrics: macro_recall: 0.87, macro_precision: 0.89, macro_f1: 0.87, accuracy: 0.92, micro_recall: 0.92, micro_precision: 0.92, micro_f1: 0.92
+2025-04-11 13:02:35.364 | INFO     | __main__:train_and_evaluate:107 - Epoch 31, Loss: 0.0485
+2025-04-11 13:02:36.226 | INFO     | __main__:train_and_evaluate:107 - Epoch 32, Loss: 0.0644
+2025-04-11 13:02:37.087 | INFO     | __main__:train_and_evaluate:107 - Epoch 33, Loss: 0.0459
+2025-04-11 13:02:37.949 | INFO     | __main__:train_and_evaluate:107 - Epoch 34, Loss: 0.0428
+2025-04-11 13:02:38.810 | INFO     | __main__:train_and_evaluate:107 - Epoch 35, Loss: 0.0415
+2025-04-11 13:02:39.671 | INFO     | __main__:train_and_evaluate:107 - Epoch 36, Loss: 0.0380
+2025-04-11 13:02:40.532 | INFO     | __main__:train_and_evaluate:107 - Epoch 37, Loss: 0.0421
+2025-04-11 13:02:41.412 | INFO     | __main__:train_and_evaluate:107 - Epoch 38, Loss: 0.0352
+2025-04-11 13:02:42.281 | INFO     | __main__:train_and_evaluate:107 - Epoch 39, Loss: 0.0370
+2025-04-11 13:02:43.143 | INFO     | __main__:train_and_evaluate:107 - Epoch 40, Loss: 0.0333
+2025-04-11 13:02:43.221 | INFO     | __main__:eval:67 - Eval Loss: 0.5495
+2025-04-11 13:02:43.233 | INFO     | __main__:train_and_evaluate:117 - Epoch 40, Eval Metrics: macro_recall: 0.91, macro_precision: 0.93, macro_f1: 0.91, accuracy: 0.93, micro_recall: 0.93, micro_precision: 0.93, micro_f1: 0.93
+2025-04-11 13:02:44.095 | INFO     | __main__:train_and_evaluate:107 - Epoch 41, Loss: 0.0257
+2025-04-11 13:02:44.958 | INFO     | __main__:train_and_evaluate:107 - Epoch 42, Loss: 0.0352
+2025-04-11 13:02:45.820 | INFO     | __main__:train_and_evaluate:107 - Epoch 43, Loss: 0.0310
+2025-04-11 13:02:46.681 | INFO     | __main__:train_and_evaluate:107 - Epoch 44, Loss: 0.0286
+2025-04-11 13:02:47.543 | INFO     | __main__:train_and_evaluate:107 - Epoch 45, Loss: 0.0272
+2025-04-11 13:02:48.407 | INFO     | __main__:train_and_evaluate:107 - Epoch 46, Loss: 0.0239
+2025-04-11 13:02:49.270 | INFO     | __main__:train_and_evaluate:107 - Epoch 47, Loss: 0.0267
+2025-04-11 13:02:50.134 | INFO     | __main__:train_and_evaluate:107 - Epoch 48, Loss: 0.0285
+2025-04-11 13:02:50.997 | INFO     | __main__:train_and_evaluate:107 - Epoch 49, Loss: 0.0241
+2025-04-11 13:02:51.859 | INFO     | __main__:train_and_evaluate:107 - Epoch 50, Loss: 0.0314
+2025-04-11 13:02:51.934 | INFO     | __main__:eval:67 - Eval Loss: 0.5704
+2025-04-11 13:02:51.947 | INFO     | __main__:train_and_evaluate:117 - Epoch 50, Eval Metrics: macro_recall: 0.90, macro_precision: 0.92, macro_f1: 0.90, accuracy: 0.93, micro_recall: 0.93, micro_precision: 0.93, micro_f1: 0.93
+2025-04-11 13:02:51.947 | INFO     | __main__:CV_run:320 - Fold 4, Final Eval Metrics: macro_recall: 0.90, macro_precision: 0.92, macro_f1: 0.90, accuracy: 0.93, micro_recall: 0.93, micro_precision: 0.93, micro_f1: 0.93
+2025-04-11 13:02:51.947 | INFO     | __main__:CV_run:286 - Starting fold 5
+2025-04-11 13:02:53.766 | INFO     | __main__:train_and_evaluate:107 - Epoch 1, Loss: 11.2657
+2025-04-11 13:02:54.630 | INFO     | __main__:train_and_evaluate:107 - Epoch 2, Loss: 3.4705
+2025-04-11 13:02:55.491 | INFO     | __main__:train_and_evaluate:107 - Epoch 3, Loss: 2.6196
+2025-04-11 13:02:56.352 | INFO     | __main__:train_and_evaluate:107 - Epoch 4, Loss: 1.8645
+2025-04-11 13:02:57.213 | INFO     | __main__:train_and_evaluate:107 - Epoch 5, Loss: 1.3896
+2025-04-11 13:02:58.084 | INFO     | __main__:train_and_evaluate:107 - Epoch 6, Loss: 1.0289
+2025-04-11 13:02:58.959 | INFO     | __main__:train_and_evaluate:107 - Epoch 7, Loss: 0.7392
+2025-04-11 13:02:59.819 | INFO     | __main__:train_and_evaluate:107 - Epoch 8, Loss: 0.5599
+2025-04-11 13:03:00.681 | INFO     | __main__:train_and_evaluate:107 - Epoch 9, Loss: 0.4172
+2025-04-11 13:03:01.543 | INFO     | __main__:train_and_evaluate:107 - Epoch 10, Loss: 0.3416
+2025-04-11 13:03:01.621 | INFO     | __main__:eval:67 - Eval Loss: 0.6021
+2025-04-11 13:03:01.633 | INFO     | __main__:train_and_evaluate:117 - Epoch 10, Eval Metrics: macro_recall: 0.81, macro_precision: 0.87, macro_f1: 0.81, accuracy: 0.87, micro_recall: 0.87, micro_precision: 0.87, micro_f1: 0.87
+2025-04-11 13:03:02.494 | INFO     | __main__:train_and_evaluate:107 - Epoch 11, Loss: 0.3112
+2025-04-11 13:03:03.358 | INFO     | __main__:train_and_evaluate:107 - Epoch 12, Loss: 0.2474
+2025-04-11 13:03:04.220 | INFO     | __main__:train_and_evaluate:107 - Epoch 13, Loss: 0.2161
+2025-04-11 13:03:05.080 | INFO     | __main__:train_and_evaluate:107 - Epoch 14, Loss: 0.1933
+2025-04-11 13:03:05.940 | INFO     | __main__:train_and_evaluate:107 - Epoch 15, Loss: 0.1388
+2025-04-11 13:03:06.800 | INFO     | __main__:train_and_evaluate:107 - Epoch 16, Loss: 0.1312
+2025-04-11 13:03:07.662 | INFO     | __main__:train_and_evaluate:107 - Epoch 17, Loss: 0.1185
+2025-04-11 13:03:08.526 | INFO     | __main__:train_and_evaluate:107 - Epoch 18, Loss: 0.1044
+2025-04-11 13:03:09.387 | INFO     | __main__:train_and_evaluate:107 - Epoch 19, Loss: 0.0986
+2025-04-11 13:03:10.245 | INFO     | __main__:train_and_evaluate:107 - Epoch 20, Loss: 0.0970
+2025-04-11 13:03:10.320 | INFO     | __main__:eval:67 - Eval Loss: 0.5631
+2025-04-11 13:03:10.333 | INFO     | __main__:train_and_evaluate:117 - Epoch 20, Eval Metrics: macro_recall: 0.86, macro_precision: 0.89, macro_f1: 0.87, accuracy: 0.90, micro_recall: 0.90, micro_precision: 0.90, micro_f1: 0.90
+2025-04-11 13:03:11.195 | INFO     | __main__:train_and_evaluate:107 - Epoch 21, Loss: 0.1006
+2025-04-11 13:03:12.059 | INFO     | __main__:train_and_evaluate:107 - Epoch 22, Loss: 0.0923
+2025-04-11 13:03:12.920 | INFO     | __main__:train_and_evaluate:107 - Epoch 23, Loss: 0.0687
+2025-04-11 13:03:13.784 | INFO     | __main__:train_and_evaluate:107 - Epoch 24, Loss: 0.0756
+2025-04-11 13:03:14.645 | INFO     | __main__:train_and_evaluate:107 - Epoch 25, Loss: 0.0971
+2025-04-11 13:03:15.506 | INFO     | __main__:train_and_evaluate:107 - Epoch 26, Loss: 0.0782
+2025-04-11 13:03:16.369 | INFO     | __main__:train_and_evaluate:107 - Epoch 27, Loss: 0.0731
+2025-04-11 13:03:17.229 | INFO     | __main__:train_and_evaluate:107 - Epoch 28, Loss: 0.0549
+2025-04-11 13:03:18.090 | INFO     | __main__:train_and_evaluate:107 - Epoch 29, Loss: 0.0760
+2025-04-11 13:03:18.951 | INFO     | __main__:train_and_evaluate:107 - Epoch 30, Loss: 0.0750
+2025-04-11 13:03:19.023 | INFO     | __main__:eval:67 - Eval Loss: 0.5554
+2025-04-11 13:03:19.035 | INFO     | __main__:train_and_evaluate:117 - Epoch 30, Eval Metrics: macro_recall: 0.86, macro_precision: 0.88, macro_f1: 0.86, accuracy: 0.90, micro_recall: 0.90, micro_precision: 0.90, micro_f1: 0.90
+2025-04-11 13:03:19.897 | INFO     | __main__:train_and_evaluate:107 - Epoch 31, Loss: 0.0722
+2025-04-11 13:03:20.779 | INFO     | __main__:train_and_evaluate:107 - Epoch 32, Loss: 0.0510
+2025-04-11 13:03:21.641 | INFO     | __main__:train_and_evaluate:107 - Epoch 33, Loss: 0.0426
+2025-04-11 13:03:22.502 | INFO     | __main__:train_and_evaluate:107 - Epoch 34, Loss: 0.0531
+2025-04-11 13:03:23.363 | INFO     | __main__:train_and_evaluate:107 - Epoch 35, Loss: 0.0363
+2025-04-11 13:03:24.225 | INFO     | __main__:train_and_evaluate:107 - Epoch 36, Loss: 0.0368
+2025-04-11 13:03:25.086 | INFO     | __main__:train_and_evaluate:107 - Epoch 37, Loss: 0.0381
+2025-04-11 13:03:25.948 | INFO     | __main__:train_and_evaluate:107 - Epoch 38, Loss: 0.0259
+2025-04-11 13:03:26.810 | INFO     | __main__:train_and_evaluate:107 - Epoch 39, Loss: 0.0392
+2025-04-11 13:03:27.672 | INFO     | __main__:train_and_evaluate:107 - Epoch 40, Loss: 0.0324
+2025-04-11 13:03:27.752 | INFO     | __main__:eval:67 - Eval Loss: 0.5705
+2025-04-11 13:03:27.764 | INFO     | __main__:train_and_evaluate:117 - Epoch 40, Eval Metrics: macro_recall: 0.87, macro_precision: 0.90, macro_f1: 0.87, accuracy: 0.91, micro_recall: 0.91, micro_precision: 0.91, micro_f1: 0.91
+2025-04-11 13:03:28.625 | INFO     | __main__:train_and_evaluate:107 - Epoch 41, Loss: 0.0240
+2025-04-11 13:03:29.487 | INFO     | __main__:train_and_evaluate:107 - Epoch 42, Loss: 0.0295
+2025-04-11 13:03:30.349 | INFO     | __main__:train_and_evaluate:107 - Epoch 43, Loss: 0.0369
+2025-04-11 13:03:31.209 | INFO     | __main__:train_and_evaluate:107 - Epoch 44, Loss: 0.0226
+2025-04-11 13:03:32.068 | INFO     | __main__:train_and_evaluate:107 - Epoch 45, Loss: 0.0308
+2025-04-11 13:03:32.931 | INFO     | __main__:train_and_evaluate:107 - Epoch 46, Loss: 0.0230
+2025-04-11 13:03:33.796 | INFO     | __main__:train_and_evaluate:107 - Epoch 47, Loss: 0.0271
+2025-04-11 13:03:34.657 | INFO     | __main__:train_and_evaluate:107 - Epoch 48, Loss: 0.0260
+2025-04-11 13:03:35.520 | INFO     | __main__:train_and_evaluate:107 - Epoch 49, Loss: 0.0241
+2025-04-11 13:03:36.385 | INFO     | __main__:train_and_evaluate:107 - Epoch 50, Loss: 0.0288
+2025-04-11 13:03:36.458 | INFO     | __main__:eval:67 - Eval Loss: 0.5882
+2025-04-11 13:03:36.471 | INFO     | __main__:train_and_evaluate:117 - Epoch 50, Eval Metrics: macro_recall: 0.87, macro_precision: 0.90, macro_f1: 0.88, accuracy: 0.91, micro_recall: 0.91, micro_precision: 0.91, micro_f1: 0.91
+2025-04-11 13:03:36.471 | INFO     | __main__:CV_run:320 - Fold 5, Final Eval Metrics: macro_recall: 0.87, macro_precision: 0.90, macro_f1: 0.88, accuracy: 0.91, micro_recall: 0.91, micro_precision: 0.91, micro_f1: 0.91
+2025-04-11 13:03:36.472 | INFO     | __main__:CV_run:340 - Average Eval Accuracy across all folds: 0.92%
+2025-04-11 13:03:36.472 | SUCCESS  | __main__:CV_run:342 - 5-Fold Cross Validation completed
+top_k: None
+macro_recall: 0.8848 (± 0.0152)
+macro_precision: 0.8908 (± 0.0204)
+macro_f1: 0.8798 (± 0.0176)
+accuracy: 0.9210 (± 0.0106)
+micro_recall: 0.9210 (± 0.0106)
+micro_precision: 0.9210 (± 0.0106)
+micro_f1: 0.9210 (± 0.0106)

@@ -138,10 +138,12 @@ class AbstractNNLayer():
         if node.name == 'auxiliary-tensor':
             self.is_input_node = True
             self.output_shape = node.tensor_shape
+            self.operation = 'Input'
+
         if node.name == 'output-tensor':
             self.is_output_node = True
             self.input_shape = node.tensor_shape
-
+            self.operation = 'Output'
     # fill in the class var for function node type
     def from_torchview_functionnode(self, node: FunctionNode) -> None:
         """

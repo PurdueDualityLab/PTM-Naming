@@ -32,13 +32,15 @@ class AbstractNNSorter():
         if mapper.aptm_layer_edge_list is None:
             raise ValueError("The mapper object does not contain the edge list information")
 
+        input_ids = []
+        output_ids = []
         # identify input/output node and put them into the class var
         for edge_node_info_tuple in mapper.aptm_layer_edge_list:
             if edge_node_info_tuple[0].is_input_node \
-                and edge_node_info_tuple[0] not in self.input_aptmlayer_list:
+                and edge_node_info_tuple[0].node_id not in input_ids:
                 self.input_aptmlayer_list.append(edge_node_info_tuple[0])
             if edge_node_info_tuple[1].is_output_node \
-                and edge_node_info_tuple[1] not in self.output_aptmlayer_list:
+                and edge_node_info_tuple[1].node_id not in output_ids:
                 self.output_aptmlayer_list.append(edge_node_info_tuple[1])
         self.adj_dict = mapper.get_adj_dict({'remove_identity'})
 
