@@ -27,24 +27,24 @@
 |                             | data/                  |
 
 
-## [Survey Study](/survey) ($4.1)
+## [Survey Study](/survey) ($5.1)
 This folder includes scripts and data relevant to Table 1, Table 2, Table 3, Table 4, Figure 5, Table 5, Table 6, Table 7, Table 8, Table 9, Table 10 in the paper.
 
 
 - [Survey Instrument](/survey/Instruments/Survey%20Instrument.pdf): 
-  - The survey instrument used in the study. ($4.1.2)
+  - The survey instrument used in the study. ($5.1.2)
 
 - [Survey data](/survey/data/survey_data.xlsx): 
-  - The raw data of our survey study. ($4.1.3)
+  - The raw data of our survey study. ($5.1.3)
   
 - [Qualitative analysis - data](/survey/data/Survey%20Analysis.xlsx): 
-  - The analysis of the qualitative survey data. ($4.1.4)
+  - The analysis of the qualitative survey data. ($5.1.4)
 
 - [Qualitative analysis - Themes](/survey/Instruments/PTMVsTraditionalNaming-Themes-v1.docx.pdf): 
-  - The extracted themes for the qualitative analysis. ($4.1.4)
+  - The extracted themes for the qualitative analysis. ($5.1.4)
 
-## [Repository mining](/Naming_practices) ($4.2)
-This folder includes scripts and data relevant to Listing 1, Listing 2, Figure 4, Figure 5, Figure 6, Table 5, and Table 6 in the paper.
+## [Repository mining](/Naming_practices) ($5.2)
+This folder includes scripts and data relevant to Figure 4, Figure 5, Figure 6, Table 5, and Table 6 in the paper.
 
 - [Naming elements analysis](/Naming_practices/naming_elements)
   - The prompts and scripts to analyze the naming elements of the PTMs.
@@ -54,15 +54,15 @@ This folder includes scripts and data relevant to Listing 1, Listing 2, Figure 4
   - The prompts and scripts to analyze the naming conventions of the PTMs.
   - The manually labeled groud truth data for evaluation.
 
-## [Naming_anomaly_detection](/Naming_anomaly_detection) ($5.4)
-This folder includes scripts and data relevant to Figure 7, Figure 8, Figure 9, Figure 10, Figure 11, and Table 11 in the paper.
+## [Naming_anomaly_detection](/Naming_anomaly_detection) ($7.2)
+This folder includes scripts and data relevant to Listing 1, Listing 2, Figure 7, Figure 8, Figure 9, Figure 10, Figure 11, Figure 12, and Table 12, Table 13, Table 14, Table 15 in the paper.
 
 
 - [APTMs](/Naming_anomaly_detection/APTM)
   - The APTM model and graph conversion pipeline.
 - [DARA](/Naming_anomaly_detection/DARA)
   - The DNN Architecture Assessment pipeline.
-- [Data files](/Naming_anomaly_detection/data_files)
+- [Data files](/Naming_anomaly_detection/*/data)
   - The data collections scripts files used in the study.
   - The collected data files used in the study.
 - [Tools](/Naming_anomaly_detection/tools)
