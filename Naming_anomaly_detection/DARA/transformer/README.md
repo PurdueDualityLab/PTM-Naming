@@ -4,20 +4,22 @@ This folder includes all the scripts and data used in our contrastive learning p
 
 ## Example Usage (Longformer)
 
-python train.py --do_train --train_mode='model_type' --loss_fn='CLCE' --model_name='longformer' --batch=32 --eval_batch_size=32 --lr=5e-5 --epoch=30 --lambd=0.3
+python Naming_anomaly_detection/DARA/transformer/run.py --lr=0.00005 --label_type=model_type --model_name=longformer --batch_size=8 --epoch=50 --finetune_type=contrastive --lambd=0.1 --tau=0.1
 
 ## Example Usage (RoBERTa)
 
-python train.py --do_train --train_mode='model_type' --loss_fn='CLCE' --model_name='roberta' --batch=64 --eval_batch_size=64 --lr=5e-5 --epoch=40 --trim=416 --lambd=0.3
+python Naming_anomaly_detection/DARA/transformer/run.py --lr=0.00005 --label_type=model_type --model_name=roberta --batch_size=256 --epoch=50 --finetune_type=contrastive --lambd=0.1 --tau=0.1
 
 
 ## Parameters
 
-- `--do_train`: Run training
-- `--train_mode`: Choose from `model_type`, `task`, or `arch`
-- `--loss_fn`: Loss function (CLCE, CL, FoCL)
+
+- `--label_type`: Choose from `model_type`, `task`, or `arch`
+- `--loss_fn`: Loss function (SupConCL)
 - `--model_name`: Name of the model to use
 - `--batch`: Training batch size
+- `--train_mode`: Choose from `pre-train` or `fine-tune`
+- `--finetune_type`: Suboptions for fine-tuning (Choose from `cross-entropy` or `contrastive`)
 - `--eval_batch_size`: Evaluation batch size
 - `--lr`: Learning rate
 - `--epoch`: Number of training epochs
@@ -26,20 +28,10 @@ python train.py --do_train --train_mode='model_type' --loss_fn='CLCE' --model_na
 
 ## Project Structure
 
-- `train.py`: Main training script
-- `model.py`: Model architecture definition
+- `run.py`: Main training script
 - `loss.py`: Loss function implementations
-- `huggingface.py`: Dataset loading and preprocessing
-- `PeaTMOSS_data/*`: Train and evaluation dataset
+- `dataloader.py`: Dataset loading
+- `data_pre.py`: Dataset preprocessing
+- `data/*`: Full dataset
+- `cl_trainer.py`: Custom `trainer` wrapper
 
-## Results
-
-### Longformer Accuracies
-- Model Type: 87.67%
-- Task: 50.37%
-- Architecture: 50.66%
-
-### RoBERTa Accuracies
-- Model Type: 85.61%
-- Task: 46.40%
-- Architecture: 49.34%

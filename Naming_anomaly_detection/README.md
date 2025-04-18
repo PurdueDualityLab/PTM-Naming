@@ -3,10 +3,10 @@
 This folder includes all the scripts and data used in our DNN Architecture Assessment and Contrastive Learning pipeline (DARA, CL, RQ4).
 
 Larger version of figures are available: 
-- [Figure 8](/Naming_anomaly_detection/DARA/results/PCA_projection_model_type.pdf): visualization of selected PTM features based on `model_type`.
-- [Figure 9](/Naming_anomaly_detection/DARA/results/confusion_matrix_heatmap_model_type.pdf): Confusion matrix of evaluation results on `model_type`.
-- [Figure 10](/Naming_anomaly_detection/DARA/results/confusion_matrix_heatmap_task.pdf): Confusion matrix of evaluation results on `task`.
-- [Figure 11](/Naming_anomaly_detection/DARA/results/confusion_matrix_heatmap_arch.pdf):  Confusion matrix of evaluation results on `arch`.
+- [Figure 8](/Naming_anomaly_detection/DARA/ngram/results/PCA_projection_model_type.pdf): visualization of selected PTM features based on `model_type`.
+- [Figure 9](/Naming_anomaly_detection/DARA/transformer/results/longformer_contrastive/confusion_matrix_heatmap_model_type.pdf): Confusion matrix of evaluation results on `model_type`.
+- [Figure 10](/Naming_anomaly_detection/DARA/ngram/results/confusion_matrix_heatmap_task.pdf): Confusion matrix of evaluation results on `task`.
+- [Figure 11](/Naming_anomaly_detection/DARA/transformer/results/longformer_continued_cross-entropy/confusion_matrix_heatmap_arch.pdf):  Confusion matrix of evaluation results on `arch`.
 
 ## Requirements
 
