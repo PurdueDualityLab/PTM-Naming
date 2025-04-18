@@ -62,7 +62,7 @@ This folder includes scripts and data relevant to Listing 1, Listing 2, Figure 7
   - The APTM model and graph conversion pipeline.
 - [DARA](/Naming_anomaly_detection/DARA)
   - The DNN Architecture Assessment pipeline.
-- [Data files](/Naming_anomaly_detection/*/data)
+- [Data files](/Naming_anomaly_detection/data_files)
   - The data collections scripts files used in the study.
   - The collected data files used in the study.
 - [Tools](/Naming_anomaly_detection/tools)
